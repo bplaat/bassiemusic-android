@@ -55,8 +55,8 @@ public class MainActivity extends Activity {
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mediaPlayer) {
                 musicPlayer.setVisibility(View.VISIBLE);
-                musicPlayButton.setImageResource(R.drawable.ic_pause);
                 musicSeekBar.setMax(mediaPlayer.getDuration());
+                musicPlayButton.setImageResource(R.drawable.ic_pause);
                 mediaPlayer.start();
                 handler.post(syncPlayer);
             }
@@ -102,6 +102,10 @@ public class MainActivity extends Activity {
         ((ImageView)findViewById(R.id.music_seek_back_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - 10000, 0), MediaPlayer.SEEK_CLOSEST_SYNC);
+                if (!mediaPlayer.isPlaying()) {
+                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    mediaPlayer.start();
+                }
             }
         });
         musicPlayButton = (ImageView)findViewById(R.id.music_play_button);
@@ -119,6 +123,10 @@ public class MainActivity extends Activity {
         ((ImageView)findViewById(R.id.music_seek_forward_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + 10000, mediaPlayer.getDuration()), MediaPlayer.SEEK_CLOSEST_SYNC);
+                if (!mediaPlayer.isPlaying()) {
+                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    mediaPlayer.start();
+                }
             }
         });
         ((ImageView)findViewById(R.id.music_next_button)).setOnClickListener(new View.OnClickListener() {
