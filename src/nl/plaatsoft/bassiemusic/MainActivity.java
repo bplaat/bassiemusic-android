@@ -159,11 +159,11 @@ public class MainActivity extends Activity {
                 handler.removeCallbacks(syncPlayer);
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress(), MediaPlayer.SEEK_CLOSEST_SYNC);
                 if (!mediaPlayer.isPlaying()) {
                     musicPlayButton.setImageResource(R.drawable.ic_pause);
                     mediaPlayer.start();
                 }
-                mediaPlayer.seekTo(seekBar.getProgress(), MediaPlayer.SEEK_CLOSEST_SYNC);
                 handler.post(syncPlayer);
             }
         });
