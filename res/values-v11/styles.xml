@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.NoTitleBar">
+    <style name="AppTheme" parent="@android:style/Theme.Holo.NoActionBar">
         <item name="android:textColor">@color/primary_text_color</item>
         <item name="android:windowBackground">@color/background_color</item>
     </style>

@@ -8,6 +8,12 @@
         android:layout_height="wrap_content"
         android:background="@color/primary_color">
 
+        <ImageView android:id="@+id/shuffle_button"
+            android:src="@drawable/ic_shuffle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:scaleType="center" />
+
         <TextView android:text="@string/app_name"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -59,8 +65,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true">
 
-                        <ImageView android:id="@+id/music_previous_button" 
+                        <ImageView android:id="@+id/music_previous_button"
                             android:src="@drawable/ic_skip_previous"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="center" />
+
+                        <ImageView android:id="@+id/music_seek_back_button"
+                            android:src="@drawable/ic_fast_rewind"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:scaleType="center" />
@@ -71,7 +83,13 @@
                             android:layout_height="48dp"
                             android:scaleType="center" />
 
-                        <ImageView android:id="@+id/music_next_button" 
+                        <ImageView android:id="@+id/music_seek_forward_button"
+                            android:src="@drawable/ic_fast_forward"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:scaleType="center" />
+
+                        <ImageView android:id="@+id/music_next_button"
                             android:src="@drawable/ic_skip_next"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
@@ -102,7 +120,7 @@
 
             <ImageView android:src="@drawable/ic_queue_music"
                 android:layout_width="96dp"
-                android:layout_height="96dp" 
+                android:layout_height="96dp"
                 android:layout_marginBottom="8dp" />
 
             <TextView android:text="@string/empty_header"
@@ -138,7 +156,7 @@
 
             <ImageView android:src="@drawable/ic_folder"
                 android:layout_width="96dp"
-                android:layout_height="96dp" 
+                android:layout_height="96dp"
                 android:layout_marginBottom="8dp" />
 
             <TextView android:text="@string/access_header"

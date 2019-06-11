@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BassieMusic</string>
+    <string name="app_name" translatable="false">BassieMusic</string>
     <string name="access_header">No access</string>
     <string name="access_description">BassieMusic needs access to your media files on your device, without access the app can\'t load your music.</string>
     <string name="access_button">Ask again</string>

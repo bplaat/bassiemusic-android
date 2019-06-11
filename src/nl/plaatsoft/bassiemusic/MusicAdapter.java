@@ -12,9 +12,11 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         TextView musicTitle;
         TextView musicDuration;
     }
+
     public MusicAdapter(Context context) {
        super(context, 0);
     }
+
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {

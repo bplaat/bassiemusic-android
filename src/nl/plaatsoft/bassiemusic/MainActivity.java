@@ -21,9 +21,11 @@ import android.widget.SeekBar;
 import android.Manifest;
 
 public class MainActivity extends Activity {
+    private ImageView shuffleButton;
     private ImageView refreshButton;
     private LinearLayout musicPage;
     private MusicAdapter musicAdapter;
+    private ListView musicList;
     private LinearLayout musicPlayer;
     private ImageView musicPlayButton;
     private SeekBar musicSeekBar;
@@ -33,7 +35,8 @@ public class MainActivity extends Activity {
     private Handler handler;
     private Runnable syncPlayer;
     private int playingPosition;
-    protected void onCreate(Bundle savedInstanceState) {
+
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
@@ -43,21 +46,39 @@ public class MainActivity extends Activity {
         accessPage = (LinearLayout)findViewById(R.id.access_page);
 
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void	onCompletion(MediaPlayer mediaPlayer) {
                 playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
             }
         });
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            public void onPrepared(MediaPlayer mp) {
+                musicPlayer.setVisibility(View.VISIBLE);
+                musicPlayButton.setImageResource(R.drawable.ic_pause);
+                musicSeekBar.setMax(mediaPlayer.getDuration());
+                mediaPlayer.start();
+                handler.post(syncPlayer);
+            }
+        });
 
         musicAdapter = new MusicAdapter(this);
-        ListView musicList = (ListView)findViewById(R.id.music_list);
+        musicList = (ListView)findViewById(R.id.music_list);
         musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 playMusic(position);
             }
         });
         musicList.setAdapter(musicAdapter);
+
+        shuffleButton = (ImageView)findViewById(R.id.shuffle_button);
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                int pos = (int)(Math.random() * musicAdapter.getCount());
+                playMusic(pos);
+                musicList.setSelection(pos);
+            }
+        });
 
         View.OnClickListener refreshOnClick = new View.OnClickListener() {
             public void onClick(View v) {
@@ -78,6 +99,11 @@ public class MainActivity extends Activity {
                 playMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
             }
         });
+        ((ImageView)findViewById(R.id.music_seek_back_button)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - 10000, 0), MediaPlayer.SEEK_CLOSEST_SYNC);
+            }
+        });
         musicPlayButton = (ImageView)findViewById(R.id.music_play_button);
         musicPlayButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -90,25 +116,14 @@ public class MainActivity extends Activity {
                 }
             }
         });
+        ((ImageView)findViewById(R.id.music_seek_forward_button)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + 10000, mediaPlayer.getDuration()), MediaPlayer.SEEK_CLOSEST_SYNC);
+            }
+        });
         ((ImageView)findViewById(R.id.music_next_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
-            }
-        });
-
-        musicSeekBar = (SeekBar)findViewById(R.id.music_seekbar);
-        musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                handler.removeCallbacks(syncPlayer);
-            }
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (!mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
-                    mediaPlayer.start();
-                }
-                mediaPlayer.seekTo(seekBar.getProgress());
-                handler.post(syncPlayer);
             }
         });
 
@@ -124,6 +139,26 @@ public class MainActivity extends Activity {
             }
         };
 
+        musicSeekBar = (SeekBar)findViewById(R.id.music_seekbar);
+        musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    musicTimeCurrent.setText(Music.formatDuration(progress));
+                }
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                handler.removeCallbacks(syncPlayer);
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!mediaPlayer.isPlaying()) {
+                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    mediaPlayer.start();
+                }
+                mediaPlayer.seekTo(seekBar.getProgress(), MediaPlayer.SEEK_CLOSEST_SYNC);
+                handler.post(syncPlayer);
+            }
+        });
+
         if (Build.VERSION.SDK_INT >= 23) {
             ((Button)findViewById(R.id.access_button)).setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -134,6 +169,7 @@ public class MainActivity extends Activity {
             });
 
             if (new ContextWrapper(this).checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                shuffleButton.setVisibility(View.GONE);
                 refreshButton.setVisibility(View.GONE);
                 requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
             } else {
@@ -143,14 +179,17 @@ public class MainActivity extends Activity {
             loadMusic();
         }
     }
-    protected void onDestroy() {
+
+    public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(syncPlayer);
         mediaPlayer.release();
     }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                shuffleButton.setVisibility(View.VISIBLE);
                 refreshButton.setVisibility(View.VISIBLE);
                 loadMusic();
             } else {
@@ -159,6 +198,7 @@ public class MainActivity extends Activity {
             }
         }
     }
+
     private void loadMusic() {
         Cursor musicCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA }, null, null, MediaStore.Audio.Media.TITLE);
         if (musicCursor != null) {
@@ -176,18 +216,14 @@ public class MainActivity extends Activity {
             emptyPage.setVisibility(View.VISIBLE);
         }
     }
+
     private void playMusic(int position) {
         handler.removeCallbacks(syncPlayer);
         playingPosition = position;
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(musicAdapter.getItem(position).getPath());
-            mediaPlayer.prepare();
+            mediaPlayer.prepareAsync();
         } catch (Exception e) {}
-        musicPlayer.setVisibility(View.VISIBLE);
-        musicPlayButton.setImageResource(R.drawable.ic_pause);
-        musicSeekBar.setMax(mediaPlayer.getDuration());
-        mediaPlayer.start();
-        handler.post(syncPlayer);
     }
 }
