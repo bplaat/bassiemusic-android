@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
             }
         });
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mp) {
+            public void onPrepared(MediaPlayer mediaPlayer) {
                 musicPlayer.setVisibility(View.VISIBLE);
                 musicPlayButton.setImageResource(R.drawable.ic_pause);
                 musicSeekBar.setMax(mediaPlayer.getDuration());
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
         });
 
         View.OnClickListener refreshOnClick = new View.OnClickListener() {
-            public void onClick(View v) {
+            public void onClick(View view) {
                 musicPage.setVisibility(View.VISIBLE);
                 musicPlayer.setVisibility(View.GONE);
                 emptyPage.setVisibility(View.GONE);
@@ -144,6 +144,7 @@ public class MainActivity extends Activity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     musicTimeCurrent.setText(Music.formatDuration(progress));
+                    musicTimeUntil.setText(Music.formatDuration(mediaPlayer.getDuration() - progress));
                 }
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -161,7 +162,7 @@ public class MainActivity extends Activity {
 
         if (Build.VERSION.SDK_INT >= 23) {
             ((Button)findViewById(R.id.access_button)).setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
+                public void onClick(View view) {
                     musicPage.setVisibility(View.VISIBLE);
                     accessPage.setVisibility(View.GONE);
                     requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
@@ -181,9 +182,9 @@ public class MainActivity extends Activity {
     }
 
     public void onDestroy() {
-        super.onDestroy();
         handler.removeCallbacks(syncPlayer);
         mediaPlayer.release();
+        super.onDestroy();
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
