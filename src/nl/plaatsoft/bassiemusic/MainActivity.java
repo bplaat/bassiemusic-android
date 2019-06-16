@@ -21,16 +21,10 @@ import android.widget.SeekBar;
 import android.Manifest;
 
 public class MainActivity extends Activity {
-    private ImageView shuffleButton;
-    private ImageView refreshButton;
     private LinearLayout musicPage;
-    private MusicAdapter musicAdapter;
-    private ListView musicList;
-    private LinearLayout musicPlayer;
-    private ImageView musicPlayButton;
-    private SeekBar musicSeekBar;
     private LinearLayout emptyPage;
     private LinearLayout accessPage;
+    private MusicAdapter musicAdapter;
     private MediaPlayer mediaPlayer;
     private Handler handler;
     private Runnable syncPlayer;
@@ -38,45 +32,27 @@ public class MainActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.activity_main);
 
         musicPage = (LinearLayout)findViewById(R.id.music_page);
-        musicPlayer = (LinearLayout)findViewById(R.id.music_player);
+        LinearLayout musicPlayer = (LinearLayout)findViewById(R.id.music_player);
         emptyPage = (LinearLayout)findViewById(R.id.empty_page);
         accessPage = (LinearLayout)findViewById(R.id.access_page);
 
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            public void	onCompletion(MediaPlayer mediaPlayer) {
-                playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
-            }
-        });
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                musicPlayer.setVisibility(View.VISIBLE);
-                musicSeekBar.setMax(mediaPlayer.getDuration());
-                musicPlayButton.setImageResource(R.drawable.ic_pause);
-                mediaPlayer.start();
-                handler.post(syncPlayer);
-            }
-        });
-
+        ListView musicList = (ListView)findViewById(R.id.music_list);
         musicAdapter = new MusicAdapter(this);
-        musicList = (ListView)findViewById(R.id.music_list);
+        musicList.setAdapter(musicAdapter);
         musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 playMusic(position);
             }
         });
-        musicList.setAdapter(musicAdapter);
 
-        shuffleButton = (ImageView)findViewById(R.id.shuffle_button);
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
+        ((ImageView)findViewById(R.id.music_shuffle_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                int pos = (int)(Math.random() * musicAdapter.getCount());
-                playMusic(pos);
-                musicList.setSelection(pos);
+                int position = (int)(Math.random() * musicAdapter.getCount());
+                playMusic(position);
+                musicList.setSelection(position);
             }
         });
 
@@ -85,15 +61,18 @@ public class MainActivity extends Activity {
                 musicPage.setVisibility(View.VISIBLE);
                 musicPlayer.setVisibility(View.GONE);
                 emptyPage.setVisibility(View.GONE);
-                mediaPlayer.stop();
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
                 musicAdapter.clear();
                 loadMusic();
             }
         };
-        refreshButton = (ImageView)findViewById(R.id.refresh_button);
-        refreshButton.setOnClickListener(refreshOnClick);
+        ((ImageView)findViewById(R.id.music_refresh_button)).setOnClickListener(refreshOnClick);
+        ((ImageView)findViewById(R.id.empty_refresh_button)).setOnClickListener(refreshOnClick);
         ((Button)findViewById(R.id.empty_button)).setOnClickListener(refreshOnClick);
 
+        ImageView musicPlayButton = (ImageView)findViewById(R.id.music_play_button);
         ((ImageView)findViewById(R.id.music_previous_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 playMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
@@ -108,7 +87,6 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        musicPlayButton = (ImageView)findViewById(R.id.music_play_button);
         musicPlayButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (mediaPlayer.isPlaying()) {
@@ -135,28 +113,27 @@ public class MainActivity extends Activity {
             }
         });
 
-        TextView musicTimeCurrent = (TextView)findViewById(R.id.music_time_current);
-        TextView musicTimeUntil = (TextView)findViewById(R.id.music_time_until);
+        TextView musicTimeCurrentLabel = (TextView)findViewById(R.id.music_time_current_label);
+        TextView musicTimeUntilLabel = (TextView)findViewById(R.id.music_time_until_label);
+        SeekBar musicSeekBar = (SeekBar)findViewById(R.id.music_seekbar);
         handler = new Handler();
         syncPlayer = new Runnable() {
             public void run() {
-                musicTimeCurrent.setText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
-                musicTimeUntil.setText(Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+                musicTimeCurrentLabel.setText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+                musicTimeUntilLabel.setText(Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
                 musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                 handler.postDelayed(this, 100);
             }
         };
-
-        musicSeekBar = (SeekBar)findViewById(R.id.music_seekbar);
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    musicTimeCurrent.setText(Music.formatDuration(progress));
-                    musicTimeUntil.setText(Music.formatDuration(mediaPlayer.getDuration() - progress));
-                }
-            }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 handler.removeCallbacks(syncPlayer);
+            }
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    musicTimeCurrentLabel.setText(Music.formatDuration(progress));
+                    musicTimeUntilLabel.setText(Music.formatDuration(mediaPlayer.getDuration() - progress));
+                }
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.seekTo(seekBar.getProgress(), MediaPlayer.SEEK_CLOSEST_SYNC);
@@ -168,18 +145,35 @@ public class MainActivity extends Activity {
             }
         });
 
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void	onCompletion(MediaPlayer mediaPlayer) {
+                playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
+            }
+        });
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                musicPlayer.setVisibility(View.VISIBLE);
+                musicSeekBar.setMax(mediaPlayer.getDuration());
+                musicPlayButton.setImageResource(R.drawable.ic_pause);
+                mediaPlayer.start();
+                handler.post(syncPlayer);
+            }
+        });
+
         if (Build.VERSION.SDK_INT >= 23) {
-            ((Button)findViewById(R.id.access_button)).setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener accessOnClick = new View.OnClickListener() {
                 public void onClick(View view) {
-                    musicPage.setVisibility(View.VISIBLE);
-                    accessPage.setVisibility(View.GONE);
                     requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
                 }
-            });
+            };
+            ((ImageView)findViewById(R.id.access_refresh_button)).setOnClickListener(accessOnClick);
+            ((Button)findViewById(R.id.access_button)).setOnClickListener(accessOnClick);
 
             if (new ContextWrapper(this).checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                shuffleButton.setVisibility(View.GONE);
-                refreshButton.setVisibility(View.GONE);
+                accessPage.setVisibility(View.VISIBLE);
+                musicPage.setVisibility(View.GONE);
                 requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
             } else {
                 loadMusic();
@@ -196,15 +190,10 @@ public class MainActivity extends Activity {
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                shuffleButton.setVisibility(View.VISIBLE);
-                refreshButton.setVisibility(View.VISIBLE);
-                loadMusic();
-            } else {
-                musicPage.setVisibility(View.GONE);
-                accessPage.setVisibility(View.VISIBLE);
-            }
+        if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            musicPage.setVisibility(View.VISIBLE);
+            accessPage.setVisibility(View.GONE);
+            loadMusic();
         }
     }
 

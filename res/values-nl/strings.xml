@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="access_header">Geen toegang</string>
-    <string name="access_description">BassieMusic heeft toegang tot uw mediabestanden op uw apparaat nodig, zonder toegang tot de app kan uw muziek niet worden geladen.</string>
+    <string name="access_description">BassieMusic heeft toegang tot uw muziekbestanden op uw apparaat nodig, zonder deze toegang kan de app uw muziek niet laden.</string>
     <string name="access_button">Vraag opnieuw</string>
     <string name="empty_header">Geen muziek</string>
-    <string name="empty_description">BassieMusic kan geen muziekbestanden op uw apparaat vinden, misschien moet u muziek van uw computer naar uw apparaat overbrengen.</string>
+    <string name="empty_description">BassieMusic kan geen muziekbestanden op uw apparaat vinden, misschien moet u wat muziek van uw computer naar uw apparaat overbrengen.</string>
     <string name="empty_button">Herlaad muziek</string>
 </resources>

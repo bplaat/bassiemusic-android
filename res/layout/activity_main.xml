@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/music_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/primary_color">
+
+            <ImageView android:id="@+id/music_shuffle_button"
+                android:src="@drawable/ic_shuffle"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="center" />
+
+            <TextView android:text="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="20sp" />
+
+            <ImageView android:id="@+id/music_refresh_button"
+                android:src="@drawable/ic_refresh"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="center" />
+        </RelativeLayout>
+
+        <ListView android:id="@+id/music_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="@color/divider_color"
+            android:dividerHeight="1dp" />
+
+        <LinearLayout android:id="@+id/music_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/primary_color"
+            android:visibility="gone">
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView android:id="@+id/music_time_current_label"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center_vertical" />
+
+                <ImageView android:id="@+id/music_previous_button"
+                    android:src="@drawable/ic_skip_previous"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <ImageView android:id="@+id/music_seek_back_button"
+                    android:src="@drawable/ic_fast_rewind"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <ImageView android:id="@+id/music_play_button"
+                    android:src="@drawable/ic_pause"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <ImageView android:id="@+id/music_seek_forward_button"
+                    android:src="@drawable/ic_fast_forward"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <ImageView android:id="@+id/music_next_button"
+                    android:src="@drawable/ic_skip_next"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <TextView android:id="@+id/music_time_until_label"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="16dp"
+                    android:gravity="right|center_vertical" />
+            </LinearLayout>
+
+            <SeekBar android:id="@+id/music_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/empty_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/primary_color">
+
+            <TextView android:text="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="20sp" />
+
+            <ImageView android:id="@+id/empty_refresh_button"
+                android:src="@drawable/ic_refresh"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="center" />
+        </RelativeLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView android:src="@drawable/ic_queue_music"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView android:text="@string/empty_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="24sp" />
+
+            <TextView android:text="@string/empty_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_horizontal"
+                android:textSize="16sp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+
+            <Button android:id="@+id/empty_button"
+                android:text="@string/empty_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/access_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/primary_color">
+
+            <TextView android:text="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="20sp" />
+
+            <ImageView android:id="@+id/access_refresh_button"
+                android:src="@drawable/ic_refresh"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="center" />
+        </RelativeLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView android:src="@drawable/ic_folder"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView android:text="@string/access_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="24sp" />
+
+            <TextView android:text="@string/access_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_horizontal"
+                android:textSize="16sp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+
+            <Button android:id="@+id/access_button"
+                android:text="@string/access_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

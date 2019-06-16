@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 public class MusicAdapter extends ArrayAdapter<Music> {
     private static class ViewHolder {
-        TextView musicTitle;
-        TextView musicDuration;
+        public TextView musicTitle;
+        public TextView musicDuration;
     }
 
     public MusicAdapter(Context context) {
@@ -20,7 +20,7 @@ public class MusicAdapter extends ArrayAdapter<Music> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.music_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_music, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.musicTitle = (TextView)convertView.findViewById(R.id.music_title);
             viewHolder.musicDuration = (TextView)convertView.findViewById(R.id.music_duration);

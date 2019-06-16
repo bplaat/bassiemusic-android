@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name" translatable="false">BassieMusic</string>
     <string name="access_header">No access</string>
-    <string name="access_description">BassieMusic needs access to your media files on your device, without access the app can\'t load your music.</string>
+    <string name="access_description">BassieMusic needs access to your music files on your device, without this access the app can\'t load your music.</string>
     <string name="access_button">Ask again</string>
     <string name="empty_header">No music</string>
     <string name="empty_description">BassieMusic can\'t find any music files on your device, maybe you need to transfer some music from your computer to your device.</string>
