@@ -80,7 +80,11 @@ public class MainActivity extends Activity {
         });
         ((ImageView)findViewById(R.id.music_seek_back_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - 10000, 0), MediaPlayer.SEEK_CLOSEST_SYNC);
+                if (Build.VERSION.SDK_INT >= 26) {
+                    mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - 10000, 0), MediaPlayer.SEEK_CLOSEST_SYNC);
+                } else {
+                    mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - 10000, 0));
+                }
                 if (!mediaPlayer.isPlaying()) {
                     musicPlayButton.setImageResource(R.drawable.ic_pause);
                     mediaPlayer.start();
@@ -100,7 +104,11 @@ public class MainActivity extends Activity {
         });
         ((ImageView)findViewById(R.id.music_seek_forward_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + 10000, mediaPlayer.getDuration()), MediaPlayer.SEEK_CLOSEST_SYNC);
+                if (Build.VERSION.SDK_INT >= 26) {
+                    mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + 10000, mediaPlayer.getDuration()), MediaPlayer.SEEK_CLOSEST_SYNC);
+                } else {
+                    mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + 10000, mediaPlayer.getDuration()));
+                }
                 if (!mediaPlayer.isPlaying()) {
                     musicPlayButton.setImageResource(R.drawable.ic_pause);
                     mediaPlayer.start();
@@ -136,7 +144,11 @@ public class MainActivity extends Activity {
                 }
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(seekBar.getProgress(), MediaPlayer.SEEK_CLOSEST_SYNC);
+                if (Build.VERSION.SDK_INT >= 26) {
+                    mediaPlayer.seekTo(seekBar.getProgress(), MediaPlayer.SEEK_CLOSEST_SYNC);
+                } else {
+                    mediaPlayer.seekTo(seekBar.getProgress());
+                }
                 if (!mediaPlayer.isPlaying()) {
                     musicPlayButton.setImageResource(R.drawable.ic_pause);
                     mediaPlayer.start();
