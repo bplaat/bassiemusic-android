@@ -1,4 +1,4 @@
-# BassieMusic
+# BassieMusic Android App
 *A simple Android app to listen to local music!*
 
 With BassieMusic you can enjoy your music on your Android device at any time of the day. This simple app plays all music that you have and it's fast and light in use.
@@ -13,10 +13,10 @@ If you don't want to use the Google Play store, you can always download the late
 ## Screenshots
 Here are some screenshots I took from my phone:
 
-[<img alt="Screenshot 1" src="screenshots/screenshot1.png" width="160">](screenshots/screenshot1.png)
-[<img alt="Screenshot 2" src="screenshots/screenshot2.png" width="160">](screenshots/screenshot2.png)
-[<img alt="Screenshot 3" src="screenshots/screenshot3.png" width="160">](screenshots/screenshot3.png)
-[<img alt="Screenshot 4" src="screenshots/screenshot4.png" width="160">](screenshots/screenshot4.png)
+[<img alt="Screenshot 1" src="screenshots/screenshot1_small.png" width="160">](screenshots/screenshot1.png)
+[<img alt="Screenshot 2" src="screenshots/screenshot2_small.png" width="160">](screenshots/screenshot2.png)
+[<img alt="Screenshot 3" src="screenshots/screenshot3_small.png" width="160">](screenshots/screenshot3.png)
+[<img alt="Screenshot 4" src="screenshots/screenshot4_small.png" width="160">](screenshots/screenshot4.png)
 
 ## License
 Copyright (c) Bastiaan van der Plaat
