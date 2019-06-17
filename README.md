@@ -21,4 +21,4 @@ Here are some screenshots I took from my phone:
 ## License
 Copyright (c) Bastiaan van der Plaat
 
-Licensed under the [MIT](LICENSE.txt) license.
+Licensed under the [MIT](LICENSE) license.
