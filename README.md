@@ -10,14 +10,6 @@ If you don't want to use the Google Play store, you can always download the late
 
 <a href="https://play.google.com/store/apps/details?id=nl.plaatsoft.bassiemusic"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200"></a>
 
-## Screenshots
-Here are some screenshots I took from my phone:
-
-[<img alt="Screenshot 1" src="screenshots/screenshot1_small.png" width="160">](screenshots/screenshot1.png)
-[<img alt="Screenshot 2" src="screenshots/screenshot2_small.png" width="160">](screenshots/screenshot2.png)
-[<img alt="Screenshot 3" src="screenshots/screenshot3_small.png" width="160">](screenshots/screenshot3.png)
-[<img alt="Screenshot 4" src="screenshots/screenshot4_small.png" width="160">](screenshots/screenshot4.png)
-
 ## License
 Copyright (c) Bastiaan van der Plaat
 

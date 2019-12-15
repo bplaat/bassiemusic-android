@@ -2,7 +2,10 @@ package nl.plaatsoft.bassiemusic;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
@@ -24,6 +27,7 @@ public class MainActivity extends Activity {
     private LinearLayout musicPage;
     private LinearLayout emptyPage;
     private LinearLayout accessPage;
+    private PowerManager.WakeLock wakeLock;
     private MusicAdapter musicAdapter;
     private MediaPlayer mediaPlayer;
     private Handler handler;
@@ -32,12 +36,18 @@ public class MainActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if (preferences.getBoolean("dark-theme", false)) {
+            setTheme(R.style.dark_app_theme);
+        }
         setContentView(R.layout.activity_main);
 
         musicPage = (LinearLayout)findViewById(R.id.music_page);
         LinearLayout musicPlayer = (LinearLayout)findViewById(R.id.music_player);
         emptyPage = (LinearLayout)findViewById(R.id.empty_page);
         accessPage = (LinearLayout)findViewById(R.id.access_page);
+
+        wakeLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BassieMusic::WakeLock");
 
         ListView musicList = (ListView)findViewById(R.id.music_list);
         musicAdapter = new MusicAdapter(this);
@@ -51,8 +61,20 @@ public class MainActivity extends Activity {
         ((ImageView)findViewById(R.id.music_shuffle_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 int position = (int)(Math.random() * musicAdapter.getCount());
-                playMusic(position);
                 musicList.setSelection(position);
+                playMusic(position);
+            }
+        });
+
+        ((TextView)findViewById(R.id.light_dark_button)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("dark-theme", !preferences.getBoolean("dark-theme", false));
+                editor.apply();
+
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
             }
         });
 
@@ -75,7 +97,20 @@ public class MainActivity extends Activity {
         ImageView musicPlayButton = (ImageView)findViewById(R.id.music_play_button);
         ((ImageView)findViewById(R.id.music_previous_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                playMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
+                if (mediaPlayer.getCurrentPosition() > 2500) {
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        mediaPlayer.seekTo(0, MediaPlayer.SEEK_CLOSEST_SYNC);
+                    } else {
+                        mediaPlayer.seekTo(0);
+                    }
+                    if (!mediaPlayer.isPlaying()) {
+                        musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_pause_dark : R.drawable.ic_pause_light);
+                        mediaPlayer.start();
+                        wakeLock.acquire();
+                    }
+                } else {
+                    playMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
+                }
             }
         });
         ((ImageView)findViewById(R.id.music_seek_back_button)).setOnClickListener(new View.OnClickListener() {
@@ -86,19 +121,22 @@ public class MainActivity extends Activity {
                     mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - 10000, 0));
                 }
                 if (!mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_pause_dark : R.drawable.ic_pause_light);
                     mediaPlayer.start();
+                    wakeLock.acquire();
                 }
             }
         });
         musicPlayButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_play_arrow);
+                    musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_play_dark : R.drawable.ic_play_light);
                     mediaPlayer.pause();
+                    wakeLock.release();
                 } else {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_pause_dark : R.drawable.ic_pause_light);
                     mediaPlayer.start();
+                    wakeLock.acquire();
                 }
             }
         });
@@ -110,8 +148,9 @@ public class MainActivity extends Activity {
                     mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + 10000, mediaPlayer.getDuration()));
                 }
                 if (!mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_pause_dark : R.drawable.ic_pause_light);
                     mediaPlayer.start();
+                    wakeLock.acquire();
                 }
             }
         });
@@ -128,7 +167,7 @@ public class MainActivity extends Activity {
         syncPlayer = new Runnable() {
             public void run() {
                 musicTimeCurrentLabel.setText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
-                musicTimeUntilLabel.setText(Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+                musicTimeUntilLabel.setText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
                 musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                 handler.postDelayed(this, 100);
             }
@@ -140,7 +179,7 @@ public class MainActivity extends Activity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     musicTimeCurrentLabel.setText(Music.formatDuration(progress));
-                    musicTimeUntilLabel.setText(Music.formatDuration(mediaPlayer.getDuration() - progress));
+                    musicTimeUntilLabel.setText("-" + Music.formatDuration(mediaPlayer.getDuration() - progress));
                 }
             }
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -150,27 +189,28 @@ public class MainActivity extends Activity {
                     mediaPlayer.seekTo(seekBar.getProgress());
                 }
                 if (!mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
+                    musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_pause_dark : R.drawable.ic_pause_light);
                     mediaPlayer.start();
+                    wakeLock.acquire();
                 }
                 handler.post(syncPlayer);
             }
         });
 
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            public void	onCompletion(MediaPlayer mediaPlayer) {
-                playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
-            }
-        });
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mediaPlayer) {
                 musicPlayer.setVisibility(View.VISIBLE);
                 musicSeekBar.setMax(mediaPlayer.getDuration());
-                musicPlayButton.setImageResource(R.drawable.ic_pause);
+                musicPlayButton.setImageResource(preferences.getBoolean("dark-theme", false) ? R.drawable.ic_pause_dark : R.drawable.ic_pause_light);
                 mediaPlayer.start();
+                wakeLock.acquire();
                 handler.post(syncPlayer);
+            }
+        });
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void	onCompletion(MediaPlayer mediaPlayer) {
+                playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
             }
         });
 
@@ -198,6 +238,9 @@ public class MainActivity extends Activity {
     public void onDestroy() {
         handler.removeCallbacks(syncPlayer);
         mediaPlayer.release();
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
         super.onDestroy();
     }
 

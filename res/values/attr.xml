@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colors -->
+    <attr name="primary_color" format="reference|color" />
+    <attr name="secondary_text_color" format="reference|color" />
+    <attr name="divider_color" format="reference|color" />
+    <attr name="background_color" format="reference|color" />
+
+    <!-- Drawables -->
+    <attr name="ic_fast_forward" format="reference" />
+    <attr name="ic_fast_rewind" format="reference" />
+    <attr name="ic_folder" format="reference" />
+    <attr name="ic_pause" format="reference" />
+    <attr name="ic_play" format="reference" />
+    <attr name="ic_playlist_music" format="reference" />
+    <attr name="ic_refresh" format="reference" />
+    <attr name="ic_shuffle" format="reference" />
+    <attr name="ic_skip_next" format="reference" />
+    <attr name="ic_skip_previous" format="reference" />
+</resources>

@@ -1,7 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.Holo.NoActionBar">
-        <item name="android:textColor">@color/primary_text_color</item>
-        <item name="android:windowBackground">@color/background_color</item>
+    <!-- Holo Light Theme -->
+    <style name="light_app_theme" parent="@android:style/Theme.Holo.Light.NoActionBar">
+        <item name="android:textColor">@color/light_primary_text_color</item>
+        <item name="android:windowBackground">@color/light_background_color</item>
+
+        <item name="primary_color">@color/light_primary_color</item>
+        <item name="secondary_text_color">@color/light_secondary_text_color</item>
+        <item name="divider_color">@color/light_divider_color</item>
+        <item name="background_color">@color/light_background_color</item>
+
+        <item name="ic_fast_forward">@drawable/ic_fast_forward_light</item>
+        <item name="ic_fast_rewind">@drawable/ic_fast_rewind_light</item>
+        <item name="ic_folder">@drawable/ic_folder_light</item>
+        <item name="ic_pause">@drawable/ic_pause_light</item>
+        <item name="ic_play">@drawable/ic_play_light</item>
+        <item name="ic_playlist_music">@drawable/ic_playlist_music_light</item>
+        <item name="ic_refresh">@drawable/ic_refresh_light</item>
+        <item name="ic_shuffle">@drawable/ic_shuffle_light</item>
+        <item name="ic_skip_next">@drawable/ic_skip_next_light</item>
+        <item name="ic_skip_previous">@drawable/ic_skip_previous_light</item>
+    </style>
+
+    <!-- Holo Dark Theme -->
+    <style name="dark_app_theme" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:textColor">@color/dark_primary_text_color</item>
+        <item name="android:windowBackground">@color/dark_background_color</item>
+
+        <item name="primary_color">@color/dark_primary_color</item>
+        <item name="secondary_text_color">@color/dark_secondary_text_color</item>
+        <item name="divider_color">@color/dark_divider_color</item>
+        <item name="background_color">@color/dark_background_color</item>
+
+        <item name="ic_fast_forward">@drawable/ic_fast_forward_dark</item>
+        <item name="ic_fast_rewind">@drawable/ic_fast_rewind_dark</item>
+        <item name="ic_folder">@drawable/ic_folder_dark</item>
+        <item name="ic_pause">@drawable/ic_pause_dark</item>
+        <item name="ic_play">@drawable/ic_play_dark</item>
+        <item name="ic_playlist_music">@drawable/ic_playlist_music_dark</item>
+        <item name="ic_refresh">@drawable/ic_refresh_dark</item>
+        <item name="ic_shuffle">@drawable/ic_shuffle_dark</item>
+        <item name="ic_skip_next">@drawable/ic_skip_next_dark</item>
+        <item name="ic_skip_previous">@drawable/ic_skip_previous_dark</item>
     </style>
 </resources>

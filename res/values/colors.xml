@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_color">#222</color>
-    <color name="primary_dark_color">#000</color>
-    <color name="accent_color">#2196f3</color>
-    <color name="primary_text_color">#fff</color>
-    <color name="secondary_text_color">#888</color>
-    <color name="divider_color">#333</color>
-    <color name="background_color">#111</color>
+    <!-- Light theme colors -->
+    <color name="light_primary_color">#eee</color>
+    <color name="light_primary_dark_color">#ddd</color>
+    <color name="light_accent_color">#29f</color>
+    <color name="light_background_color">#fff</color>
+    <color name="light_secondary_text_color">#666</color>
+    <color name="light_divider_color">#eee</color>
+    <color name="light_primary_text_color">#111</color>
+
+    <!-- Dark theme colors -->
+    <color name="dark_primary_color">#222</color>
+    <color name="dark_primary_dark_color">#000</color>
+    <color name="dark_accent_color">#29f</color>
+    <color name="dark_primary_text_color">#fff</color>
+    <color name="dark_secondary_text_color">#777</color>
+    <color name="dark_divider_color">#333</color>
+    <color name="dark_background_color">#111</color>
 </resources>
