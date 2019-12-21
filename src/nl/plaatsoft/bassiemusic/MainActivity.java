@@ -235,6 +235,10 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void onBackPressed() {
+        moveTaskToBack(false);
+    }
+
     public void onDestroy() {
         handler.removeCallbacks(syncPlayer);
         mediaPlayer.release();
