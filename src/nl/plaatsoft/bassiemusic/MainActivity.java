@@ -7,11 +7,14 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.view.View;
 import android.widget.AdapterView;
@@ -163,7 +166,7 @@ public class MainActivity extends Activity {
         TextView musicTimeCurrentLabel = (TextView)findViewById(R.id.music_time_current_label);
         TextView musicTimeUntilLabel = (TextView)findViewById(R.id.music_time_until_label);
         SeekBar musicSeekBar = (SeekBar)findViewById(R.id.music_seekbar);
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
         syncPlayer = new Runnable() {
             public void run() {
                 musicTimeCurrentLabel.setText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
@@ -198,6 +201,15 @@ public class MainActivity extends Activity {
         });
 
         mediaPlayer = new MediaPlayer();
+        if (Build.VERSION.SDK_INT >= 21) {
+            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build());
+        } else {
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
+
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mediaPlayer) {
                 musicPlayer.setVisibility(View.VISIBLE);
@@ -281,6 +293,8 @@ public class MainActivity extends Activity {
         try {
             mediaPlayer.setDataSource(musicAdapter.getItem(position).getPath());
             mediaPlayer.prepareAsync();
-        } catch (Exception e) {}
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
