@@ -10,9 +10,12 @@
         <item name="divider_color">@color/light_divider_color</item>
         <item name="background_color">@color/light_background_color</item>
 
+        <item name="ic_arrow_left">@drawable/ic_arrow_left_light</item>
+        <item name="ic_close">@drawable/ic_close_light</item>
         <item name="ic_fast_forward">@drawable/ic_fast_forward_light</item>
         <item name="ic_fast_rewind">@drawable/ic_fast_rewind_light</item>
         <item name="ic_folder">@drawable/ic_folder_light</item>
+        <item name="ic_magnify">@drawable/ic_magnify_light</item>
         <item name="ic_pause">@drawable/ic_pause_light</item>
         <item name="ic_play">@drawable/ic_play_light</item>
         <item name="ic_playlist_music">@drawable/ic_playlist_music_light</item>
@@ -32,9 +35,12 @@
         <item name="divider_color">@color/dark_divider_color</item>
         <item name="background_color">@color/dark_background_color</item>
 
+        <item name="ic_arrow_left">@drawable/ic_arrow_left_dark</item>
+        <item name="ic_close">@drawable/ic_close_dark</item>
         <item name="ic_fast_forward">@drawable/ic_fast_forward_dark</item>
         <item name="ic_fast_rewind">@drawable/ic_fast_rewind_dark</item>
         <item name="ic_folder">@drawable/ic_folder_dark</item>
+        <item name="ic_magnify">@drawable/ic_magnify_dark</item>
         <item name="ic_pause">@drawable/ic_pause_dark</item>
         <item name="ic_play">@drawable/ic_play_dark</item>
         <item name="ic_playlist_music">@drawable/ic_playlist_music_dark</item>

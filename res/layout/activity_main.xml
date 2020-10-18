@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Music page -->
     <LinearLayout android:id="@+id/music_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,12 +30,23 @@
                 android:fontFamily="sans-serif-medium"
                 android:textSize="20sp" />
 
-            <ImageView android:id="@+id/music_refresh_button"
-                android:src="?ic_refresh"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_alignParentRight="true"
-                android:scaleType="center" />
+            <LinearLayout android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
+
+                <ImageView android:id="@+id/music_refresh_button"
+                    android:src="?ic_refresh"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:scaleType="center" />
+
+                <ImageView android:id="@+id/music_search_button"
+                    android:src="?ic_magnify"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:scaleType="center" />
+            </LinearLayout>
         </RelativeLayout>
 
         <ListView android:id="@+id/music_list"
@@ -111,6 +123,49 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Search page -->
+    <LinearLayout android:id="@+id/search_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?background_color"
+        android:visibility="gone">
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?primary_color">
+
+            <ImageView android:id="@+id/search_back_button"
+                android:src="?ic_arrow_left"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="center" />
+
+            <EditText android:id="@+id/search_input"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:hint="Search"
+                android:background="@android:color/transparent" />
+
+            <ImageView android:id="@+id/search_clear_button"
+                android:src="?ic_close"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="center" />
+        </LinearLayout>
+
+        <ListView android:id="@+id/search_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="?divider_color"
+            android:dividerHeight="1dp" />
+    </LinearLayout>
+
+    <!-- Empty page -->
     <LinearLayout android:id="@+id/empty_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -172,6 +227,7 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Access page -->
     <LinearLayout android:id="@+id/access_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

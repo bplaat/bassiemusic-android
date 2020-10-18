@@ -3,14 +3,20 @@ package nl.plaatsoft.bassiemusic;
 import android.net.Uri;
 
 public class Music {
+    private long id;
     private String title;
     private long duration;
     private Uri uri;
 
-    public Music(String title, long duration, Uri uri) {
+    public Music(long id, String title, long duration, Uri uri) {
+        this.id = id;
         this.title = title;
         this.duration = duration;
         this.uri = uri;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getTitle() {

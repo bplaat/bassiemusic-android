@@ -7,9 +7,12 @@
     <attr name="background_color" format="reference|color" />
 
     <!-- Drawables -->
+    <attr name="ic_arrow_left" format="reference" />
+    <attr name="ic_close" format="reference" />
     <attr name="ic_fast_forward" format="reference" />
     <attr name="ic_fast_rewind" format="reference" />
     <attr name="ic_folder" format="reference" />
+    <attr name="ic_magnify" format="reference" />
     <attr name="ic_pause" format="reference" />
     <attr name="ic_play" format="reference" />
     <attr name="ic_playlist_music" format="reference" />
