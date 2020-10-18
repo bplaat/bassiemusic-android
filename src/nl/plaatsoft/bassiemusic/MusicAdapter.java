@@ -28,6 +28,7 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
+
         Music music = getItem(position);
         viewHolder.musicTitle.setText(music.getTitle());
         viewHolder.musicDuration.setText(Music.formatDuration(music.getDuration()));

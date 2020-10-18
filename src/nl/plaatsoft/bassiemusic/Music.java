@@ -1,14 +1,16 @@
 package nl.plaatsoft.bassiemusic;
 
+import android.net.Uri;
+
 public class Music {
     private String title;
     private long duration;
-    private String path;
+    private Uri uri;
 
-    public Music(String title, long duration, String path) {
+    public Music(String title, long duration, Uri uri) {
         this.title = title;
         this.duration = duration;
-        this.path = path;
+        this.uri = uri;
     }
 
     public String getTitle() {
@@ -19,8 +21,8 @@ public class Music {
         return duration;
     }
 
-    public String getPath() {
-        return path;
+    public Uri getUri() {
+        return uri;
     }
 
     public static String formatDuration(long ms) {
