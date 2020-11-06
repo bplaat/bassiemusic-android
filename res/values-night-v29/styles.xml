@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AppBase" parent="@android:style/Theme.Material.NoActionBar">
+        <!-- Make status and navigation bar dark -->
+        <item name="android:statusBarColor">@color/primary_color</item>
+        <item name="android:navigationBarColor">@color/primary_color</item>
+
+        <!-- Disable force dark mode -->
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+</resources>

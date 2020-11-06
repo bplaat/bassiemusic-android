@@ -5,7 +5,11 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/primary_color</item>
 
-        <!-- Make navigation bar dark -->
-        <item name="android:navigationBarColor">@color/primary_dark_color</item>
+        <!-- Make navigation bar light -->
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/primary_color</item>
+
+        <!-- Disable force dark mode -->
+        <item name="android:forceDarkAllowed">false</item>
     </style>
 </resources>

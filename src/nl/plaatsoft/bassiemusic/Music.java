@@ -1,6 +1,11 @@
 package nl.plaatsoft.bassiemusic;
 
+import android.content.Context;
+import android.content.ContentUris;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.MediaStore;
+import java.util.ArrayList;
 
 public class Music {
     private long id;
@@ -38,5 +43,27 @@ public class Music {
         } else {
             return String.format("%d:%02d", s / 60, s % 60);
         }
+    }
+
+    public static ArrayList<Music> loadMusic(Context context) {
+        ArrayList<Music> music = new ArrayList<Music>();
+
+        Cursor musicCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            new String[] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION },
+            null, null, MediaStore.Audio.Media.TITLE);
+        if (musicCursor != null) {
+            while (musicCursor.moveToNext()) {
+                long musicId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                music.add(new Music(
+                    musicId,
+                    musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
+                    musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
+                    ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicId)
+                ));
+            }
+            musicCursor.close();
+        }
+
+        return music;
     }
 }

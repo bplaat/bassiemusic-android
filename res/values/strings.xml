@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">BassieMusic</string>
-    <string name="access_header">No access</string>
-    <string name="access_description">BassieMusic needs access to your music files on your device, without this access the app can\'t load your music.</string>
+
+    <string name="access_title">No access</string>
+    <string name="access_description">BassieMusic needs access to your music files on your device, without this access the app can\'t load your music</string>
     <string name="access_button">Ask again</string>
-    <string name="empty_header">No music</string>
-    <string name="empty_description">BassieMusic can\'t find any music files on your device, maybe you need to transfer some music from your computer to your device.</string>
+
+    <string name="empty_title">No music</string>
+    <string name="empty_description">BassieMusic can\'t find any music files on your device, maybe you need to transfer some music from your computer to your device</string>
     <string name="empty_button">Refresh music</string>
+
+    <string name="search_input_hint">Search</string>
+    <string name="search_start_title">Start searching...</string>
+    <string name="search_start_description">Type your search query and BassieMusic will try to find the right song...</string>
+    <string name="search_empty_title">No search results</string>
+    <string name="search_empty_description">BassieMusic can\'t find any music files with that search query</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_about">This application is made by Bastiaan van der Plaat</string>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Nederlands</item>
+        <item>Use system default</item>
+    </string-array>
+
+    <string-array name="themes">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Set by Battery Saver</item>
+    </string-array>
 </resources>

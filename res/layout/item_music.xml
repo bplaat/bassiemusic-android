@@ -15,5 +15,5 @@
     <TextView android:id="@+id/music_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?secondary_text_color" />
+        android:textColor="@color/secondary_text_color" />
 </LinearLayout>

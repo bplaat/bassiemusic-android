@@ -14,7 +14,7 @@ public class MusicAdapter extends ArrayAdapter<Music> {
     }
 
     public MusicAdapter(Context context) {
-       super(context, 0);
+        super(context, 0);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {

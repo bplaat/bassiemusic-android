@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="access_header">Geen toegang</string>
-    <string name="access_description">BassieMusic heeft toegang tot uw muziekbestanden op uw apparaat nodig, zonder deze toegang kan de app uw muziek niet laden.</string>
+    <string name="access_title">Geen toegang</string>
+    <string name="access_description">BassieMusic heeft toegang tot uw muziekbestanden op uw apparaat nodig, zonder deze toegang kan de app uw muziek niet laden</string>
     <string name="access_button">Vraag opnieuw</string>
-    <string name="empty_header">Geen muziek</string>
-    <string name="empty_description">BassieMusic kan geen muziekbestanden op uw apparaat vinden, misschien moet u wat muziek van uw computer naar uw apparaat overbrengen.</string>
+
+    <string name="empty_title">Geen muziek</string>
+    <string name="empty_description">BassieMusic kan geen muziekbestanden op uw apparaat vinden, misschien moet u wat muziek van uw computer naar uw apparaat overbrengen</string>
     <string name="empty_button">Herlaad muziek</string>
+
+    <string name="search_input_hint">Zoeken</string>
+    <string name="search_start_title">Begin met zoeken...</string>
+    <string name="search_start_description">Typ uw zoekopdracht en BassieMusic zal proberen het juiste nummer te vinden...</string>
+    <string name="search_empty_title">Geen resultaten gevonden</string>
+    <string name="search_empty_description">BassieMusic kan geen muziekbestanden vinden met die zoekopdracht</string>
+
+    <string name="settings_title">Instellingen</string>
+    <string name="settings_language">Taal</string>
+    <string name="settings_theme">Thema</string>
+    <string name="settings_cancel">Annuleren</string>
+    <string name="settings_about">Deze applicatie is gemaakt door Bastiaan van der Plaat</string>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Nederlands</item>
+        <item>Gebruik systeemstandaard</item>
+    </string-array>
+
+    <string-array name="themes">
+        <item>Licht</item>
+        <item>Donker</item>
+        <item>Ingesteld door batterijbesparing</item>
+    </string-array>
 </resources>
