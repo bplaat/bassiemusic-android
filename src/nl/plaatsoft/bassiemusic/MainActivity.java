@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity {
     private int oldTheme = -1;
 
     private LinearLayout musicPage;
+    private LinearLayout musicPlayer;
     private ListView musicList;
     private LinearLayout emptyPage;
     private LinearLayout accessPage;
@@ -56,7 +57,7 @@ public class MainActivity extends BaseActivity {
         SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         musicPage = (LinearLayout)findViewById(R.id.music_page);
-        LinearLayout musicPlayer = (LinearLayout)findViewById(R.id.music_player);
+        musicPlayer = (LinearLayout)findViewById(R.id.music_player);
 
         emptyPage = (LinearLayout)findViewById(R.id.empty_page);
 
@@ -343,8 +344,16 @@ public class MainActivity extends BaseActivity {
 
         musicAdapter.setSelectedPosition(position);
 
-        if (position < musicList.getFirstVisiblePosition() || position > musicList.getLastVisiblePosition()) {
+        if (position < musicList.getFirstVisiblePosition()) {
             musicList.setSelection(position);
+        }
+
+        if (position > musicList.getLastVisiblePosition()) {
+            if (musicPlayer.getVisibility() == View.VISIBLE) {
+                musicList.setSelection(position - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 1));
+            } else {
+                musicList.setSelection(position - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 2));
+            }
         }
 
         mediaPlayer.reset();

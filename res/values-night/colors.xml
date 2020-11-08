@@ -5,7 +5,7 @@
     <color name="primary_text_color">#fff</color>
     <color name="secondary_text_color">#888</color>
     <color name="divider_color">#333</color>
-    <color name="selected_background_color">#222</color>
+    <color name="selected_background_color">#1a1a1a</color>
     <color name="background_color">#111</color>
     <color name="icon_color">#fff</color>
 </resources>
