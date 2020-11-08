@@ -76,9 +76,7 @@ public class MainActivity extends BaseActivity {
 
         ((ImageView)findViewById(R.id.music_shuffle_button)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                int position = (int)(Math.random() * musicAdapter.getCount());
-                musicList.setSelection(position);
-                playMusic(position);
+                playMusic((int)(Math.random() * musicAdapter.getCount()));
             }
         });
 
@@ -100,6 +98,7 @@ public class MainActivity extends BaseActivity {
         View.OnClickListener refreshOnClick = new View.OnClickListener() {
             public void onClick(View view) {
                 musicPage.setVisibility(View.VISIBLE);
+                musicAdapter.setSelectedPosition(-1);
                 musicPlayer.setVisibility(View.GONE);
                 emptyPage.setVisibility(View.GONE);
                 if (mediaPlayer.isPlaying()) {
@@ -299,15 +298,11 @@ public class MainActivity extends BaseActivity {
             if (id != -1) {
                 for (Music musicItem : music) {
                     if (id == musicItem.getId()) {
-                        int position = musicAdapter.getPosition(musicItem);
-
-                        musicList.post(new Runnable() {
+                        handler.post(new Runnable() {
                             public void run() {
-                                musicList.setSelection(position);
+                                playMusic(musicAdapter.getPosition(musicItem));
                             }
                         });
-
-                        playMusic(position);
                         return;
                     }
                 }
@@ -321,7 +316,6 @@ public class MainActivity extends BaseActivity {
                     oldLanguage != settings.getInt("language", SettingsActivity.LANGUAGE_DEFAULT) ||
                     oldTheme != settings.getInt("theme", SettingsActivity.THEME_DEFAULT)
                 ) {
-                    Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
                         public void run() {
                             recreate();
@@ -346,6 +340,12 @@ public class MainActivity extends BaseActivity {
         handler.removeCallbacks(syncPlayer);
 
         playingPosition = position;
+
+        musicAdapter.setSelectedPosition(position);
+
+        if (position < musicList.getFirstVisiblePosition() || position > musicList.getLastVisiblePosition()) {
+            musicList.setSelection(position);
+        }
 
         mediaPlayer.reset();
 

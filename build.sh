@@ -2,6 +2,7 @@
 PATH=$PATH:~/android-sdk/build-tools/30.0.2:~/android-sdk/platform-tools
 PLATFORM=~/android-sdk/platforms/android-30/android.jar
 if [ "$1" == "log" ]; then
+    adb logcat -c
     adb logcat *:E
 else
     if aapt package -m -J src -M AndroidManifest.xml -S res -I $PLATFORM; then

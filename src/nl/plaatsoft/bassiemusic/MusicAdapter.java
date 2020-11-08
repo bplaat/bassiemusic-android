@@ -13,8 +13,15 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         public TextView musicDuration;
     }
 
+    private int selectedPosition = -1;
+
     public MusicAdapter(Context context) {
         super(context, 0);
+    }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+        notifyDataSetChanged();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -27,6 +34,12 @@ public class MusicAdapter extends ArrayAdapter<Music> {
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
+        }
+
+        if (position == selectedPosition) {
+            convertView.setBackgroundResource(R.color.selected_background_color);
+        } else {
+            convertView.setBackgroundResource(0);
         }
 
         Music music = getItem(position);
