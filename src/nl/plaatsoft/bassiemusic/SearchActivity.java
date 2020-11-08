@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.inputmethod.EditorInfo;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.EditText;
+import android.widget.TextView;
 import java.util.ArrayList;
 
 public class SearchActivity extends BaseActivity {
@@ -46,6 +49,16 @@ public class SearchActivity extends BaseActivity {
 
         EditText searchInput = (EditText)findViewById(R.id.search_input);
         searchInput.requestFocus();
+
+        searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
         searchInput.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String searchQuery = charSequence.toString().toLowerCase();
