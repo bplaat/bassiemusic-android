@@ -9,8 +9,10 @@ import android.os.PowerManager;
 import java.util.Locale;
 
 public abstract class BaseActivity extends Activity {
+    protected SharedPreferences settings;
+
     public void attachBaseContext(Context context) {
-        SharedPreferences settings = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        settings = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         int language = settings.getInt("language", SettingsActivity.LANGUAGE_DEFAULT);
         int theme = settings.getInt("theme", SettingsActivity.THEME_DEFAULT);

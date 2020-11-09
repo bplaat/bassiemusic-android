@@ -21,10 +21,8 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        ((ImageView)findViewById(R.id.search_back_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                finish();
-            }
+        ((ImageView)findViewById(R.id.search_back_button)).setOnClickListener((View view) -> {
+            finish();
         });
 
         ArrayList<Music> music = Music.loadMusic(this);
@@ -37,26 +35,22 @@ public class SearchActivity extends BaseActivity {
 
         MusicAdapter searchAdapter = new MusicAdapter(this);
         searchList.setAdapter(searchAdapter);
-        searchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Music musicItem = searchAdapter.getItem(position);
-                Intent intent = getIntent();
-                intent.putExtra("id", musicItem.getId());
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-            }
+        searchList.setOnItemClickListener((AdapterView<?> adapterView, View view, int position, long id) -> {
+            Music musicItem = searchAdapter.getItem(position);
+            Intent intent = getIntent();
+            intent.putExtra("id", musicItem.getId());
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         });
 
         EditText searchInput = (EditText)findViewById(R.id.search_input);
         searchInput.requestFocus();
 
-        searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    return true;
-                }
-                return false;
+        searchInput.setOnEditorActionListener((TextView view, int actionId, KeyEvent event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                return true;
             }
+            return false;
         });
 
         searchInput.addTextChangedListener(new TextWatcher() {
@@ -95,10 +89,8 @@ public class SearchActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {}
         });
 
-        ((ImageView)findViewById(R.id.search_clear_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                searchInput.setText("");
-            }
+        ((ImageView)findViewById(R.id.search_clear_button)).setOnClickListener((View view) -> {
+            searchInput.setText("");
         });
     }
 }

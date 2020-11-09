@@ -2,11 +2,8 @@ package nl.plaatsoft.bassiemusic;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,12 +21,9 @@ import android.widget.SeekBar;
 import android.Manifest;
 import java.util.ArrayList;
 
-import android.widget.Toast;
-
 public class MainActivity extends BaseActivity {
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1;
     public static final int SETTINGS_ACTIVITY_REQUEST_CODE = 2;
-
     public static final int STORAGE_PERMISSION_REQUEST_CODE = 1;
     public static final int SEEK_TIME_SKIP = 10000;
 
@@ -54,8 +48,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
-
         musicPage = (LinearLayout)findViewById(R.id.music_page);
         musicPlayer = (LinearLayout)findViewById(R.id.music_player);
 
@@ -69,76 +61,46 @@ public class MainActivity extends BaseActivity {
         musicList = (ListView)findViewById(R.id.music_list);
         musicAdapter = new MusicAdapter(this);
         musicList.setAdapter(musicAdapter);
-        musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                playMusic(position);
-            }
+        musicList.setOnItemClickListener((AdapterView<?> adapterView, View view, int position, long id) -> {
+            playMusic(position);
         });
 
-        ((ImageView)findViewById(R.id.music_shuffle_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                playMusic((int)(Math.random() * musicAdapter.getCount()));
-            }
+        ((ImageView)findViewById(R.id.music_shuffle_button)).setOnClickListener((View view) -> {
+            playMusic((int)(Math.random() * musicAdapter.getCount()));
         });
 
-        ((ImageView)findViewById(R.id.music_search_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                startActivityForResult(new Intent(MainActivity.this, SearchActivity.class), MainActivity.SEARCH_ACTIVITY_REQUEST_CODE);
-            }
+        ((ImageView)findViewById(R.id.music_search_button)).setOnClickListener((View view) -> {
+            startActivityForResult(new Intent(this, SearchActivity.class), MainActivity.SEARCH_ACTIVITY_REQUEST_CODE);
         });
 
-        ((ImageView)findViewById(R.id.music_settings_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                oldLanguage = settings.getInt("language", SettingsActivity.LANGUAGE_DEFAULT);
-                oldTheme = settings.getInt("theme", SettingsActivity.THEME_DEFAULT);
-                startActivityForResult(new Intent(MainActivity.this, SettingsActivity.class), MainActivity.SETTINGS_ACTIVITY_REQUEST_CODE);
-            }
+        ((ImageView)findViewById(R.id.music_settings_button)).setOnClickListener((View view) -> {
+            oldLanguage = settings.getInt("language", SettingsActivity.LANGUAGE_DEFAULT);
+            oldTheme = settings.getInt("theme", SettingsActivity.THEME_DEFAULT);
+            startActivityForResult(new Intent(this, SettingsActivity.class), MainActivity.SETTINGS_ACTIVITY_REQUEST_CODE);
         });
 
         // Empty page
-        View.OnClickListener refreshOnClick = new View.OnClickListener() {
-            public void onClick(View view) {
-                musicPage.setVisibility(View.VISIBLE);
-                musicAdapter.setSelectedPosition(-1);
-                musicPlayer.setVisibility(View.GONE);
-                emptyPage.setVisibility(View.GONE);
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                }
-                loadMusic();
+        View.OnClickListener refreshOnClick = (View view) -> {
+            musicPage.setVisibility(View.VISIBLE);
+            musicAdapter.setSelectedPosition(-1);
+            musicPlayer.setVisibility(View.GONE);
+            emptyPage.setVisibility(View.GONE);
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
             }
+            loadMusic();
         };
         ((TextView)findViewById(R.id.music_refresh_button)).setOnClickListener(refreshOnClick);
         ((ImageView)findViewById(R.id.empty_refresh_button)).setOnClickListener(refreshOnClick);
         ((Button)findViewById(R.id.empty_button)).setOnClickListener(refreshOnClick);
 
         ImageView musicPlayButton = (ImageView)findViewById(R.id.music_play_button);
-        ((ImageView)findViewById(R.id.music_previous_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (mediaPlayer.getCurrentPosition() > 2500) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        mediaPlayer.seekTo(0, MediaPlayer.SEEK_CLOSEST_SYNC);
-                    } else {
-                        mediaPlayer.seekTo(0);
-                    }
-
-                    if (!mediaPlayer.isPlaying()) {
-                        musicPlayButton.setImageResource(R.drawable.ic_pause);
-                        mediaPlayer.start();
-                        wakeLock.acquire();
-                    }
-                } else {
-                    playMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
-                }
-            }
-        });
-
-        ((ImageView)findViewById(R.id.music_seek_back_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
+        ((ImageView)findViewById(R.id.music_previous_button)).setOnClickListener((View view) -> {
+            if (mediaPlayer.getCurrentPosition() > 2500) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - SEEK_TIME_SKIP, 0), MediaPlayer.SEEK_CLOSEST_SYNC);
+                    mediaPlayer.seekTo(0, MediaPlayer.SEEK_CLOSEST_SYNC);
                 } else {
-                    mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - SEEK_TIME_SKIP, 0));
+                    mediaPlayer.seekTo(0);
                 }
 
                 if (!mediaPlayer.isPlaying()) {
@@ -146,43 +108,53 @@ public class MainActivity extends BaseActivity {
                     mediaPlayer.start();
                     wakeLock.acquire();
                 }
+            } else {
+                playMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
             }
         });
 
-        musicPlayButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_play);
-                    mediaPlayer.pause();
-                    wakeLock.release();
-                } else {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
-                    mediaPlayer.start();
-                    wakeLock.acquire();
-                }
+        ((ImageView)findViewById(R.id.music_seek_back_button)).setOnClickListener((View view) -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - SEEK_TIME_SKIP, 0), MediaPlayer.SEEK_CLOSEST_SYNC);
+            } else {
+                mediaPlayer.seekTo(Math.max(mediaPlayer.getCurrentPosition() - SEEK_TIME_SKIP, 0));
+            }
+
+            if (!mediaPlayer.isPlaying()) {
+                musicPlayButton.setImageResource(R.drawable.ic_pause);
+                mediaPlayer.start();
+                wakeLock.acquire();
             }
         });
 
-        ((ImageView)findViewById(R.id.music_seek_forward_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + SEEK_TIME_SKIP, mediaPlayer.getDuration()), MediaPlayer.SEEK_CLOSEST_SYNC);
-                } else {
-                    mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + SEEK_TIME_SKIP, mediaPlayer.getDuration()));
-                }
-
-                if (!mediaPlayer.isPlaying()) {
-                    musicPlayButton.setImageResource(R.drawable.ic_pause);
-                    mediaPlayer.start();
-                    wakeLock.acquire();
-                }
+        musicPlayButton.setOnClickListener((View view) -> {
+            if (mediaPlayer.isPlaying()) {
+                musicPlayButton.setImageResource(R.drawable.ic_play);
+                mediaPlayer.pause();
+                wakeLock.release();
+            } else {
+                musicPlayButton.setImageResource(R.drawable.ic_pause);
+                mediaPlayer.start();
+                wakeLock.acquire();
             }
         });
 
-        ((ImageView)findViewById(R.id.music_next_button)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
+        ((ImageView)findViewById(R.id.music_seek_forward_button)).setOnClickListener((View view) -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + SEEK_TIME_SKIP, mediaPlayer.getDuration()), MediaPlayer.SEEK_CLOSEST_SYNC);
+            } else {
+                mediaPlayer.seekTo(Math.min(mediaPlayer.getCurrentPosition() + SEEK_TIME_SKIP, mediaPlayer.getDuration()));
             }
+
+            if (!mediaPlayer.isPlaying()) {
+                musicPlayButton.setImageResource(R.drawable.ic_pause);
+                mediaPlayer.start();
+                wakeLock.acquire();
+            }
+        });
+
+        ((ImageView)findViewById(R.id.music_next_button)).setOnClickListener((View view) -> {
+            playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
         });
 
         TextView musicTimeCurrentLabel = (TextView)findViewById(R.id.music_time_current_label);
@@ -191,13 +163,11 @@ public class MainActivity extends BaseActivity {
 
         handler = new Handler(Looper.getMainLooper());
 
-        syncPlayer = new Runnable() {
-            public void run() {
-                musicTimeCurrentLabel.setText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
-                musicTimeUntilLabel.setText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
-                musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
-                handler.postDelayed(this, 100);
-            }
+        syncPlayer = () -> {
+            musicTimeCurrentLabel.setText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+            musicTimeUntilLabel.setText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+            musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+            handler.postDelayed(syncPlayer, 100);
         };
 
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -232,29 +202,23 @@ public class MainActivity extends BaseActivity {
         // Media player
         mediaPlayer = new MediaPlayer();
 
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                musicPlayer.setVisibility(View.VISIBLE);
-                musicSeekBar.setMax(mediaPlayer.getDuration());
-                musicPlayButton.setImageResource(R.drawable.ic_pause);
-                mediaPlayer.start();
-                wakeLock.acquire();
-                handler.post(syncPlayer);
-            }
+        mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
+            musicPlayer.setVisibility(View.VISIBLE);
+            musicSeekBar.setMax(mediaPlayer.getDuration());
+            musicPlayButton.setImageResource(R.drawable.ic_pause);
+            mediaPlayer.start();
+            wakeLock.acquire();
+            handler.post(syncPlayer);
         });
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            public void	onCompletion(MediaPlayer mediaPlayer) {
-                playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
-            }
+        mediaPlayer.setOnCompletionListener((MediaPlayer mediaPlayer) -> {
+            playMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Access page
-            View.OnClickListener accessOnClick = new View.OnClickListener() {
-                public void onClick(View view) {
-                    requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
-                }
+            View.OnClickListener accessOnClick = (View view) -> {
+                requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
             };
             ((ImageView)findViewById(R.id.access_refresh_button)).setOnClickListener(accessOnClick);
             ((Button)findViewById(R.id.access_button)).setOnClickListener(accessOnClick);
@@ -265,9 +229,11 @@ public class MainActivity extends BaseActivity {
                 musicPage.setVisibility(View.GONE);
                 requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
             } else {
+                RatingAlert.check(this);
                 loadMusic();
             }
         } else {
+            RatingAlert.check(this);
             loadMusic();
         }
     }
@@ -299,10 +265,8 @@ public class MainActivity extends BaseActivity {
             if (id != -1) {
                 for (Music musicItem : music) {
                     if (id == musicItem.getId()) {
-                        handler.post(new Runnable() {
-                            public void run() {
-                                playMusic(musicAdapter.getPosition(musicItem));
-                            }
+                        handler.post(() -> {
+                            playMusic(musicAdapter.getPosition(musicItem));
                         });
                         return;
                     }
@@ -312,15 +276,12 @@ public class MainActivity extends BaseActivity {
 
         if (requestCode == MainActivity.SETTINGS_ACTIVITY_REQUEST_CODE) {
             if (oldLanguage != -1 && oldTheme != -1) {
-                SharedPreferences settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
                 if (
                     oldLanguage != settings.getInt("language", SettingsActivity.LANGUAGE_DEFAULT) ||
                     oldTheme != settings.getInt("theme", SettingsActivity.THEME_DEFAULT)
                 ) {
-                    handler.post(new Runnable() {
-                        public void run() {
-                            recreate();
-                        }
+                    handler.post(() -> {
+                        recreate();
                     });
                 }
             }

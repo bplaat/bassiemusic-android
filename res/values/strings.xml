@@ -10,6 +10,12 @@
     <string name="empty_description">BassieMusic can\'t find any music files on your device, maybe you need to transfer some music from your computer to your device</string>
     <string name="empty_button">Refresh music</string>
 
+    <string name="rating_alert_title">Rate BassieMusic?</string>
+    <string name="rating_alert_message_label">If you like the BassieMusic app, please take a moment to rate it. Thanks for your support!</string>
+    <string name="rating_alert_rate_button">Rate</string>
+    <string name="rating_alert_later_button">Later</string>
+    <string name="rating_alert_never_button">Never</string>
+
     <string name="search_input_hint">Search</string>
     <string name="search_start_title">Start searching...</string>
     <string name="search_start_description">Type your search query and BassieMusic will try to find the right song...</string>

@@ -8,6 +8,12 @@
     <string name="empty_description">BassieMusic kan geen muziekbestanden op uw apparaat vinden, misschien moet u wat muziek van uw computer naar uw apparaat overbrengen</string>
     <string name="empty_button">Herlaad muziek</string>
 
+    <string name="rating_alert_title">Beoordeel BassieMusic?</string>
+    <string name="rating_alert_message_label">Als je de BassieMusic-app leuk vindt, neem dan even de tijd om deze te beoordelen. Bedankt voor je steun!</string>
+    <string name="rating_alert_rate_button">Beoordeel</string>
+    <string name="rating_alert_later_button">Later</string>
+    <string name="rating_alert_never_button">Nooit</string>
+
     <string name="search_input_hint">Zoeken</string>
     <string name="search_start_title">Begin met zoeken...</string>
     <string name="search_start_description">Typ uw zoekopdracht en BassieMusic zal proberen het juiste nummer te vinden...</string>
