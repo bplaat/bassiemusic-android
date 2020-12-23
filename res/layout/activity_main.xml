@@ -34,6 +34,14 @@
             style="@style/MusicPlayer"
             android:visibility="gone">
 
+            <LinearLayout style="@style/MusicPlayerInfo">
+                <TextView android:id="@+id/main_music_title_label"
+                    style="@style/MusicPlayerTitle" />
+
+                <TextView android:id="@+id/main_music_duration_label"
+                    style="@style/MusicPlayerDuration" />
+            </LinearLayout>
+
             <LinearLayout style="@style/MusicPlayerControls">
                 <TextView android:id="@+id/main_music_time_current_label"
                     style="@style/MusicPlayerLeftLabel" />

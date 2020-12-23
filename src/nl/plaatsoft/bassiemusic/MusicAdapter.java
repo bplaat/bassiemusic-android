@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -43,8 +44,19 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         }
 
         Music music = getItem(position);
+
         viewHolder.musicTitle.setText(music.getTitle());
+        if (position == selectedPosition) {
+            viewHolder.musicTitle.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            viewHolder.musicTitle.setMarqueeRepeatLimit(-1);
+            viewHolder.musicTitle.setSelected(true);
+        } else {
+            viewHolder.musicTitle.setEllipsize(null);
+            viewHolder.musicTitle.setSelected(false);
+        }
+
         viewHolder.musicDuration.setText(Music.formatDuration(music.getDuration()));
+
         return convertView;
     }
 }

@@ -176,12 +176,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
     </style>
 
     <style name="ListItemButtonMeta">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">16dp</item>
         <item name="android:textColor">@color/secondary_text_color</item>
     </style>
 
@@ -199,6 +201,33 @@
         <item name="android:paddingBottom">8dp</item>
         <item name="android:background">@color/primary_color</item>
         <item name="android:elevation">8dp</item>
+    </style>
+
+    <style name="MusicPlayerInfo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="MusicPlayerTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+    </style>
+
+    <style name="MusicPlayerDuration">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
     </style>
 
     <style name="MusicPlayerControls">

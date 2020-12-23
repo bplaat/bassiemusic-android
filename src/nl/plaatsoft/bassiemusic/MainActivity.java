@@ -30,8 +30,6 @@ public class MainActivity extends BaseActivity {
     private int oldTheme = -1;
 
     private LinearLayout musicPage;
-    private LinearLayout musicPlayer;
-    private ListView musicList;
     private LinearLayout emptyPage;
     private LinearLayout accessPage;
 
@@ -48,7 +46,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         musicPage = (LinearLayout)findViewById(R.id.main_music_page);
-        musicPlayer = (LinearLayout)findViewById(R.id.main_music_player);
+        LinearLayout musicPlayer = (LinearLayout)findViewById(R.id.main_music_player);
 
         emptyPage = (LinearLayout)findViewById(R.id.main_empty_page);
 
@@ -57,7 +55,7 @@ public class MainActivity extends BaseActivity {
         wakeLock = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BassieMusic::WakeLock");
 
         // Music page
-        musicList = (ListView)findViewById(R.id.main_music_list);
+        ListView musicList = (ListView)findViewById(R.id.main_music_list);
         musicAdapter = new MusicAdapter(this);
         musicList.setAdapter(musicAdapter);
         musicList.setOnItemClickListener((AdapterView<?> adapterView, View view, int position, long id) -> {
@@ -201,10 +199,40 @@ public class MainActivity extends BaseActivity {
         // Media player
         mediaPlayer = new MediaPlayer();
 
+        TextView musicPlayerTitle = (TextView)findViewById(R.id.main_music_title_label);
+        TextView musicPlayerDuration = (TextView)findViewById(R.id.main_music_duration_label);
+
         mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
+            // Scroll to playing music
+            musicAdapter.setSelectedPosition(playingPosition);
+
+            if (playingPosition < musicList.getFirstVisiblePosition()) {
+                musicList.setSelection(playingPosition);
+            }
+
+            if (playingPosition > musicList.getLastVisiblePosition()) {
+                if (musicPlayer.getVisibility() == View.VISIBLE) {
+                    musicList.setSelection(playingPosition - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 2));
+                } else {
+                    musicList.setSelection(playingPosition - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 2));
+                }
+            }
+
+            // Show music player
             musicPlayer.setVisibility(View.VISIBLE);
-            musicSeekBar.setMax(mediaPlayer.getDuration());
+
+            Music music = musicAdapter.getItem(playingPosition);
+
+            musicPlayerTitle.setText(music.getTitle());
+            musicPlayerTitle.setSelected(true);
+
+            musicPlayerDuration.setText(Music.formatDuration(music.getDuration()));
+
             musicPlayButton.setImageResource(R.drawable.ic_pause);
+
+            musicSeekBar.setMax(mediaPlayer.getDuration());
+
+            // Start media player
             mediaPlayer.start();
             wakeLock.acquire();
             handler.post(syncPlayer);
@@ -305,20 +333,6 @@ public class MainActivity extends BaseActivity {
 
         playingPosition = position;
 
-        musicAdapter.setSelectedPosition(position);
-
-        if (position < musicList.getFirstVisiblePosition()) {
-            musicList.setSelection(position);
-        }
-
-        if (position > musicList.getLastVisiblePosition()) {
-            if (musicPlayer.getVisibility() == View.VISIBLE) {
-                musicList.setSelection(position - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 1));
-            } else {
-                musicList.setSelection(position - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 2));
-            }
-        }
-
         mediaPlayer.reset();
 
         mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
@@ -327,7 +341,8 @@ public class MainActivity extends BaseActivity {
             .build());
 
         try {
-            mediaPlayer.setDataSource(this, musicAdapter.getItem(position).getUri());
+            Music music = musicAdapter.getItem(position);
+            mediaPlayer.setDataSource(this, music.getUri());
             mediaPlayer.prepareAsync();
         } catch (Exception exception) {
             exception.printStackTrace();
