@@ -1,105 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    style="@style/Root">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/primary_color"
-        android:elevation="4dp">
-
-        <ImageView android:id="@+id/search_back_button"
+    <LinearLayout style="@style/ActionBar">
+        <ImageButton android:id="@+id/search_back_button"
             android:src="@drawable/ic_arrow_left"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:scaleType="center" />
+            style="@style/ActionBarIconButton" />
 
         <EditText android:id="@+id/search_input"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
             android:inputType="text"
             android:imeOptions="actionSearch"
             android:hint="@string/search_input_hint"
-            android:background="@android:color/transparent" />
+            style="@style/ActionBarInput" />
 
-        <ImageView android:id="@+id/search_clear_button"
+        <ImageButton android:id="@+id/search_clear_button"
             android:src="@drawable/ic_close"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:scaleType="center" />
+            style="@style/ActionBarIconButton" />
     </LinearLayout>
 
-    <FrameLayout android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
+    <FrameLayout style="@style/Container">
         <!-- Start page -->
-        <LinearLayout android:id="@+id/search_start_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
+        <ScrollView android:id="@+id/search_start_page"
+            style="@style/Scroll">
 
-            <ImageView android:src="@drawable/ic_magnify"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginBottom="8dp" />
+            <LinearLayout style="@style/Hero">
+                <ImageView android:src="@drawable/ic_magnify"
+                    style="@style/HeroIcon" />
 
-            <TextView android:text="@string/search_start_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="24sp" />
+                <TextView android:text="@string/search_start_title_label"
+                    style="@style/HeroTitle" />
 
-            <TextView android:text="@string/search_start_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/secondary_text_color"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
-        </LinearLayout>
+                <TextView android:text="@string/search_start_description_label"
+                    style="@style/HeroDescription" />
+            </LinearLayout>
+        </ScrollView>
 
-        <!-- Search List -->
-        <ListView android:id="@+id/search_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/divider_color"
-            android:dividerHeight="1dp"
-            android:visibility="gone" />
+        <!-- Music Page -->
+        <ListView android:id="@+id/search_music_page"
+            android:visibility="gone"
+            style="@style/MusicList" />
 
         <!-- Empty Page -->
-        <LinearLayout android:id="@+id/search_empty_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone">
+        <ScrollView android:id="@+id/search_empty_page"
+            android:visibility="gone"
+            style="@style/Scroll">
 
-            <ImageView android:src="@drawable/ic_playlist_music"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginBottom="8dp" />
+            <LinearLayout style="@style/Hero">
+                <ImageView android:src="@drawable/ic_playlist_music"
+                    style="@style/HeroIcon" />
 
-            <TextView android:text="@string/search_empty_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="24sp" />
+                <TextView android:text="@string/search_empty_title_label"
+                    style="@style/HeroTitle" />
 
-            <TextView android:text="@string/search_empty_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/secondary_text_color"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
-        </LinearLayout>
+                <TextView android:text="@string/search_empty_description_label"
+                    style="@style/HeroDescription" />
+
+                <Button android:id="@+id/search_empty_hero_button"
+                    android:text="@string/search_empty_clear_button"
+                    style="@style/HeroButton" />
+            </LinearLayout>
+        </ScrollView>
     </FrameLayout>
 </LinearLayout>

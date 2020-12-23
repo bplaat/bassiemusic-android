@@ -1,82 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    style="@style/Root">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/primary_color"
-        android:elevation="4dp">
-
-        <ImageView android:id="@+id/settings_back_button"
+    <LinearLayout style="@style/ActionBar">
+        <ImageButton android:id="@+id/settings_back_button"
             android:src="@drawable/ic_arrow_left"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:scaleType="center" />
+            style="@style/ActionBarIconButton" />
 
-        <TextView android:text="@string/settings_title"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="20sp" />
+        <TextView android:text="@string/settings_title_label"
+            style="@style/ActionBarTitle" />
     </LinearLayout>
 
-    <ScrollView android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+    <ScrollView style="@style/ScrollContainer">
+        <LinearLayout style="@style/List">
+            <TextView android:text="@string/settings_display_label"
+                style="@style/ListItemSubtitle"/>
 
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            <LinearLayout style="@style/ListGroup">
+                <!-- Language button -->
+                <LinearLayout android:id="@+id/settings_language_button"
+                    style="@style/ListItemButton">
 
-            <LinearLayout android:id="@+id/settings_language_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:padding="16dp">
+                    <ImageView android:src="@drawable/ic_language"
+                        style="@style/ListItemButtonIcon" />
 
-                <TextView android:text="@string/settings_language"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    <TextView android:text="@string/settings_language_button"
+                        style="@style/ListItemButtonLabel" />
 
-                <TextView android:id="@+id/settings_language_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/secondary_text_color" />
+                    <TextView android:id="@+id/settings_language_label"
+                        style="@style/ListItemButtonMeta" />
+                </LinearLayout>
+
+                <!-- Theme button -->
+                <LinearLayout android:id="@+id/settings_theme_button"
+                    style="@style/ListItemButton">
+
+                    <ImageView android:src="@drawable/ic_invert_colors"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_theme_button"
+                        style="@style/ListItemButtonLabel" />
+
+                    <TextView android:id="@+id/settings_theme_label"
+                        style="@style/ListItemButtonMeta" />
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/settings_theme_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:padding="16dp">
+            <TextView android:text="@string/settings_information_label"
+                style="@style/ListItemSubtitle" />
 
-                <TextView android:text="@string/settings_theme"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+            <LinearLayout style="@style/ListGroup">
+                <!-- Version button -->
+                <LinearLayout android:id="@+id/settings_version_button"
+                    style="@style/ListItemButton">
 
-                <TextView android:id="@+id/settings_theme_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/secondary_text_color" />
+                    <ImageView android:src="@drawable/ic_information"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_version_button"
+                        style="@style/ListItemButtonLabel" />
+
+                    <TextView android:id="@+id/settings_version_label"
+                        style="@style/ListItemButtonMeta" />
+                </LinearLayout>
+
+                <!-- Rate button -->
+                <LinearLayout android:id="@+id/settings_rate_button"
+                    style="@style/ListItemButton">
+
+                    <ImageView android:src="@drawable/ic_grade"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_rate_button"
+                        style="@style/ListItemButtonLabel" />
+                </LinearLayout>
+
+                <!-- Share button -->
+                <LinearLayout android:id="@+id/settings_share_button"
+                    style="@style/ListItemButton">
+
+                    <ImageView android:src="@drawable/ic_share"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_share_button"
+                        style="@style/ListItemButtonLabel" />
+                </LinearLayout>
+
+                <!-- About button -->
+                <LinearLayout android:id="@+id/settings_about_button"
+                    style="@style/ListItemButton">
+
+                    <ImageView android:src="@drawable/ic_supervisor_account"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_about_button"
+                        style="@style/ListItemButtonLabel" />
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView android:id="@+id/settings_about_button"
-                android:text="@string/settings_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/secondary_text_color" />
+            <TextView android:text="@string/settings_about_message_label"
+                style="@style/ListItemFooter" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

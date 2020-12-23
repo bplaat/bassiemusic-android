@@ -2,41 +2,58 @@
 <resources>
     <string name="app_name" translatable="false">BassieMusic</string>
 
-    <string name="access_title">No access</string>
-    <string name="access_description">BassieMusic needs access to your music files on your device, without this access the app can\'t load your music</string>
-    <string name="access_button">Ask again</string>
+    <!-- Main activity -->
+    <string name="main_access_title_label">No access</string>
+    <string name="main_access_description_label">BassieMusic needs access to your music files on your device, without this access the app can\'t load your music</string>
+    <string name="main_access_refresh_button">Ask again</string>
 
-    <string name="empty_title">No music</string>
-    <string name="empty_description">BassieMusic can\'t find any music files on your device, maybe you need to transfer some music from your computer to your device</string>
-    <string name="empty_button">Refresh music</string>
+    <string name="main_empty_title_label">No music</string>
+    <string name="main_empty_description_label">BassieMusic can\'t find any music files on your device, maybe you need to transfer some music from your computer to your device</string>
+    <string name="main_empty_refresh_button">Refresh music</string>
 
-    <string name="rating_alert_title">Rate BassieMusic?</string>
-    <string name="rating_alert_message_label">If you like the BassieMusic app, please take a moment to rate it. Thanks for your support!</string>
-    <string name="rating_alert_rate_button">Rate</string>
-    <string name="rating_alert_later_button">Later</string>
-    <string name="rating_alert_never_button">Never</string>
-
+    <!-- Search activity -->
     <string name="search_input_hint">Search</string>
-    <string name="search_start_title">Start searching...</string>
-    <string name="search_start_description">Type your search query and BassieMusic will try to find the right song...</string>
-    <string name="search_empty_title">No search results</string>
-    <string name="search_empty_description">BassieMusic can\'t find any music files with that search query</string>
+    <string name="search_start_title_label">Start searching...</string>
+    <string name="search_start_description_label">Type your search query and BassieMusic will try to find the right song...</string>
+    <string name="search_empty_title_label">No search results</string>
+    <string name="search_empty_description_label">BassieMusic can\'t find any music files with that search query</string>
+    <string name="search_empty_clear_button">Clear search</string>
 
-    <string name="settings_title">Settings</string>
-    <string name="settings_language">Language</string>
-    <string name="settings_theme">Theme</string>
-    <string name="settings_cancel">Cancel</string>
-    <string name="settings_about">This application is made by Bastiaan van der Plaat</string>
+    <!-- Settings activity -->
+    <string name="settings_title_label">Settings</string>
 
-    <string-array name="languages">
+    <string name="settings_display_label">Display</string>
+    <string name="settings_language_button">Language</string>
+    <string name="settings_theme_button">Theme</string>
+    <string name="settings_cancel_button">Cancel</string>
+
+    <string name="settings_information_label">Information</string>
+    <string name="settings_version_button">App version</string>
+    <string name="settings_version_message_label">Who, you are an amazing hacker!</string>
+    <string name="settings_rate_button">Rate this app</string>
+    <string name="settings_share_button">Share this app</string>
+    <string name="settings_share_message">Check out this cool Android app:</string>
+    <string name="settings_about_button">About this app</string>
+    <string name="settings_about_message_label">This application is made by Bastiaan van der Plaat</string>
+    <string name="settings_about_website_button">Website</string>
+    <string name="settings_about_ok_button">OK</string>
+
+    <string-array name="settings_languages">
         <item>English</item>
         <item>Nederlands</item>
         <item>Use system default</item>
     </string-array>
 
-    <string-array name="themes">
+    <string-array name="settings_themes">
         <item>Light</item>
         <item>Dark</item>
         <item>Set by Battery Saver</item>
     </string-array>
+
+    <!-- Rating alert -->
+    <string name="rating_alert_title_label">Rate BassieMusic?</string>
+    <string name="rating_alert_message_label">If you like the BassieMusic app, please take a moment to rate it. Thanks for your support!</string>
+    <string name="rating_alert_rate_button">Rate</string>
+    <string name="rating_alert_later_button">Later</string>
+    <string name="rating_alert_never_button">Never</string>
 </resources>

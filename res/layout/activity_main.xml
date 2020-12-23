@@ -1,250 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    style="@style/Root">
 
     <!-- Music page -->
-    <LinearLayout android:id="@+id/music_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <LinearLayout android:id="@+id/main_music_page"
+        style="@style/Root">
 
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/primary_color"
-            android:elevation="4dp">
+        <LinearLayout style="@style/ActionBar">
+            <TextView android:text="@string/app_name"
+                style="@style/ActionBarTitle" />
 
-            <TextView android:id="@+id/music_refresh_button"
-                android:text="@string/app_name"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="20sp" />
-
-            <View android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1" />
-
-            <ImageView android:id="@+id/music_shuffle_button"
+            <ImageButton android:id="@+id/main_music_shuffle_button"
                 android:src="@drawable/ic_shuffle"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:scaleType="center" />
+                style="@style/ActionBarIconButton" />
 
-            <ImageView android:id="@+id/music_search_button"
+            <ImageButton android:id="@+id/main_music_refresh_button"
+                android:src="@drawable/ic_refresh"
+                style="@style/ActionBarIconButton" />
+
+            <ImageButton android:id="@+id/main_music_search_button"
                 android:src="@drawable/ic_magnify"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:scaleType="center" />
+                style="@style/ActionBarIconButton" />
 
-            <ImageView android:id="@+id/music_settings_button"
+            <ImageButton android:id="@+id/main_music_settings_button"
                 android:src="@drawable/ic_settings"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:scaleType="center" />
+                style="@style/ActionBarIconButton" />
         </LinearLayout>
 
-        <ListView android:id="@+id/music_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:divider="@color/divider_color"
-            android:dividerHeight="1dp" />
+        <ListView android:id="@+id/main_music_list"
+            style="@style/MusicListContainer" />
 
-        <LinearLayout android:id="@+id/music_player"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/primary_color"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="gone"
-            android:elevation="8dp">
+        <LinearLayout android:id="@+id/main_music_player"
+            style="@style/MusicPlayer"
+            android:visibility="gone">
 
-            <LinearLayout android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <LinearLayout style="@style/MusicPlayerControls">
+                <TextView android:id="@+id/main_music_time_current_label"
+                    style="@style/MusicPlayerLeftLabel" />
 
-                <TextView android:id="@+id/music_time_current_label"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center_vertical" />
-
-                <ImageView android:id="@+id/music_previous_button"
+                <ImageButton android:id="@+id/main_music_previous_button"
                     android:src="@drawable/ic_skip_previous"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleType="center" />
+                    style="@style/MusicPlayerIconButton" />
 
-                <ImageView android:id="@+id/music_seek_back_button"
+                <ImageButton android:id="@+id/main_music_seek_back_button"
                     android:src="@drawable/ic_fast_rewind"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleType="center" />
+                    style="@style/MusicPlayerIconButton" />
 
-                <ImageView android:id="@+id/music_play_button"
+                <ImageButton android:id="@+id/main_music_play_button"
                     android:src="@drawable/ic_pause"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleType="center" />
+                    style="@style/MusicPlayerIconButton" />
 
-                <ImageView android:id="@+id/music_seek_forward_button"
+                <ImageButton android:id="@+id/main_music_seek_forward_button"
                     android:src="@drawable/ic_fast_forward"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleType="center" />
+                    style="@style/MusicPlayerIconButton" />
 
-                <ImageView android:id="@+id/music_next_button"
+                <ImageButton android:id="@+id/main_music_next_button"
                     android:src="@drawable/ic_skip_next"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleType="center" />
+                    style="@style/MusicPlayerIconButton" />
 
-                <TextView android:id="@+id/music_time_until_label"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginRight="16dp"
-                    android:gravity="right|center_vertical" />
+                <TextView android:id="@+id/main_music_time_until_label"
+                    style="@style/MusicPlayerRightLabel" />
             </LinearLayout>
 
-            <SeekBar android:id="@+id/music_seekbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="8dp" />
+            <SeekBar android:id="@+id/main_music_seekbar"
+                style="@style/MusicPlayerSeekbar" />
         </LinearLayout>
     </LinearLayout>
 
     <!-- Empty page -->
-    <LinearLayout android:id="@+id/empty_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <LinearLayout android:id="@+id/main_empty_page"
+        android:visibility="gone"
+        style="@style/Root">
 
-        <RelativeLayout android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/primary_color"
-            android:elevation="4dp">
-
+        <LinearLayout style="@style/ActionBar">
             <TextView android:text="@string/app_name"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="20sp" />
+                style="@style/ActionBarTitle" />
 
-            <ImageView android:id="@+id/empty_refresh_button"
+            <ImageButton android:id="@+id/main_empty_refresh_button"
                 android:src="@drawable/ic_refresh"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_alignParentRight="true"
-                android:scaleType="center" />
-        </RelativeLayout>
-
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView android:src="@drawable/ic_playlist_music"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginBottom="8dp" />
-
-            <TextView android:text="@string/empty_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="24sp" />
-
-            <TextView android:text="@string/empty_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/secondary_text_color"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
-
-            <Button android:id="@+id/empty_button"
-                android:text="@string/empty_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp" />
+                style="@style/ActionBarIconButton" />
         </LinearLayout>
+
+        <ScrollView style="@style/Scroll">
+            <LinearLayout style="@style/Hero">
+                <ImageView android:src="@drawable/ic_playlist_music"
+                    style="@style/HeroIcon" />
+
+                <TextView android:text="@string/main_empty_title_label"
+                    style="@style/HeroTitle" />
+
+                <TextView android:text="@string/main_empty_description_label"
+                    style="@style/HeroDescription" />
+
+                <Button android:id="@+id/main_empty_hero_button"
+                    android:text="@string/main_empty_refresh_button"
+                    style="@style/HeroButton" />
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
     <!-- Access page -->
-    <LinearLayout android:id="@+id/access_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <LinearLayout android:id="@+id/main_access_page"
+        android:visibility="gone"
+        style="@style/Root">
 
-        <RelativeLayout android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/primary_color"
-            android:elevation="4dp">
-
+        <LinearLayout style="@style/ActionBar">
             <TextView android:text="@string/app_name"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="20sp" />
+                style="@style/ActionBarTitle" />
 
-            <ImageView android:id="@+id/access_refresh_button"
+            <ImageButton android:id="@+id/main_access_refresh_button"
                 android:src="@drawable/ic_refresh"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_alignParentRight="true"
-                android:scaleType="center" />
-        </RelativeLayout>
-
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView android:src="@drawable/ic_folder"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_marginBottom="8dp" />
-
-            <TextView android:text="@string/access_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="24sp" />
-
-            <TextView android:text="@string/access_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/secondary_text_color"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
-
-            <Button android:id="@+id/access_button"
-                android:text="@string/access_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp" />
+                style="@style/ActionBarIconButton" />
         </LinearLayout>
+
+        <ScrollView style="@style/Scroll">
+            <LinearLayout style="@style/Hero">
+                <ImageView android:src="@drawable/ic_folder"
+                    style="@style/HeroIcon" />
+
+                <TextView android:text="@string/main_access_title_label"
+                    style="@style/HeroTitle" />
+
+                <TextView android:text="@string/main_access_description_label"
+                    style="@style/HeroDescription" />
+
+                <Button android:id="@+id/main_access_hero_button"
+                    android:text="@string/main_access_refresh_button"
+                    style="@style/HeroButton" />
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </FrameLayout>

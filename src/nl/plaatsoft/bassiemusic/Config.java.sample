@@ -1,0 +1,26 @@
+package nl.plaatsoft.bassiemusic;
+
+public class Config {
+    private Config() {}
+
+    public static final String APP_OVERRIDE_STORE_PAGE_URL = null;
+
+    public static final int MUSIC_PREVIOUS_RESET_TIMEOUT = 2500;
+    public static final int MUSIC_SEEK_SKIP_TIME = 10000;
+    public static final int MUSIC_SEEKBAR_UPDATE_TIMEOUT = 100;
+
+    public static final int SETTINGS_LANGUAGE_ENGLISH = 0;
+    public static final int SETTINGS_LANGUAGE_DUTCH = 1;
+    public static final int SETTINGS_LANGUAGE_SYSTEM = 2;
+    public static final int SETTINGS_LANGUAGE_DEFAULT = Config.SETTINGS_LANGUAGE_SYSTEM;
+
+    public static final int SETTINGS_THEME_LIGHT = 0;
+    public static final int SETTINGS_THEME_DARK = 1;
+    public static final int SETTINGS_THEME_SYSTEM = 2;
+    public static final int SETTINGS_THEME_DEFAULT = Config.SETTINGS_THEME_SYSTEM;
+
+    public static final String SETTINGS_ABOUT_WEBSITE_URL = "https://bastiaan.ml/";
+
+    public static final int RATING_ALERT_LAUNCHES_UNTIL_PROMPT = 5;
+    public static final int RATING_ALERT_TIME_UNTIL_PROMPT = 2 * 24 * 60 * 60 * 1000;
+}

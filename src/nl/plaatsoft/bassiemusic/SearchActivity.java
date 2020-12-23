@@ -9,10 +9,11 @@ import android.view.inputmethod.EditorInfo;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
@@ -21,17 +22,17 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        ((ImageView)findViewById(R.id.search_back_button)).setOnClickListener((View view) -> {
+        ((ImageButton)findViewById(R.id.search_back_button)).setOnClickListener((View view) -> {
             finish();
         });
 
         ArrayList<Music> music = Music.loadMusic(this);
 
-        LinearLayout startPage = (LinearLayout)findViewById(R.id.search_start_page);
+        ScrollView startPage = (ScrollView)findViewById(R.id.search_start_page);
 
-        ListView searchList = (ListView)findViewById(R.id.search_list);
+        ListView searchList = (ListView)findViewById(R.id.search_music_page);
 
-        LinearLayout emptyPage = (LinearLayout)findViewById(R.id.search_empty_page);
+        ScrollView emptyPage = (ScrollView)findViewById(R.id.search_empty_page);
 
         MusicAdapter searchAdapter = new MusicAdapter(this);
         searchList.setAdapter(searchAdapter);
@@ -89,7 +90,11 @@ public class SearchActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {}
         });
 
-        ((ImageView)findViewById(R.id.search_clear_button)).setOnClickListener((View view) -> {
+        ((ImageButton)findViewById(R.id.search_clear_button)).setOnClickListener((View view) -> {
+            searchInput.setText("");
+        });
+
+        ((Button)findViewById(R.id.search_empty_hero_button)).setOnClickListener((View view) -> {
             searchInput.setText("");
         });
     }

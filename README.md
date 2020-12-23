@@ -8,9 +8,11 @@ The easiest way to download the app is via the [Google Play Store](https://play.
 
 If you don't want to use the Google Play store, you can always download the latest `apk` file from the [release tab](https://github.com/bplaat/bassiemusic-android/releases).
 
-<a href="https://play.google.com/store/apps/details?id=nl.plaatsoft.bassiemusic"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200"></a>
+<a href="https://play.google.com/store/apps/details?id=nl.plaatsoft.bassiemusic">
+    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200">
+</a>
 
 ## License
-Copyright (c) Bastiaan van der Plaat
+Copyright (c) 2018 - present Bastiaan van der Plaat
 
 Licensed under the [MIT](LICENSE) license.
