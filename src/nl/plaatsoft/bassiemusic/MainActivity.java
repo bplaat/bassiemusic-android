@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
 
     private List<Music> music;
     private int playingPosition;
-    private boolean playingAutoplay;
+    private boolean requestAutoplay;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +105,10 @@ public class MainActivity extends BaseActivity {
 
             handler.postDelayed(syncPlayer, Config.MUSIC_SEEKBAR_UPDATE_TIMEOUT);
         };
+
+        ((LinearLayout)findViewById(R.id.main_music_info_button)).setOnClickListener((View view) -> {
+            scrollMusic(playingPosition);
+        });
 
         ((ImageButton)findViewById(R.id.main_music_previous_button)).setOnClickListener((View view) -> {
             if (mediaPlayer.getCurrentPosition() > Config.MUSIC_PREVIOUS_RESET_TIMEOUT) {
@@ -221,7 +225,7 @@ public class MainActivity extends BaseActivity {
             }
 
             // Start media player when autoplay
-            if (playingAutoplay) {
+            if (requestAutoplay) {
                 playMusic(true);
             } else {
                 pauseMusic();
@@ -340,11 +344,24 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void scrollMusic(int position) {
+        musicList.clearFocus();
+        musicList.post(() -> {
+            if (position < musicList.getFirstVisiblePosition()) {
+                musicList.setSelection(position);
+            }
+
+            if (position > musicList.getLastVisiblePosition()) {
+                musicList.setSelection(position - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 1));
+            }
+        });
+    }
+
     private void startMusic(int position, boolean autoplay) {
         handler.removeCallbacks(syncPlayer);
 
         playingPosition = position;
-        playingAutoplay = autoplay;
+        requestAutoplay = autoplay;
 
         // Reset and prepare media player
         mediaPlayer.reset();
@@ -366,16 +383,7 @@ public class MainActivity extends BaseActivity {
         musicAdapter.setSelectedPosition(playingPosition);
 
         // Scroll to playing music
-        musicList.clearFocus();
-        musicList.post(() -> {
-            if (playingPosition < musicList.getFirstVisiblePosition()) {
-                musicList.setSelection(playingPosition);
-            }
-
-            if (playingPosition > musicList.getLastVisiblePosition()) {
-                musicList.setSelection(playingPosition - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 1));
-            }
-        });
+        scrollMusic(playingPosition);
     }
 
     private void playMusic(boolean delayed) {

@@ -1,23 +1,38 @@
 package nl.plaatsoft.bassiemusic;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.text.TextUtils;
 import android.widget.ArrayAdapter;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
+import java.util.List;
+import java.util.ArrayList;
 
-public class MusicAdapter extends ArrayAdapter<Music> {
+public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer {
     private static class ViewHolder {
         public TextView musicTitle;
         public TextView musicDuration;
     }
 
+    private static class Section {
+        public char character;
+        public int position;
+
+        public Section(char character, int position) {
+            this.character = character;
+            this.position = position;
+        }
+    }
+
+    private List<Section> sections = null;
+
     private int selectedPosition = -1;
+    private boolean isSelectedPositionAnimated = false;
     private int oldSelectedPosition = -1;
 
     public MusicAdapter(Context context) {
@@ -25,8 +40,15 @@ public class MusicAdapter extends ArrayAdapter<Music> {
     }
 
     public void setSelectedPosition(int selectedPosition) {
-        oldSelectedPosition = this.selectedPosition;
+        if (this.selectedPosition != selectedPosition) {
+            oldSelectedPosition = this.selectedPosition;
+            isSelectedPositionAnimated = false;
+        } else {
+            isSelectedPositionAnimated = true;
+        }
+
         this.selectedPosition = selectedPosition;
+
         notifyDataSetChanged();
     }
 
@@ -43,24 +65,32 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         }
 
         if (position == selectedPosition) {
-            View convertViewHolder[] = { convertView };
-            ValueAnimator animation = ValueAnimator.ofObject(new ArgbEvaluator(), 0, getContext().getColor(R.color.selected_background_color));
-            animation.addUpdateListener(animator -> {
-                convertViewHolder[0].setBackgroundColor((int)animator.getAnimatedValue());
-            });
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            animation.setDuration(Config.MUSIC_SEEKBAR_UPDATE_TIMEOUT);
-            animation.start();
+            if (!isSelectedPositionAnimated) {
+                View convertViewHolder[] = { convertView };
+                convertView.setBackgroundColor(0);
+                ValueAnimator animation = ValueAnimator.ofArgb(0, getContext().getColor(R.color.selected_background_color));
+                animation.addUpdateListener((ValueAnimator animator) -> {
+                    convertViewHolder[0].setBackgroundColor((int)animator.getAnimatedValue());
+                });
+                animation.setInterpolator(new AccelerateDecelerateInterpolator());
+                animation.setDuration(Config.MUSIC_SEEKBAR_UPDATE_TIMEOUT);
+                animation.start();
+                isSelectedPositionAnimated = true;
+            } else {
+                convertView.setBackgroundResource(R.color.selected_background_color);
+            }
         }
         else if (position == oldSelectedPosition) {
             View convertViewHolder[] = { convertView };
-            ValueAnimator animation = ValueAnimator.ofObject(new ArgbEvaluator(), getContext().getColor(R.color.selected_background_color), 0);
-            animation.addUpdateListener(animator -> {
+            convertView.setBackgroundResource(R.color.selected_background_color);
+            ValueAnimator animation = ValueAnimator.ofArgb(getContext().getColor(R.color.selected_background_color), 0);
+            animation.addUpdateListener((ValueAnimator animator) -> {
                 convertViewHolder[0].setBackgroundColor((int)animator.getAnimatedValue());
             });
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             animation.setDuration(Config.MUSIC_SEEKBAR_UPDATE_TIMEOUT);
             animation.start();
+            oldSelectedPosition = -1;
         }
         else {
             convertView.setBackgroundColor(0);
@@ -81,5 +111,49 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         viewHolder.musicDuration.setText(Music.formatDuration(music.getDuration()));
 
         return convertView;
+    }
+
+    public Object[] getSections() {
+        if (sections == null) {
+            sections = new ArrayList<Section>();
+
+            for (int position = 0; position < getCount(); position++) {
+                Music music = getItem(position);
+                char firstCharacter = Character.toUpperCase(music.getTitle().charAt(0));
+
+                boolean isCharacterFound = false;
+                for (Section section : sections) {
+                    if (section.character == firstCharacter) {
+                        isCharacterFound = true;
+                        break;
+                    }
+                }
+
+                if (!isCharacterFound) {
+                    sections.add(new Section(firstCharacter, position));
+                }
+            }
+        }
+
+        String[] sectionsArray = new String[sections.size()];
+        for (int i = 0; i < sections.size(); i++) {
+            sectionsArray[i] = String.valueOf(sections.get(i).character);
+        }
+        return sectionsArray;
+    }
+
+    public int getPositionForSection(int section) {
+        return sections.get(section).position;
+    }
+
+    public int getSectionForPosition(int position) {
+        Music music = getItem(position);
+        char firstCharacter = Character.toUpperCase(music.getTitle().charAt(0));
+        for (int i = 0; i < sections.size(); i++) {
+            if (sections.get(i).character == firstCharacter) {
+                return i;
+            }
+        }
+        return 0;
     }
 }

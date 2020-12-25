@@ -28,10 +28,13 @@
         </LinearLayout>
 
         <ListView android:id="@+id/main_music_list"
+            android:fastScrollEnabled="true"
             style="@style/MusicListContainer" />
 
         <LinearLayout style="@style/MusicPlayer">
-            <LinearLayout style="@style/MusicPlayerInfo">
+            <LinearLayout android:id="@+id/main_music_info_button"
+                style="@style/MusicPlayerInfo">
+
                 <TextSwitcher android:id="@+id/main_music_title_label"
                     style="@style/MusicPlayerTitle">
 
