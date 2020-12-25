@@ -216,6 +216,13 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:inAnimation">@anim/fade_in</item>
+        <item name="android:outAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="MusicPlayerTitleText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:singleLine">true</item>
         <item name="android:scrollHorizontally">true</item>
         <item name="android:requiresFadingEdge">horizontal</item>
@@ -227,6 +234,13 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:inAnimation">@anim/fade_in</item>
+        <item name="android:outAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="MusicPlayerDurationText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:textColor">@color/secondary_text_color</item>
     </style>
 
@@ -237,14 +251,23 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="MusicPlayerLeftLabel">
+    <style name="MusicPlayerTimeLabel">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:inAnimation">@anim/fade_in</item>
+        <item name="android:outAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="MusicPlayerLeftTimeLabelText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="MusicPlayerRightLabel" parent="MusicPlayerLeftLabel">
+    <style name="MusicPlayerRightTimeLabelText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">right|center_vertical</item>
     </style>
 

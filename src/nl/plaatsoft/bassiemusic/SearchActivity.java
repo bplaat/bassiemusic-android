@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import java.util.ArrayList;
+import java.util.List;
 
 public class SearchActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class SearchActivity extends BaseActivity {
             finish();
         });
 
-        ArrayList<Music> music = Music.loadMusic(this);
+        List<Music> music = Music.loadMusic(this);
 
         ScrollView startPage = (ScrollView)findViewById(R.id.search_start_page);
 

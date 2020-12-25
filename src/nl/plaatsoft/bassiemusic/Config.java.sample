@@ -7,7 +7,7 @@ public class Config {
 
     public static final int MUSIC_PREVIOUS_RESET_TIMEOUT = 2500;
     public static final int MUSIC_SEEK_SKIP_TIME = 10000;
-    public static final int MUSIC_SEEKBAR_UPDATE_TIMEOUT = 100;
+    public static final int MUSIC_SEEKBAR_UPDATE_TIMEOUT = 200;
 
     public static final int SETTINGS_LANGUAGE_ENGLISH = 0;
     public static final int SETTINGS_LANGUAGE_DUTCH = 1;

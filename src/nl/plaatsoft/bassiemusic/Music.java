@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 public class Music {
     private long id;
@@ -45,13 +47,13 @@ public class Music {
         }
     }
 
-    public static ArrayList<Music> loadMusic(Context context) {
-        ArrayList<Music> music = new ArrayList<Music>();
+    public static List<Music> loadMusic(Context context) {
+        List<Music> music = new ArrayList<Music>();
 
         Cursor musicCursor = context.getContentResolver().query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             new String[] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION },
-            null, null, MediaStore.Audio.Media.TITLE
+            null, null, null
         );
         if (musicCursor != null) {
             while (musicCursor.moveToNext()) {
@@ -65,6 +67,8 @@ public class Music {
             }
             musicCursor.close();
         }
+
+        Collections.sort(music, (Music a, Music b) -> a.title.compareToIgnoreCase(b.title));
 
         return music;
     }

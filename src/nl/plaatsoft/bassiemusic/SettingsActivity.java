@@ -93,7 +93,7 @@ public class SettingsActivity extends BaseActivity {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.settings_share_message) + Utils.getStorePageUrl(this));
+            intent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.settings_share_message) + " " + Utils.getStorePageUrl(this));
             startActivity(Intent.createChooser(intent, null));
         });
 

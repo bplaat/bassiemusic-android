@@ -1,6 +1,9 @@
 package nl.plaatsoft.bassiemusic;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +18,14 @@ public class MusicAdapter extends ArrayAdapter<Music> {
     }
 
     private int selectedPosition = -1;
+    private int oldSelectedPosition = -1;
 
     public MusicAdapter(Context context) {
         super(context, 0);
     }
 
     public void setSelectedPosition(int selectedPosition) {
+        oldSelectedPosition = this.selectedPosition;
         this.selectedPosition = selectedPosition;
         notifyDataSetChanged();
     }
@@ -38,9 +43,27 @@ public class MusicAdapter extends ArrayAdapter<Music> {
         }
 
         if (position == selectedPosition) {
-            convertView.setBackgroundResource(R.color.selected_background_color);
-        } else {
-            convertView.setBackgroundResource(0);
+            View convertViewHolder[] = { convertView };
+            ValueAnimator animation = ValueAnimator.ofObject(new ArgbEvaluator(), 0, getContext().getColor(R.color.selected_background_color));
+            animation.addUpdateListener(animator -> {
+                convertViewHolder[0].setBackgroundColor((int)animator.getAnimatedValue());
+            });
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            animation.setDuration(Config.MUSIC_SEEKBAR_UPDATE_TIMEOUT);
+            animation.start();
+        }
+        else if (position == oldSelectedPosition) {
+            View convertViewHolder[] = { convertView };
+            ValueAnimator animation = ValueAnimator.ofObject(new ArgbEvaluator(), getContext().getColor(R.color.selected_background_color), 0);
+            animation.addUpdateListener(animator -> {
+                convertViewHolder[0].setBackgroundColor((int)animator.getAnimatedValue());
+            });
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            animation.setDuration(Config.MUSIC_SEEKBAR_UPDATE_TIMEOUT);
+            animation.start();
+        }
+        else {
+            convertView.setBackgroundColor(0);
         }
 
         Music music = getItem(position);
