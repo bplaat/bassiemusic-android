@@ -187,9 +187,16 @@
         <item name="android:textColor">@color/secondary_text_color</item>
     </style>
 
+    <style name="ListItemButtonSwitch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">16dp</item>
+    </style>
+
     <style name="ListItemFooter" parent="ListItem">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/secondary_text_color</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
     <!-- Music player -->

@@ -13,6 +13,25 @@
 
     <ScrollView style="@style/ScrollContainer">
         <LinearLayout style="@style/List">
+            <TextView android:text="@string/settings_behaviour_label"
+                style="@style/ListItemSubtitle"/>
+
+            <LinearLayout style="@style/ListGroup">
+                <!-- Remember music button -->
+                <LinearLayout android:id="@+id/settings_remember_music_button"
+                    style="@style/ListItemButton">
+
+                    <ImageView android:src="@drawable/ic_bookmark_music"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_remember_music_button"
+                        style="@style/ListItemButtonLabel" />
+
+                    <Switch android:id="@+id/settings_remember_music_switch"
+                        style="@style/ListItemButtonSwitch" />
+                </LinearLayout>
+            </LinearLayout>
+
             <TextView android:text="@string/settings_display_label"
                 style="@style/ListItemSubtitle"/>
 
@@ -98,7 +117,8 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView android:text="@string/settings_about_message_label"
+            <TextView android:id="@+id/settings_about_message_label"
+                android:text="@string/settings_about_message_label"
                 style="@style/ListItemFooter" />
         </LinearLayout>
     </ScrollView>

@@ -8,8 +8,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,23 @@ public class SettingsActivity extends BaseActivity {
         });
 
         Resources resources = getResources();
+
+        // Init remember music button
+        Switch rememberMusicSwitch = (Switch)findViewById(R.id.settings_remember_music_switch);
+        rememberMusicSwitch.setChecked(settings.getBoolean("remember_music", Config.SETTINGS_REMEMBER_MUSIC_DEFAULT));
+        rememberMusicSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            SharedPreferences.Editor settingsEditor = settings.edit();
+            settingsEditor.putBoolean("remember_music", isChecked);
+            if (!isChecked) {
+                settingsEditor.remove("playing_music_id");
+                settingsEditor.remove("playing_music_position");
+            }
+            settingsEditor.apply();
+        });
+
+        ((LinearLayout)findViewById(R.id.settings_remember_music_button)).setOnClickListener((View view) -> {
+            rememberMusicSwitch.toggle();
+        });
 
         // Init language switcher button
         String[] languages = resources.getStringArray(R.array.settings_languages);
@@ -107,6 +126,11 @@ public class SettingsActivity extends BaseActivity {
                 })
                 .setPositiveButton(R.string.settings_about_ok_button, null)
                 .show();
+        });
+
+        // Init about label
+        ((TextView)findViewById(R.id.settings_about_message_label)).setOnClickListener((View view) -> {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SETTINGS_ABOUT_WEBSITE_URL)));
         });
     }
 }

@@ -20,6 +20,9 @@
     <!-- Settings activity -->
     <string name="settings_title_label">Instellingen</string>
 
+    <string name="settings_behaviour_label">Gedrag</string>
+    <string name="settings_remember_music_button">Onthoud het laatste nummer</string>
+
     <string name="settings_display_label">Weergave</string>
     <string name="settings_language_button">Taal</string>
     <string name="settings_theme_button">Thema</string>

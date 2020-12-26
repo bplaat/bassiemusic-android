@@ -3,6 +3,7 @@ package nl.plaatsoft.bassiemusic;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -43,6 +44,7 @@ public class MainActivity extends BaseActivity {
 
     private List<Music> music;
     private int playingPosition;
+    private int requestMusicPosition;
     private boolean requestAutoplay;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -68,11 +70,11 @@ public class MainActivity extends BaseActivity {
         musicList.setAdapter(musicAdapter);
 
         musicList.setOnItemClickListener((AdapterView<?> adapterView, View view, int position, long id) -> {
-            startMusic(position, true);
+            startMusic(position);
         });
 
         ((ImageButton)findViewById(R.id.main_music_shuffle_button)).setOnClickListener((View view) -> {
-            startMusic((int)(Math.random() * musicAdapter.getCount()), true);
+            startMusic((int)(Math.random() * musicAdapter.getCount()));
         });
 
         ((ImageButton)findViewById(R.id.main_music_search_button)).setOnClickListener((View view) -> {
@@ -125,7 +127,7 @@ public class MainActivity extends BaseActivity {
                     handler.post(syncPlayer);
                 }
             } else {
-                startMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1, true);
+                startMusic(playingPosition == 0 ? musicAdapter.getCount() - 1 : playingPosition - 1);
             }
         });
 
@@ -168,7 +170,7 @@ public class MainActivity extends BaseActivity {
         });
 
         ((ImageButton)findViewById(R.id.main_music_next_button)).setOnClickListener((View view) -> {
-            startMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1, true);
+            startMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
         });
 
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -205,6 +207,7 @@ public class MainActivity extends BaseActivity {
         TextSwitcher musicPlayerDuration = (TextSwitcher)findViewById(R.id.main_music_duration_label);
 
         mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
+            // Update music player
             Music music = musicAdapter.getItem(playingPosition);
 
             musicPlayerTitle.setText(music.getTitle());
@@ -218,10 +221,19 @@ public class MainActivity extends BaseActivity {
 
             musicSeekBar.setMax(mediaPlayer.getDuration());
 
+            // Seek media player to request music position
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                musicSeekBar.setProgress(0, true);
+                musicSeekBar.setProgress(requestMusicPosition != -1 ? requestMusicPosition : 0, true);
             } else {
-                musicSeekBar.setProgress(0);
+                musicSeekBar.setProgress(requestMusicPosition != -1 ? requestMusicPosition : 0);
+            }
+
+            if (requestMusicPosition != -1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    mediaPlayer.seekTo(requestMusicPosition, MediaPlayer.SEEK_CLOSEST_SYNC);
+                } else {
+                    mediaPlayer.seekTo(requestMusicPosition);
+                }
             }
 
             // Start media player when autoplay
@@ -233,7 +245,7 @@ public class MainActivity extends BaseActivity {
         });
 
         mediaPlayer.setOnCompletionListener((MediaPlayer mediaPlayer) -> {
-            startMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1, true);
+            startMusic(playingPosition == musicAdapter.getCount() - 1 ? 0 : playingPosition + 1);
         });
 
         // Empty page
@@ -278,6 +290,18 @@ public class MainActivity extends BaseActivity {
         moveTaskToBack(false);
     }
 
+    public void onPause() {
+        if (settings.getBoolean("remember_music", Config.SETTINGS_REMEMBER_MUSIC_DEFAULT)) {
+            SharedPreferences.Editor settingsEditor = settings.edit();
+            Music music = musicAdapter.getItem(playingPosition);
+            settingsEditor.putLong("playing_music_id", music.getId());
+            settingsEditor.putInt("playing_music_position", mediaPlayer.getCurrentPosition());
+            settingsEditor.apply();
+        }
+
+        super.onPause();
+    }
+
     public void onDestroy() {
         handler.removeCallbacks(syncPlayer);
 
@@ -300,12 +324,12 @@ public class MainActivity extends BaseActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MainActivity.SEARCH_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            long id = data.getLongExtra("id", -1);
-            if (id != -1) {
+            long musicId = data.getLongExtra("id", -1);
+            if (musicId != -1) {
                 for (Music musicItem : music) {
-                    if (id == musicItem.getId()) {
+                    if (musicItem.getId() == musicId) {
                         handler.post(() -> {
-                            startMusic(musicAdapter.getPosition(musicItem), true);
+                            startMusic(musicAdapter.getPosition(musicItem));
                         });
                         return;
                     }
@@ -336,7 +360,20 @@ public class MainActivity extends BaseActivity {
             musicPage.setVisibility(View.GONE);
             emptyPage.setVisibility(View.VISIBLE);
         } else {
-            startMusic((int)(Math.random() * musicAdapter.getCount()), false);
+            long musicId = settings.getLong("playing_music_id", -1);
+            boolean isMusicFound = false;
+            if (musicId != -1) {
+                for (Music musicItem : music) {
+                    if (musicItem.getId() == musicId) {
+                        isMusicFound = true;
+                        startMusic(musicAdapter.getPosition(musicItem), settings.getInt("playing_music_position", 0), false);
+                    }
+                }
+            }
+
+            if (!isMusicFound) {
+                startMusic((int)(Math.random() * musicAdapter.getCount()), -1, false);
+            }
         }
 
         if (updateRatingAlert) {
@@ -357,10 +394,15 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void startMusic(int position, boolean autoplay) {
+    private void startMusic(int position) {
+        startMusic(position, -1, true);
+    }
+
+    private void startMusic(int position, int musicPosition, boolean autoplay) {
         handler.removeCallbacks(syncPlayer);
 
         playingPosition = position;
+        requestMusicPosition = musicPosition;
         requestAutoplay = autoplay;
 
         // Reset and prepare media player
