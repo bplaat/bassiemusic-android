@@ -39,6 +39,10 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         super(context, 0);
     }
 
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
     public void setSelectedPosition(int selectedPosition) {
         if (this.selectedPosition != selectedPosition) {
             oldSelectedPosition = this.selectedPosition;

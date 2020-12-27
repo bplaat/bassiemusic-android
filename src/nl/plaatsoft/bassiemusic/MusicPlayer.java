@@ -1,0 +1,277 @@
+package nl.plaatsoft.bassiemusic;
+
+import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextSwitcher;
+import android.widget.SeekBar;
+
+public class MusicPlayer extends LinearLayout {
+    public static interface OnInfoClickListener {
+        public void onInfoClick();
+    }
+
+    public static interface OnPreviousListener {
+        public void onPrevious();
+    }
+
+    public static interface OnNextListener {
+        public void onNext();
+    }
+
+    private PowerManager.WakeLock wakeLock;
+    private MediaPlayer mediaPlayer;
+    private Handler handler;
+    private Runnable syncPlayer;
+    private ImageButton playButton;
+
+    private OnInfoClickListener onInfoClickListener;
+    private OnPreviousListener onPreviousListener;
+    private OnNextListener onNextListener;
+
+    private Music playingMusic;
+    private int requestStartPosition;
+    private boolean requestAutoPlayed;
+
+    public MusicPlayer(Context context) {
+        super(context);
+        initView();
+    }
+
+    public MusicPlayer(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView();
+    }
+
+    private void initView() {
+        inflate(getContext(), R.layout.view_music_player, this);
+
+        PowerManager powerManager = (PowerManager)getContext().getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BassieMusic::WakeLock");
+
+        TextSwitcher timeCurrentLabel = (TextSwitcher)findViewById(R.id.music_player_time_current_label);
+        TextSwitcher timeUntilLabel = (TextSwitcher)findViewById(R.id.music_player_time_until_label);
+        SeekBar seekBar = (SeekBar)findViewById(R.id.music_player_seekbar);
+
+        handler = new Handler(Looper.getMainLooper());
+
+        syncPlayer = () -> {
+            timeCurrentLabel.setCurrentText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+
+            timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                seekBar.setProgress(mediaPlayer.getCurrentPosition(), true);
+            } else {
+                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            }
+
+            handler.postDelayed(syncPlayer, Config.MUSIC_PLAYER_SYNC_TIMEOUT);
+        };
+
+        ((LinearLayout)findViewById(R.id.music_player_info_button)).setOnClickListener((View view) -> {
+            onInfoClickListener.onInfoClick();
+        });
+
+        ((ImageButton)findViewById(R.id.music_player_previous_button)).setOnClickListener((View view) -> {
+            if (mediaPlayer.getCurrentPosition() > Config.MUSIC_PLAYER_PREVIOUS_RESET_TIMEOUT) {
+                seekTo(0);
+            } else {
+                onPreviousListener.onPrevious();
+            }
+        });
+
+        ((ImageButton)findViewById(R.id.music_player_seek_back_button)).setOnClickListener((View view) -> {
+            seekTo(Math.max(mediaPlayer.getCurrentPosition() - Config.MUSIC_PLAYER_SEEK_SKIP_TIME, 0));
+        });
+
+        playButton = (ImageButton)findViewById(R.id.music_player_play_button);
+        playButton.setOnClickListener((View view) -> {
+            if (mediaPlayer.isPlaying()) {
+                pause();
+            } else {
+                play();
+            }
+        });
+
+        ((ImageButton)findViewById(R.id.music_player_seek_forward_button)).setOnClickListener((View view) -> {
+            seekTo(Math.min(mediaPlayer.getCurrentPosition() + Config.MUSIC_PLAYER_SEEK_SKIP_TIME, mediaPlayer.getDuration()));
+        });
+
+        ((ImageButton)findViewById(R.id.music_player_next_button)).setOnClickListener((View view) -> {
+            onNextListener.onNext();
+        });
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                handler.removeCallbacks(syncPlayer);
+            }
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    timeCurrentLabel.setCurrentText(Music.formatDuration(progress));
+                    timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - progress));
+                }
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekTo(seekBar.getProgress());
+            }
+        });
+
+        mediaPlayer = new MediaPlayer();
+
+        TextSwitcher infoTitleLabel = (TextSwitcher)findViewById(R.id.music_player_info_title_label);
+        TextSwitcher infoDurationLabel = (TextSwitcher)findViewById(R.id.music_player_info_duration_label);
+
+        mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
+            // Update info texts
+            infoTitleLabel.setText(playingMusic.getTitle());
+            infoTitleLabel.setSelected(true);
+
+            infoDurationLabel.setText(Music.formatDuration(playingMusic.getDuration()));
+
+            // Update seekbar max
+            seekBar.setMax(mediaPlayer.getDuration());
+
+            // Seek media player to request start position
+            if (requestStartPosition != 0) {
+                seekTo(requestStartPosition, false);
+            }
+
+            // Update timer labels
+            timeCurrentLabel.setCurrentText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+
+            timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+
+            // Update seekbar progress
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                seekBar.setProgress(mediaPlayer.getCurrentPosition(), true);
+            } else {
+                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            }
+
+            // Start media player when autoplay
+            if (requestAutoPlayed) {
+                play();
+            } else {
+                pause();
+            }
+        });
+
+        mediaPlayer.setOnCompletionListener((MediaPlayer mediaPlayer) -> {
+            onNextListener.onNext();
+        });
+    }
+
+    public void setOnInfoClickListener(OnInfoClickListener onInfoClickListener) {
+        this.onInfoClickListener = onInfoClickListener;
+    }
+
+    public void setOnPreviousListener(OnPreviousListener onPreviousListener) {
+        this.onPreviousListener = onPreviousListener;
+    }
+
+    public void setOnNextListener(OnNextListener onNextListener) {
+        this.onNextListener = onNextListener;
+    }
+
+    public int getPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    public void seekTo(int position) {
+        seekTo(position, true);
+    }
+
+    public void seekTo(int position, boolean doPauseCheck) {
+        // Seek to position
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mediaPlayer.seekTo(position, MediaPlayer.SEEK_CLOSEST_SYNC);
+        } else {
+            mediaPlayer.seekTo(position);
+        }
+
+        // Un pause music when paused
+        if (doPauseCheck) {
+            if (!mediaPlayer.isPlaying()) {
+                play();
+            } else {
+                handler.removeCallbacks(syncPlayer);
+                handler.post(syncPlayer);
+            }
+        }
+    }
+
+    public void loadAndPlay(Music music, int startPosition, boolean isAutoPlayed) {
+        handler.removeCallbacks(syncPlayer);
+
+        // Set music info and request vars
+        playingMusic = music;
+        requestStartPosition = startPosition;
+        requestAutoPlayed = isAutoPlayed;
+
+        // Reset and prepare media player
+        mediaPlayer.reset();
+
+        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .build());
+
+        try {
+            mediaPlayer.setDataSource(getContext(), playingMusic.getUri());
+            mediaPlayer.prepareAsync();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void release() {
+        handler.removeCallbacks(syncPlayer);
+
+        mediaPlayer.release();
+
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+    }
+
+    public void play() {
+        handler.removeCallbacks(syncPlayer);
+
+        playButton.setImageResource(R.drawable.ic_pause);
+
+        if (!wakeLock.isHeld()) {
+            wakeLock.acquire();
+        }
+
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+
+        handler.post(syncPlayer);
+    }
+
+    public void pause() {
+        handler.removeCallbacks(syncPlayer);
+
+        playButton.setImageResource(R.drawable.ic_play);
+
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+    }
+}
