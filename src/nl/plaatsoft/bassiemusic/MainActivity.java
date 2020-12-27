@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
     private Runnable syncPlayer;
 
     private List<Music> music;
-    private int playingPosition;
+    private int playingPosition = -1;
     private int requestMusicPosition;
     private boolean requestAutoplay;
 
@@ -291,7 +291,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void onPause() {
-        if (settings.getBoolean("remember_music", Config.SETTINGS_REMEMBER_MUSIC_DEFAULT)) {
+        if (settings.getBoolean("remember_music", Config.SETTINGS_REMEMBER_MUSIC_DEFAULT) && playingPosition != -1) {
             SharedPreferences.Editor settingsEditor = settings.edit();
             Music music = musicAdapter.getItem(playingPosition);
             settingsEditor.putLong("playing_music_id", music.getId());
