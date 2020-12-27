@@ -176,11 +176,13 @@ public class MainActivity extends BaseActivity {
     }
 
     private void rememberMusic() {
-        SharedPreferences.Editor settingsEditor = settings.edit();
-        Music music = musicAdapter.getItem(musicAdapter.getSelectedPosition());
-        settingsEditor.putLong("playing_music_id", music.getId());
-        settingsEditor.putInt("playing_music_position", musicPlayer.getPosition());
-        settingsEditor.apply();
+        if (musicAdapter.getSelectedPosition() != -1) {
+            SharedPreferences.Editor settingsEditor = settings.edit();
+            Music music = musicAdapter.getItem(musicAdapter.getSelectedPosition());
+            settingsEditor.putLong("playing_music_id", music.getId());
+            settingsEditor.putInt("playing_music_position", musicPlayer.getMusicPosition());
+            settingsEditor.apply();
+        }
     }
 
     private void loadMusicAndPlay(boolean isAutoPlayed) {

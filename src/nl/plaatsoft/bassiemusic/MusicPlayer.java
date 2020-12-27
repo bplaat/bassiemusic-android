@@ -30,8 +30,12 @@ public class MusicPlayer extends LinearLayout {
     private PowerManager.WakeLock wakeLock;
     private MediaPlayer mediaPlayer;
     private Handler handler;
-    private Runnable syncPlayer;
+    private Runnable syncUserInterfaceInterval;
+
     private ImageButton playButton;
+    private TextSwitcher timeCurrentLabel;
+    private TextSwitcher timeUntilLabel;
+    private SeekBar seekBar;
 
     private OnInfoClickListener onInfoClickListener;
     private OnPreviousListener onPreviousListener;
@@ -57,24 +61,10 @@ public class MusicPlayer extends LinearLayout {
         PowerManager powerManager = (PowerManager)getContext().getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BassieMusic::WakeLock");
 
-        TextSwitcher timeCurrentLabel = (TextSwitcher)findViewById(R.id.music_player_time_current_label);
-        TextSwitcher timeUntilLabel = (TextSwitcher)findViewById(R.id.music_player_time_until_label);
-        SeekBar seekBar = (SeekBar)findViewById(R.id.music_player_seekbar);
-
         handler = new Handler(Looper.getMainLooper());
-
-        syncPlayer = () -> {
-            timeCurrentLabel.setCurrentText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
-
-            timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                seekBar.setProgress(mediaPlayer.getCurrentPosition(), true);
-            } else {
-                seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            }
-
-            handler.postDelayed(syncPlayer, Config.MUSIC_PLAYER_SYNC_TIMEOUT);
+        syncUserInterfaceInterval = () -> {
+            syncUserInterface();
+            handler.postDelayed(syncUserInterfaceInterval, Config.MUSIC_PLAYER_SYNC_TIMEOUT);
         };
 
         ((LinearLayout)findViewById(R.id.music_player_info_button)).setOnClickListener((View view) -> {
@@ -110,9 +100,12 @@ public class MusicPlayer extends LinearLayout {
             onNextListener.onNext();
         });
 
+        timeCurrentLabel = (TextSwitcher)findViewById(R.id.music_player_time_current_label);
+        timeUntilLabel = (TextSwitcher)findViewById(R.id.music_player_time_until_label);
+        seekBar = (SeekBar)findViewById(R.id.music_player_seekbar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStartTrackingTouch(SeekBar seekBar) {
-                handler.removeCallbacks(syncPlayer);
+                handler.removeCallbacks(syncUserInterfaceInterval);
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -131,7 +124,6 @@ public class MusicPlayer extends LinearLayout {
 
         TextSwitcher infoTitleLabel = (TextSwitcher)findViewById(R.id.music_player_info_title_label);
         TextSwitcher infoDurationLabel = (TextSwitcher)findViewById(R.id.music_player_info_duration_label);
-
         mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
             // Update info texts
             infoTitleLabel.setText(playingMusic.getTitle());
@@ -147,19 +139,9 @@ public class MusicPlayer extends LinearLayout {
                 seekTo(requestStartPosition, false);
             }
 
-            // Update timer labels
-            timeCurrentLabel.setCurrentText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+            syncUserInterface();
 
-            timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
-
-            // Update seekbar progress
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                seekBar.setProgress(mediaPlayer.getCurrentPosition(), true);
-            } else {
-                seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            }
-
-            // Start media player when autoplay
+            // Start media player when autoplayed
             if (requestAutoPlayed) {
                 play();
             } else {
@@ -184,8 +166,20 @@ public class MusicPlayer extends LinearLayout {
         this.onNextListener = onNextListener;
     }
 
-    public int getPosition() {
+    public int getMusicPosition() {
         return mediaPlayer.getCurrentPosition();
+    }
+
+    private void syncUserInterface() {
+        timeCurrentLabel.setCurrentText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+
+        timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            seekBar.setProgress(mediaPlayer.getCurrentPosition(), true);
+        } else {
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+        }
     }
 
     public void seekTo(int position) {
@@ -205,14 +199,14 @@ public class MusicPlayer extends LinearLayout {
             if (!mediaPlayer.isPlaying()) {
                 play();
             } else {
-                handler.removeCallbacks(syncPlayer);
-                handler.post(syncPlayer);
+                handler.removeCallbacks(syncUserInterfaceInterval);
+                handler.post(syncUserInterfaceInterval);
             }
         }
     }
 
     public void loadAndPlay(Music music, int startPosition, boolean isAutoPlayed) {
-        handler.removeCallbacks(syncPlayer);
+        handler.removeCallbacks(syncUserInterfaceInterval);
 
         // Set music info and request vars
         playingMusic = music;
@@ -236,7 +230,7 @@ public class MusicPlayer extends LinearLayout {
     }
 
     public void release() {
-        handler.removeCallbacks(syncPlayer);
+        handler.removeCallbacks(syncUserInterfaceInterval);
 
         mediaPlayer.release();
 
@@ -246,7 +240,7 @@ public class MusicPlayer extends LinearLayout {
     }
 
     public void play() {
-        handler.removeCallbacks(syncPlayer);
+        handler.removeCallbacks(syncUserInterfaceInterval);
 
         playButton.setImageResource(R.drawable.ic_pause);
 
@@ -258,11 +252,11 @@ public class MusicPlayer extends LinearLayout {
             mediaPlayer.start();
         }
 
-        handler.post(syncPlayer);
+        handler.post(syncUserInterfaceInterval);
     }
 
     public void pause() {
-        handler.removeCallbacks(syncPlayer);
+        handler.removeCallbacks(syncUserInterfaceInterval);
 
         playButton.setImageResource(R.drawable.ic_play);
 
