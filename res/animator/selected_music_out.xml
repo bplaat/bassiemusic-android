@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
+
+    <objectAnimator android:propertyName="backgroundColor"
+        android:duration="@integer/animation_duration"
+        android:valueFrom="@color/selected_background_color"
+        android:valueTo="@android:color/transparent" />
+</set>

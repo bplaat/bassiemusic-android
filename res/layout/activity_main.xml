@@ -31,6 +31,7 @@
             android:fastScrollEnabled="true"
             style="@style/MusicListContainer" />
 
+        <!-- Music player -->
         <LinearLayout style="@style/MusicPlayer">
             <LinearLayout android:id="@+id/main_music_info_button"
                 style="@style/MusicPlayerInfo">
