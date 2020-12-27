@@ -117,8 +117,18 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        loadMusicAndPlay(false);
+        if (savedInstanceState != null && savedInstanceState.getBoolean("is_music_playing")) {
+            loadMusicAndPlay(true);
+        } else {
+            loadMusicAndPlay(false);
+        }
+
         RatingAlert.updateAndShow(this);
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean("is_music_playing", musicPlayer.isPlaying());
     }
 
     public void onBackPressed() {
@@ -180,7 +190,7 @@ public class MainActivity extends BaseActivity {
             SharedPreferences.Editor settingsEditor = settings.edit();
             Music music = musicAdapter.getItem(musicAdapter.getSelectedPosition());
             settingsEditor.putLong("playing_music_id", music.getId());
-            settingsEditor.putInt("playing_music_position", musicPlayer.getMusicPosition());
+            settingsEditor.putInt("playing_music_position", musicPlayer.getCurrentPosition());
             settingsEditor.apply();
         }
     }

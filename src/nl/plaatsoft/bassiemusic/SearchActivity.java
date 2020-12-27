@@ -1,6 +1,7 @@
 package nl.plaatsoft.bassiemusic;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import java.util.List;
 
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends BaseActivity {;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
@@ -45,11 +46,10 @@ public class SearchActivity extends BaseActivity {
         });
 
         EditText searchInput = (EditText)findViewById(R.id.search_input);
-        searchInput.requestFocus();
 
         searchInput.setOnEditorActionListener((TextView view, int actionId, KeyEvent event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                return true;
+                return getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
             }
             return false;
         });
@@ -90,12 +90,11 @@ public class SearchActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {}
         });
 
-        ((ImageButton)findViewById(R.id.search_clear_button)).setOnClickListener((View view) -> {
-            searchInput.setText("");
-        });
 
-        ((Button)findViewById(R.id.search_empty_hero_button)).setOnClickListener((View view) -> {
+        View.OnClickListener clearSearchInput = (View view) -> {
             searchInput.setText("");
-        });
+        };
+        ((ImageButton)findViewById(R.id.search_clear_button)).setOnClickListener(clearSearchInput);
+        ((Button)findViewById(R.id.search_empty_hero_button)).setOnClickListener(clearSearchInput);
     }
 }

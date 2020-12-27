@@ -50,7 +50,9 @@
                 style="@style/ActionBarIconButton" />
         </LinearLayout>
 
-        <ScrollView style="@style/Scroll">
+        <ScrollView android:id="@+id/main_empty_scroll"
+            style="@style/Scroll">
+
             <LinearLayout style="@style/Hero">
                 <ImageView android:src="@drawable/ic_playlist_music"
                     style="@style/HeroIcon" />
@@ -82,7 +84,9 @@
                 style="@style/ActionBarIconButton" />
         </LinearLayout>
 
-        <ScrollView style="@style/Scroll">
+        <ScrollView android:id="@+id/main_access_scroll"
+            style="@style/Scroll">
+
             <LinearLayout style="@style/Hero">
                 <ImageView android:src="@drawable/ic_folder"
                     style="@style/HeroIcon" />

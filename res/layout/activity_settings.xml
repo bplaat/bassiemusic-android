@@ -11,7 +11,9 @@
             style="@style/ActionBarTitle" />
     </LinearLayout>
 
-    <ScrollView style="@style/ScrollContainer">
+    <ScrollView android:id="@+id/settings_scroll"
+        style="@style/ScrollContainer">
+
         <LinearLayout style="@style/List">
             <TextView android:text="@string/settings_behaviour_label"
                 style="@style/ListItemSubtitle"/>

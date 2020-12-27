@@ -11,7 +11,10 @@
             android:inputType="text"
             android:imeOptions="actionSearch"
             android:hint="@string/search_input_hint"
-            style="@style/ActionBarInput" />
+            style="@style/ActionBarInput">
+
+            <requestFocus />
+        </EditText>
 
         <ImageButton android:id="@+id/search_clear_button"
             android:src="@drawable/ic_close"

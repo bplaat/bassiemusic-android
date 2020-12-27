@@ -166,7 +166,11 @@ public class MusicPlayer extends LinearLayout {
         this.onNextListener = onNextListener;
     }
 
-    public int getMusicPosition() {
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+    public int getCurrentPosition() {
         return mediaPlayer.getCurrentPosition();
     }
 
