@@ -35,7 +35,7 @@
     <string name="settings_share_button">Deel deze app</string>
     <string name="settings_share_message">Bekijk deze coole Android app:</string>
     <string name="settings_about_button">Over deze app</string>
-    <string name="settings_about_message_label">Deze applicatie is gemaakt door Bastiaan van der Plaat</string>
+    <string name="settings_about_message_button">Deze applicatie is gemaakt door Bastiaan van der Plaat</string>
     <string name="settings_about_website_button">Website</string>
     <string name="settings_about_ok_button">OK</string>
 

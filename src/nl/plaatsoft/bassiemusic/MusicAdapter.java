@@ -93,7 +93,6 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         viewHolder.musicTitle.setText(music.getTitle());
         if (position == selectedPosition) {
             viewHolder.musicTitle.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-            viewHolder.musicTitle.setMarqueeRepeatLimit(-1);
             viewHolder.musicTitle.setSelected(true);
         } else {
             viewHolder.musicTitle.setEllipsize(null);

@@ -120,7 +120,7 @@ public class SettingsActivity extends BaseActivity {
         ((LinearLayout)findViewById(R.id.settings_about_button)).setOnClickListener((View view) -> {
             new AlertDialog.Builder(this)
                 .setTitle(R.string.settings_about_button)
-                .setMessage(R.string.settings_about_message_label)
+                .setMessage(R.string.settings_about_message_button)
                 .setNegativeButton(R.string.settings_about_website_button, (DialogInterface dialog, int which) ->  {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SETTINGS_ABOUT_WEBSITE_URL)));
                 })
@@ -128,8 +128,8 @@ public class SettingsActivity extends BaseActivity {
                 .show();
         });
 
-        // Init about label
-        ((TextView)findViewById(R.id.settings_about_message_label)).setOnClickListener((View view) -> {
+        // Init about message button
+        ((TextView)findViewById(R.id.settings_about_message_button)).setOnClickListener((View view) -> {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SETTINGS_ABOUT_WEBSITE_URL)));
         });
     }
