@@ -27,7 +27,7 @@ else
             if javac -Xlint -cp $PLATFORM -d src-compiled @sources.txt; then
 
                 find src-compiled -name *.class > classes.txt
-                d8.bat --release --lib $PLATFORM @classes.txt
+                d8.bat --release --lib $PLATFORM --min-api 21 @classes.txt
                 aapt add $name-unaligned.apk classes.dex > /dev/null
 
                 zipalign -f -p 4 $name-unaligned.apk $name.apk
