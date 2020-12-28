@@ -119,9 +119,9 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- About message button -->
-            <TextView android:id="@+id/settings_about_message_button"
-                android:text="@string/settings_about_message_button"
+            <!-- Footer button -->
+            <TextView android:id="@+id/settings_footer_button"
+                android:text="@string/settings_footer_button"
                 style="@style/ListItemFooter" />
         </LinearLayout>
     </ScrollView>

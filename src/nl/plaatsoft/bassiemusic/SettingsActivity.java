@@ -50,7 +50,7 @@ public class SettingsActivity extends BaseActivity {
 
         ((LinearLayout)findViewById(R.id.settings_language_button)).setOnClickListener((View view) -> {
             new AlertDialog.Builder(this)
-                .setTitle(R.string.settings_language_button)
+                .setTitle(R.string.settings_language_alert_title_label)
                 .setSingleChoiceItems(languages, language, (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                     if (language != which) {
@@ -60,7 +60,7 @@ public class SettingsActivity extends BaseActivity {
                         recreate();
                     }
                 })
-                .setNegativeButton(R.string.settings_cancel_button, null)
+                .setNegativeButton(R.string.settings_language_alert_cancel_button, null)
                 .show();
         });
 
@@ -71,7 +71,7 @@ public class SettingsActivity extends BaseActivity {
 
         ((LinearLayout)findViewById(R.id.settings_theme_button)).setOnClickListener((View view) -> {
             new AlertDialog.Builder(this)
-                .setTitle(R.string.settings_theme_button)
+                .setTitle(R.string.settings_theme_alert_title_label)
                 .setSingleChoiceItems(themes, theme, (DialogInterface dialog, int which) ->  {
                     dialog.dismiss();
                     if (theme != which) {
@@ -81,7 +81,7 @@ public class SettingsActivity extends BaseActivity {
                         recreate();
                     }
                 })
-                .setNegativeButton(R.string.settings_cancel_button, null)
+                .setNegativeButton(R.string.settings_theme_alert_cancel_button, null)
                 .show();
         });
 
@@ -97,7 +97,7 @@ public class SettingsActivity extends BaseActivity {
             versionButtonClickCounterHolder[0]++;
             if (versionButtonClickCounterHolder[0] == 8) {
                 versionButtonClickCounterHolder[0] = 0;
-                Toast.makeText(this, R.string.settings_version_message_label, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.settings_version_message, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/dQw4w9WgXcQ?t=43")));
             }
         });
@@ -119,17 +119,17 @@ public class SettingsActivity extends BaseActivity {
         // Init about button
         ((LinearLayout)findViewById(R.id.settings_about_button)).setOnClickListener((View view) -> {
             new AlertDialog.Builder(this)
-                .setTitle(R.string.settings_about_button)
-                .setMessage(R.string.settings_about_message_button)
-                .setNegativeButton(R.string.settings_about_website_button, (DialogInterface dialog, int which) ->  {
+                .setTitle(R.string.settings_about_alert_title_label)
+                .setMessage(R.string.settings_about_alert_message_label)
+                .setNegativeButton(R.string.settings_about_alert_website_button, (DialogInterface dialog, int which) ->  {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SETTINGS_ABOUT_WEBSITE_URL)));
                 })
-                .setPositiveButton(R.string.settings_about_ok_button, null)
+                .setPositiveButton(R.string.settings_about_alert_ok_button, null)
                 .show();
         });
 
-        // Init about message button
-        ((TextView)findViewById(R.id.settings_about_message_button)).setOnClickListener((View view) -> {
+        // Init footer button
+        ((TextView)findViewById(R.id.settings_footer_button)).setOnClickListener((View view) -> {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SETTINGS_ABOUT_WEBSITE_URL)));
         });
     }

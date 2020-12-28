@@ -59,7 +59,7 @@
                     style="@style/HeroDescription" />
 
                 <Button android:id="@+id/search_empty_hero_button"
-                    android:text="@string/search_empty_clear_button"
+                    android:text="@string/search_empty_hero_button"
                     style="@style/HeroButton" />
             </LinearLayout>
         </ScrollView>
