@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity {
         });
 
         musicList = (ListView)findViewById(R.id.main_music_list);
+        musicList.setFastScrollEnabled(settings.getBoolean("fast_scroll", Config.SETTINGS_FAST_SCROLL_DEFAULT));
 
         musicAdapter = new MusicAdapter(this);
         musicList.setAdapter(musicAdapter);
@@ -79,7 +80,7 @@ public class MainActivity extends BaseActivity {
         ((ImageButton)findViewById(R.id.main_music_refresh_button)).setOnClickListener((View view) -> {
             musicPlayer.pause();
             rememberMusic();
-            loadMusicAndPlay(true);
+            loadMusic(true);
         });
 
         ((ImageButton)findViewById(R.id.main_music_search_button)).setOnClickListener((View view) -> {
@@ -96,7 +97,7 @@ public class MainActivity extends BaseActivity {
         View.OnClickListener refreshEmptyOnClick = (View view) -> {
             musicPage.setVisibility(View.VISIBLE);
             emptyPage.setVisibility(View.GONE);
-            loadMusicAndPlay(false);
+            loadMusic(false);
         };
         ((ImageButton)findViewById(R.id.main_empty_refresh_button)).setOnClickListener(refreshEmptyOnClick);
         ((Button)findViewById(R.id.main_empty_hero_button)).setOnClickListener(refreshEmptyOnClick);
@@ -118,9 +119,9 @@ public class MainActivity extends BaseActivity {
         }
 
         if (savedInstanceState != null && savedInstanceState.getBoolean("is_music_playing")) {
-            loadMusicAndPlay(true);
+            loadMusic(true);
         } else {
-            loadMusicAndPlay(false);
+            loadMusic(false);
         }
 
         RatingAlert.updateAndShow(this);
@@ -151,7 +152,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == MainActivity.STORAGE_PERMISSION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             musicPage.setVisibility(View.VISIBLE);
             accessPage.setVisibility(View.GONE);
-            loadMusicAndPlay(false);
+            loadMusic(false);
             RatingAlert.updateAndShow(this);
         }
     }
@@ -172,15 +173,19 @@ public class MainActivity extends BaseActivity {
         }
 
         if (requestCode == MainActivity.SETTINGS_ACTIVITY_REQUEST_CODE) {
-            if (oldLanguage != -1 && oldTheme != -1) {
-                if (
-                    oldLanguage != settings.getInt("language", Config.SETTINGS_LANGUAGE_DEFAULT) ||
-                    oldTheme != settings.getInt("theme", Config.SETTINGS_THEME_DEFAULT)
-                ) {
-                    handler.post(() -> {
-                        recreate();
-                    });
-                }
+            // Check if language or theme settings have changed
+            if (
+                oldLanguage != settings.getInt("language", Config.SETTINGS_LANGUAGE_DEFAULT) ||
+                oldTheme != settings.getInt("theme", Config.SETTINGS_THEME_DEFAULT)
+            ) {
+                handler.post(() -> {
+                    recreate();
+                });
+            }
+
+            // Else update fast scroll music list setting
+            else {
+                musicList.setFastScrollEnabled(settings.getBoolean("fast_scroll", Config.SETTINGS_FAST_SCROLL_DEFAULT));
             }
         }
     }
@@ -195,7 +200,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void loadMusicAndPlay(boolean isAutoPlayed) {
+    private void loadMusic(boolean isAutoPlayed) {
         music = Music.loadMusic(this);
         musicAdapter.clear();
         musicAdapter.addAll(music);
@@ -231,7 +236,7 @@ public class MainActivity extends BaseActivity {
         scrollToMusicByPosition(position);
 
         Music music = musicAdapter.getItem(position);
-        musicPlayer.loadAndPlay(music, startPosition, isAutoPlayed);
+        musicPlayer.loadMusic(music, startPosition, isAutoPlayed);
     }
 
     private void scrollToMusicByPosition(int position) {

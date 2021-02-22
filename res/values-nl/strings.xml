@@ -24,6 +24,7 @@
 
     <string name="settings_behaviour_label">Gedrag</string>
     <string name="settings_remember_music_button">Onthoud het laatste nummer</string>
+    <string name="settings_fast_scroll_button">Schakel snel scrollen in</string>
 
     <string name="settings_display_label">Weergave</string>
 

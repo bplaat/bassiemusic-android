@@ -28,7 +28,6 @@
         </LinearLayout>
 
         <ListView android:id="@+id/main_music_list"
-            android:fastScrollEnabled="true"
             style="@style/MusicListContainer" />
 
         <nl.plaatsoft.bassiemusic.MusicPlayer

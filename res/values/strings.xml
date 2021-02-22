@@ -26,6 +26,7 @@
 
     <string name="settings_behaviour_label">Behaviour</string>
     <string name="settings_remember_music_button">Remember last song</string>
+    <string name="settings_fast_scroll_button">Enable fast scroll</string>
 
     <string name="settings_display_label">Display</string>
 

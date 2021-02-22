@@ -68,7 +68,7 @@ public class Music {
             musicCursor.close();
         }
 
-        Collections.sort(music, (Music a, Music b) -> a.title.compareToIgnoreCase(b.title));
+        Collections.sort(music, (Music a, Music b) -> a.getTitle().compareToIgnoreCase(b.getTitle()));
 
         return music;
     }

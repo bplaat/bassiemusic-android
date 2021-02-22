@@ -3,7 +3,7 @@
 # The default gradle Android build toolchain is slow on my old laptop and produces bloated apks
 # So I use this nice build shell script to get the job done!
 
-PATH=$PATH:~/android-sdk/build-tools/30.0.2:~/android-sdk/platform-tools
+PATH=$PATH:~/android-sdk/build-tools/30.0.3:~/android-sdk/platform-tools
 PLATFORM=~/android-sdk/platforms/android-30/android.jar
 
 name="bassiemusic"

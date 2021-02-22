@@ -11,6 +11,8 @@ public class Config {
 
     public static final boolean SETTINGS_REMEMBER_MUSIC_DEFAULT = true;
 
+    public static final boolean SETTINGS_FAST_SCROLL_DEFAULT = true;
+
     public static final int SETTINGS_LANGUAGE_ENGLISH = 0;
     public static final int SETTINGS_LANGUAGE_DUTCH = 1;
     public static final int SETTINGS_LANGUAGE_SYSTEM = 2;

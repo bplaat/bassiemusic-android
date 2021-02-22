@@ -209,7 +209,7 @@ public class MusicPlayer extends LinearLayout {
         }
     }
 
-    public void loadAndPlay(Music music, int startPosition, boolean isAutoPlayed) {
+    public void loadMusic(Music music, int startPosition, boolean isAutoPlayed) {
         handler.removeCallbacks(syncUserInterfaceInterval);
 
         // Set music info and request vars
