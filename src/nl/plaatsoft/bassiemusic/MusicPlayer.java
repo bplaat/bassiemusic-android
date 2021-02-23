@@ -256,6 +256,7 @@ public class MusicPlayer extends LinearLayout {
 
         if (becomingNoisyIsRegistered) {
             getContext().unregisterReceiver(becomingNoisyReceiver);
+            becomingNoisyIsRegistered = false;
         }
 
         if (wakeLock.isHeld()) {
@@ -270,6 +271,7 @@ public class MusicPlayer extends LinearLayout {
 
         if (!becomingNoisyIsRegistered) {
             getContext().registerReceiver(becomingNoisyReceiver, becomingNoisyFilter);
+            becomingNoisyIsRegistered = true;
         }
 
         if (!wakeLock.isHeld()) {
@@ -294,6 +296,7 @@ public class MusicPlayer extends LinearLayout {
 
         if (becomingNoisyIsRegistered) {
             getContext().unregisterReceiver(becomingNoisyReceiver);
+            becomingNoisyIsRegistered = false;
         }
 
         if (wakeLock.isHeld()) {
