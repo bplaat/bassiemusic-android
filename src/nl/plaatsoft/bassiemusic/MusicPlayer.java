@@ -1,7 +1,11 @@
 package nl.plaatsoft.bassiemusic;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
@@ -26,6 +30,10 @@ public class MusicPlayer extends LinearLayout {
     public static interface OnNextListener {
         public void onNext();
     }
+
+    private IntentFilter becomingNoisyFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    private BroadcastReceiver becomingNoisyReceiver;
+    private boolean becomingNoisyIsRegistered = false;
 
     private PowerManager.WakeLock wakeLock;
     private MediaPlayer mediaPlayer;
@@ -57,6 +65,14 @@ public class MusicPlayer extends LinearLayout {
 
     private void initView() {
         inflate(getContext(), R.layout.view_music_player, this);
+
+        becomingNoisyReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+                    pause();
+                }
+            }
+        };
 
         PowerManager powerManager = (PowerManager)getContext().getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BassieMusic::WakeLock");
@@ -238,6 +254,10 @@ public class MusicPlayer extends LinearLayout {
 
         mediaPlayer.release();
 
+        if (becomingNoisyIsRegistered) {
+            getContext().unregisterReceiver(becomingNoisyReceiver);
+        }
+
         if (wakeLock.isHeld()) {
             wakeLock.release();
         }
@@ -247,6 +267,10 @@ public class MusicPlayer extends LinearLayout {
         handler.removeCallbacks(syncUserInterfaceInterval);
 
         playButton.setImageResource(R.drawable.ic_pause);
+
+        if (!becomingNoisyIsRegistered) {
+            getContext().registerReceiver(becomingNoisyReceiver, becomingNoisyFilter);
+        }
 
         if (!wakeLock.isHeld()) {
             wakeLock.acquire();
@@ -266,6 +290,10 @@ public class MusicPlayer extends LinearLayout {
 
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+        }
+
+        if (becomingNoisyIsRegistered) {
+            getContext().unregisterReceiver(becomingNoisyReceiver);
         }
 
         if (wakeLock.isHeld()) {
