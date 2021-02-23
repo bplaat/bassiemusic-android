@@ -43,19 +43,6 @@ public class SettingsActivity extends BaseActivity {
             rememberMusicSwitch.toggle();
         });
 
-        // Init fast scroll button
-        Switch fastScrollSwitch = (Switch)findViewById(R.id.settings_fast_scroll_switch);
-        fastScrollSwitch.setChecked(settings.getBoolean("fast_scroll", Config.SETTINGS_FAST_SCROLL_DEFAULT));
-        fastScrollSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            SharedPreferences.Editor settingsEditor = settings.edit();
-            settingsEditor.putBoolean("fast_scroll", isChecked);
-            settingsEditor.apply();
-        });
-
-        ((LinearLayout)findViewById(R.id.settings_fast_scroll_button)).setOnClickListener((View view) -> {
-            fastScrollSwitch.toggle();
-        });
-
         // Init language switcher button
         String[] languages = resources.getStringArray(R.array.settings_languages);
         int language = settings.getInt("language", Config.SETTINGS_LANGUAGE_DEFAULT);
@@ -96,6 +83,19 @@ public class SettingsActivity extends BaseActivity {
                 })
                 .setNegativeButton(R.string.settings_theme_alert_cancel_button, null)
                 .show();
+        });
+
+        // Init fast scroll button
+        Switch fastScrollSwitch = (Switch)findViewById(R.id.settings_fast_scroll_switch);
+        fastScrollSwitch.setChecked(settings.getBoolean("fast_scroll", Config.SETTINGS_FAST_SCROLL_DEFAULT));
+        fastScrollSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            SharedPreferences.Editor settingsEditor = settings.edit();
+            settingsEditor.putBoolean("fast_scroll", isChecked);
+            settingsEditor.apply();
+        });
+
+        ((LinearLayout)findViewById(R.id.settings_fast_scroll_button)).setOnClickListener((View view) -> {
+            fastScrollSwitch.toggle();
         });
 
         // Init version button easter egg

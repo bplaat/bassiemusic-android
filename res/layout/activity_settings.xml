@@ -32,20 +32,6 @@
                     <Switch android:id="@+id/settings_remember_music_switch"
                         style="@style/ListItemButtonSwitch" />
                 </LinearLayout>
-
-                <!-- Enable fast scroll button -->
-                <LinearLayout android:id="@+id/settings_fast_scroll_button"
-                    style="@style/ListItemButton">
-
-                    <ImageView android:src="@drawable/ic_gesture_swipe_vertical"
-                        style="@style/ListItemButtonIcon" />
-
-                    <TextView android:text="@string/settings_fast_scroll_button"
-                        style="@style/ListItemButtonLabel" />
-
-                    <Switch android:id="@+id/settings_fast_scroll_switch"
-                        style="@style/ListItemButtonSwitch" />
-                </LinearLayout>
             </LinearLayout>
 
             <TextView android:text="@string/settings_display_label"
@@ -78,6 +64,20 @@
 
                     <TextView android:id="@+id/settings_theme_label"
                         style="@style/ListItemButtonMeta" />
+                </LinearLayout>
+
+                <!-- Enable fast scroll button -->
+                <LinearLayout android:id="@+id/settings_fast_scroll_button"
+                    style="@style/ListItemButton">
+
+                    <ImageView android:src="@drawable/ic_gesture_swipe_vertical"
+                        style="@style/ListItemButtonIcon" />
+
+                    <TextView android:text="@string/settings_fast_scroll_button"
+                        style="@style/ListItemButtonLabel" />
+
+                    <Switch android:id="@+id/settings_fast_scroll_switch"
+                        style="@style/ListItemButtonSwitch" />
                 </LinearLayout>
             </LinearLayout>
 
