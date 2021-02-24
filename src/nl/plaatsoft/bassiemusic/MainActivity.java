@@ -78,9 +78,12 @@ public class MainActivity extends BaseActivity {
         });
 
         ((ImageButton)findViewById(R.id.main_music_refresh_button)).setOnClickListener((View view) -> {
-            musicPlayer.pause();
+            boolean isPlaying = musicPlayer.isPlaying();
+            if (isPlaying) {
+                musicPlayer.pause();
+            }
             rememberMusic();
-            loadMusic(true);
+            loadMusic(isPlaying);
         });
 
         ((ImageButton)findViewById(R.id.main_music_search_button)).setOnClickListener((View view) -> {
