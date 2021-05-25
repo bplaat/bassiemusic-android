@@ -60,7 +60,7 @@ public class Music {
                 long musicId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
                 music.add(new Music(
                     musicId,
-                    musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
+                    musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)).trim(),
                     musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
                     ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicId)
                 ));
