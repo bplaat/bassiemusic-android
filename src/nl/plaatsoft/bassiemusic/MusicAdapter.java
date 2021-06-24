@@ -3,6 +3,7 @@ package nl.plaatsoft.bassiemusic;
 import android.animation.AnimatorSet;
 import android.animation.AnimatorInflater;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +86,7 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
             oldSelectedPosition = -1;
         }
         else {
-            convertView.setBackgroundColor(0);
+            convertView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         Music music = getItem(position);
