@@ -88,7 +88,7 @@ public class MusicPlayer extends LinearLayout {
         });
 
         ((ImageButton)findViewById(R.id.music_player_previous_button)).setOnClickListener((View view) -> {
-            if (mediaPlayer.getCurrentPosition() > Config.MUSIC_PLAYER_PREVIOUS_RESET_TIMEOUT) {
+            if (getCurrentPosition() > Config.MUSIC_PLAYER_PREVIOUS_RESET_TIMEOUT) {
                 seekTo(0);
             } else {
                 onPreviousListener.onPrevious();
@@ -96,12 +96,12 @@ public class MusicPlayer extends LinearLayout {
         });
 
         ((ImageButton)findViewById(R.id.music_player_seek_back_button)).setOnClickListener((View view) -> {
-            seekTo(Math.max(mediaPlayer.getCurrentPosition() - Config.MUSIC_PLAYER_SEEK_SKIP_TIME, 0));
+            seekTo(Math.max(getCurrentPosition() - Config.MUSIC_PLAYER_SEEK_SKIP_TIME, 0));
         });
 
         playButton = (ImageButton)findViewById(R.id.music_player_play_button);
         playButton.setOnClickListener((View view) -> {
-            if (mediaPlayer.isPlaying()) {
+            if (isPlaying()) {
                 pause();
             } else {
                 play();
@@ -109,7 +109,7 @@ public class MusicPlayer extends LinearLayout {
         });
 
         ((ImageButton)findViewById(R.id.music_player_seek_forward_button)).setOnClickListener((View view) -> {
-            seekTo(Math.min(mediaPlayer.getCurrentPosition() + Config.MUSIC_PLAYER_SEEK_SKIP_TIME, mediaPlayer.getDuration()));
+            seekTo(Math.min(getCurrentPosition() + Config.MUSIC_PLAYER_SEEK_SKIP_TIME, mediaPlayer.getDuration()));
         });
 
         ((ImageButton)findViewById(R.id.music_player_next_button)).setOnClickListener((View view) -> {
@@ -191,14 +191,14 @@ public class MusicPlayer extends LinearLayout {
     }
 
     private void syncUserInterface() {
-        timeCurrentLabel.setCurrentText(Music.formatDuration(mediaPlayer.getCurrentPosition()));
+        timeCurrentLabel.setCurrentText(Music.formatDuration(getCurrentPosition()));
 
-        timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()));
+        timeUntilLabel.setCurrentText("-" + Music.formatDuration(mediaPlayer.getDuration() - getCurrentPosition()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            seekBar.setProgress(mediaPlayer.getCurrentPosition(), true);
+            seekBar.setProgress(getCurrentPosition(), true);
         } else {
-            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            seekBar.setProgress(getCurrentPosition());
         }
     }
 
@@ -216,7 +216,7 @@ public class MusicPlayer extends LinearLayout {
 
         // Un pause music when paused
         if (doPauseCheck) {
-            if (!mediaPlayer.isPlaying()) {
+            if (!isPlaying()) {
                 play();
             } else {
                 handler.removeCallbacks(syncUserInterfaceInterval);
@@ -278,7 +278,7 @@ public class MusicPlayer extends LinearLayout {
             wakeLock.acquire();
         }
 
-        if (!mediaPlayer.isPlaying()) {
+        if (!isPlaying()) {
             mediaPlayer.start();
         }
 
@@ -290,7 +290,7 @@ public class MusicPlayer extends LinearLayout {
 
         playButton.setImageResource(R.drawable.ic_play);
 
-        if (mediaPlayer.isPlaying()) {
+        if (isPlaying()) {
             mediaPlayer.pause();
         }
 

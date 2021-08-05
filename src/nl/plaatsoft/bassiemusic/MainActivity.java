@@ -31,6 +31,7 @@ public class MainActivity extends BaseActivity {
     private LinearLayout accessPage;
 
     private List<Music> music;
+    private boolean isShuffling;
     private MusicPlayer musicPlayer;
     private ListView musicList;
     private MusicAdapter musicAdapter;
@@ -56,11 +57,19 @@ public class MainActivity extends BaseActivity {
         });
 
         musicPlayer.setOnPreviousListener(() -> {
-            playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
+            if (isShuffling) {
+                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+            } else {
+                playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
+            }
         });
 
         musicPlayer.setOnNextListener(() -> {
-            playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
+            if (isShuffling) {
+                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+            } else {
+                playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
+            }
         });
 
         musicList = (ListView)findViewById(R.id.main_music_list);
@@ -73,8 +82,30 @@ public class MainActivity extends BaseActivity {
             playMusicByPosition(position);
         });
 
-        ((ImageButton)findViewById(R.id.main_music_shuffle_button)).setOnClickListener((View view) -> {
-            playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+        ImageButton musicShuffleButton = (ImageButton)findViewById(R.id.main_music_shuffle_button);
+        isShuffling = settings.getBoolean("shuffling", false);
+        if (isShuffling) {
+            musicShuffleButton.setImageResource(R.drawable.ic_shuffle_disabled);
+        }
+        musicShuffleButton.setOnClickListener((View view) -> {
+            if (isShuffling) {
+                isShuffling = false;
+                musicShuffleButton.setImageResource(R.drawable.ic_shuffle);
+                rememberShuffling();
+            } else {
+                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+            }
+        });
+        musicShuffleButton.setOnLongClickListener((View view) -> {
+            if (isShuffling) {
+                isShuffling = false;
+                musicShuffleButton.setImageResource(R.drawable.ic_shuffle);
+            } else {
+                isShuffling = true;
+                musicShuffleButton.setImageResource(R.drawable.ic_shuffle_disabled);
+            }
+            rememberShuffling();
+            return true;
         });
 
         ((ImageButton)findViewById(R.id.main_music_refresh_button)).setOnClickListener((View view) -> {
@@ -191,6 +222,12 @@ public class MainActivity extends BaseActivity {
                 musicList.setFastScrollEnabled(settings.getBoolean("fast_scroll", Config.SETTINGS_FAST_SCROLL_DEFAULT));
             }
         }
+    }
+
+    private void rememberShuffling() {
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putBoolean("shuffling", isShuffling);
+        settingsEditor.apply();
     }
 
     private void rememberMusic() {
