@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity {
         });
 
         musicPlayer.setOnPreviousListener((boolean inHistory) -> {
-            if (inHistory) {
+            if (inHistory || isShuffling) {
                 if (musicHistoryCurrent > 0) {
                     musicHistoryCurrent--;
                     for (Music musicItem : music) {
@@ -81,18 +81,16 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
                     }
+                } else if (isShuffling) {
+                    playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
                 }
             } else {
-                if (isShuffling) {
-                    playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
-                } else {
-                    playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
-                }
+                playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
             }
         });
 
         musicPlayer.setOnNextListener((boolean inHistory) -> {
-            if (inHistory) {
+            if (inHistory || isShuffling) {
                 if (musicHistoryCurrent < musicHistory.size() - 1) {
                     musicHistoryCurrent++;
                     for (Music musicItem : music) {
@@ -101,13 +99,11 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
                     }
+                } else if (isShuffling) {
+                    playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
                 }
             } else {
-                if (isShuffling) {
-                    playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
-                } else {
-                    playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
-                }
+                playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
             }
         });
 
@@ -127,21 +123,14 @@ public class MainActivity extends BaseActivity {
             musicShuffleButton.setImageResource(R.drawable.ic_shuffle_disabled);
         }
         musicShuffleButton.setOnClickListener((View view) -> {
-            if (isShuffling) {
-                isShuffling = false;
-                musicShuffleButton.setImageResource(R.drawable.ic_shuffle);
-                rememberShuffling();
-            } else {
-                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
-            }
+            playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
         });
         musicShuffleButton.setOnLongClickListener((View view) -> {
+            isShuffling = !isShuffling;
             if (isShuffling) {
-                isShuffling = false;
-                musicShuffleButton.setImageResource(R.drawable.ic_shuffle);
-            } else {
-                isShuffling = true;
                 musicShuffleButton.setImageResource(R.drawable.ic_shuffle_disabled);
+            } else {
+                musicShuffleButton.setImageResource(R.drawable.ic_shuffle);
             }
             rememberShuffling();
             return true;
