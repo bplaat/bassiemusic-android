@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.Manifest;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1;
@@ -32,6 +33,8 @@ public class MainActivity extends BaseActivity {
 
     private List<Music> music;
     private boolean isShuffling;
+    private ArrayList<Long> musicHistory;
+    private int musicHistoryCurrent;
     private MusicPlayer musicPlayer;
     private ListView musicList;
     private MusicAdapter musicAdapter;
@@ -50,25 +53,61 @@ public class MainActivity extends BaseActivity {
         accessPage = (LinearLayout)findViewById(R.id.main_access_page);
 
         // Music page
+        if (
+            savedInstanceState != null &&
+            savedInstanceState.getSerializable("music_history") != null &&
+            savedInstanceState.getInt("music_history_current", -1) != -1
+        ) {
+            musicHistory = (ArrayList<Long>)savedInstanceState.getSerializable("music_history");
+            musicHistoryCurrent = savedInstanceState.getInt("music_history_current");
+        } else {
+            musicHistory = new ArrayList<Long>();
+            musicHistoryCurrent = 0;
+        }
+
         musicPlayer = (MusicPlayer)findViewById(R.id.main_music_music_player);
 
         musicPlayer.setOnInfoClickListener(() -> {
             scrollToMusicByPosition(musicAdapter.getSelectedPosition());
         });
 
-        musicPlayer.setOnPreviousListener(() -> {
-            if (isShuffling) {
-                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+        musicPlayer.setOnPreviousListener((boolean inHistory) -> {
+            if (inHistory) {
+                if (musicHistoryCurrent > 0) {
+                    musicHistoryCurrent--;
+                    for (Music musicItem : music) {
+                        if (musicItem.getId() == musicHistory.get(musicHistoryCurrent)) {
+                            playMusicByPosition(musicAdapter.getPosition(musicItem), 0, true, true);
+                            return;
+                        }
+                    }
+                }
             } else {
-                playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
+                if (isShuffling) {
+                    playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+                } else {
+                    playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
+                }
             }
         });
 
-        musicPlayer.setOnNextListener(() -> {
-            if (isShuffling) {
-                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+        musicPlayer.setOnNextListener((boolean inHistory) -> {
+            if (inHistory) {
+                if (musicHistoryCurrent < musicHistory.size() - 1) {
+                    musicHistoryCurrent++;
+                    for (Music musicItem : music) {
+                        if (musicItem.getId() == musicHistory.get(musicHistoryCurrent)) {
+                            playMusicByPosition(musicAdapter.getPosition(musicItem), 0, true, true);
+                            return;
+                        }
+                    }
+                }
             } else {
-                playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
+                if (isShuffling) {
+                    playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
+                } else {
+                    playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
+                }
             }
         });
 
@@ -163,6 +202,8 @@ public class MainActivity extends BaseActivity {
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putSerializable("music_history", musicHistory);
+        savedInstanceState.putInt("music_history_current", musicHistoryCurrent);
         savedInstanceState.putBoolean("is_music_playing", musicPlayer.isPlaying());
     }
 
@@ -255,27 +296,37 @@ public class MainActivity extends BaseActivity {
                 for (Music musicItem : music) {
                     if (musicItem.getId() == musicId) {
                         isMusicFound = true;
-                        playMusicByPosition(musicAdapter.getPosition(musicItem), settings.getInt("playing_music_position", 0), isAutoPlayed);
+                        playMusicByPosition(musicAdapter.getPosition(musicItem), settings.getInt("playing_music_position", 0), isAutoPlayed, false);
                         break;
                     }
                 }
             }
 
             if (!isMusicFound) {
-                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()), 0, isAutoPlayed);
+                playMusicByPosition((int)(Math.random() * musicAdapter.getCount()), 0, isAutoPlayed, false);
             }
         }
     }
 
     private void playMusicByPosition(int position) {
-        playMusicByPosition(position, 0, true);
+        playMusicByPosition(position, 0, true, false);
     }
 
-    private void playMusicByPosition(int position, int startPosition, boolean isAutoPlayed) {
+    private void playMusicByPosition(int position, int startPosition, boolean isAutoPlayed, boolean inHistory) {
         musicAdapter.setSelectedPosition(position);
         scrollToMusicByPosition(position);
 
         Music music = musicAdapter.getItem(position);
+        if (musicHistoryCurrent == musicHistory.size() - 1 && musicHistory.get(musicHistory.size() - 1) == music.getId()) {
+            inHistory = true;
+        }
+        if (!inHistory) {
+            for (int i = musicHistoryCurrent + 1; i < musicHistory.size(); i++) {
+                musicHistory.remove(i);
+            }
+            musicHistory.add(music.getId());
+            musicHistoryCurrent = musicHistory.size() - 1;
+        }
         musicPlayer.loadMusic(music, startPosition, isAutoPlayed);
     }
 

@@ -24,11 +24,11 @@ public class MusicPlayer extends LinearLayout {
     }
 
     public static interface OnPreviousListener {
-        public void onPrevious();
+        public void onPrevious(boolean inHistory);
     }
 
     public static interface OnNextListener {
-        public void onNext();
+        public void onNext(boolean inHistory);
     }
 
     private IntentFilter becomingNoisyFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
@@ -87,12 +87,17 @@ public class MusicPlayer extends LinearLayout {
             onInfoClickListener.onInfoClick();
         });
 
-        ((ImageButton)findViewById(R.id.music_player_previous_button)).setOnClickListener((View view) -> {
+        ImageButton previousButton = (ImageButton)findViewById(R.id.music_player_previous_button);
+        previousButton.setOnClickListener((View view) -> {
             if (getCurrentPosition() > Config.MUSIC_PLAYER_PREVIOUS_RESET_TIMEOUT) {
                 seekTo(0);
             } else {
-                onPreviousListener.onPrevious();
+                onPreviousListener.onPrevious(false);
             }
+        });
+        previousButton.setOnLongClickListener((View view) -> {
+            onPreviousListener.onPrevious(true);
+            return true;
         });
 
         ((ImageButton)findViewById(R.id.music_player_seek_back_button)).setOnClickListener((View view) -> {
@@ -112,8 +117,13 @@ public class MusicPlayer extends LinearLayout {
             seekTo(Math.min(getCurrentPosition() + Config.MUSIC_PLAYER_SEEK_SKIP_TIME, mediaPlayer.getDuration()));
         });
 
-        ((ImageButton)findViewById(R.id.music_player_next_button)).setOnClickListener((View view) -> {
-            onNextListener.onNext();
+        ImageButton nextButton = (ImageButton)findViewById(R.id.music_player_next_button);
+        nextButton.setOnClickListener((View view) -> {
+            onNextListener.onNext(false);
+        });
+        nextButton.setOnLongClickListener((View view) -> {
+            onNextListener.onNext(true);
+            return true;
         });
 
         timeCurrentLabel = (TextSwitcher)findViewById(R.id.music_player_time_current_label);
@@ -166,7 +176,7 @@ public class MusicPlayer extends LinearLayout {
         });
 
         mediaPlayer.setOnCompletionListener((MediaPlayer mediaPlayer) -> {
-            onNextListener.onNext();
+            onNextListener.onNext(false);
         });
     }
 
