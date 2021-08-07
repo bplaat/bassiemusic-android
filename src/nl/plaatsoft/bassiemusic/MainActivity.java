@@ -53,15 +53,18 @@ public class MainActivity extends BaseActivity {
         accessPage = (LinearLayout)findViewById(R.id.main_access_page);
 
         // Music page
+        musicHistory = new ArrayList<Long>();
         if (
             savedInstanceState != null &&
-            savedInstanceState.getSerializable("music_history") != null &&
+            savedInstanceState.getLongArray("music_history") != null &&
             savedInstanceState.getInt("music_history_current", -1) != -1
         ) {
-            musicHistory = (ArrayList<Long>)savedInstanceState.getSerializable("music_history");
+            long[] musicHistoryArray = savedInstanceState.getLongArray("music_history");
+            for (int i = 0; i < musicHistoryArray.length; i++) {
+                musicHistory.add(musicHistoryArray[i]);
+            }
             musicHistoryCurrent = savedInstanceState.getInt("music_history_current");
         } else {
-            musicHistory = new ArrayList<Long>();
             musicHistoryCurrent = 0;
         }
 
@@ -191,7 +194,11 @@ public class MainActivity extends BaseActivity {
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putSerializable("music_history", musicHistory);
+        long[] musicHistoryArray = new long[musicHistory.size()];
+        for (int i = 0; i < musicHistory.size(); i++) {
+            musicHistoryArray[i] = musicHistory.get(i);
+        }
+        savedInstanceState.putLongArray("music_history", musicHistoryArray);
         savedInstanceState.putInt("music_history_current", musicHistoryCurrent);
         savedInstanceState.putBoolean("is_music_playing", musicPlayer.isPlaying());
     }
