@@ -52,15 +52,39 @@ public class Music {
 
         Cursor musicCursor = context.getContentResolver().query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            new String[] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION },
+            new String[] { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.CD_TRACK_NUMBER },
             null, null, null
         );
         if (musicCursor != null) {
             while (musicCursor.moveToNext()) {
                 long musicId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                String title = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)).trim();
+                String artist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).trim();
+                String album = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)).trim();
+                String trackNumber = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.CD_TRACK_NUMBER));
+
+                List<String> completeTitle = new ArrayList<String>();
+                if (artist != null) {
+                    String[] artistParts = artist.split(", ");
+                    completeTitle.add(artistParts[0]);
+                }
+                if (album != null) {
+                    completeTitle.add(album);
+                }
+                if (trackNumber != null) {
+                    String[] trackNumberParts = trackNumber.split("/");
+                    if (trackNumberParts.length >= 2) {
+                        completeTitle.add(String.format("%0" + trackNumberParts[1].length() + "d", Integer.parseInt(trackNumberParts[0])));
+                    } else {
+                        completeTitle.add(trackNumber);
+                    }
+                }
+                completeTitle.add(title);
+
                 music.add(new Music(
                     musicId,
-                    musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)).trim(),
+                    String.join(" - ", completeTitle),
                     musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
                     ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicId)
                 ));
