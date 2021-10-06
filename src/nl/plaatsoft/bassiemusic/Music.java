@@ -65,11 +65,11 @@ public class Music {
                 String trackNumber = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.CD_TRACK_NUMBER));
 
                 List<String> completeTitle = new ArrayList<String>();
-                if (artist != null) {
+                if (artist != null && !artist.equals("<unknown>")) {
                     String[] artistParts = artist.split(", ");
                     completeTitle.add(artistParts[0]);
                 }
-                if (album != null) {
+                if (album != null && !album.equals("NewPipe")) {
                     completeTitle.add(album);
                 }
                 if (trackNumber != null) {
