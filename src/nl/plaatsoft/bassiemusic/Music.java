@@ -69,7 +69,7 @@ public class Music {
                     String[] artistParts = artist.split(", ");
                     completeTitle.add(artistParts[0]);
                 }
-                if (album != null && !album.equals("NewPipe")) {
+                if (album != null && !album.equals("NewPipe") && !title.startsWith(album)) {
                     completeTitle.add(album);
                 }
                 if (trackNumber != null) {
