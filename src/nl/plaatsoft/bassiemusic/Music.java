@@ -63,14 +63,15 @@ public class Music {
                 String artist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).trim();
                 String album = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)).trim();
                 String trackNumber = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.CD_TRACK_NUMBER));
+                long duration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
 
                 List<String> completeTitle = new ArrayList<String>();
                 if (artist != null && !artist.equals("<unknown>")) {
                     String[] artistParts = artist.split(", ");
                     completeTitle.add(artistParts[0]);
-                }
-                if (album != null && !album.equals("NewPipe") && !title.startsWith(album)) {
-                    completeTitle.add(album);
+                    if (album != null) {
+                        completeTitle.add(album);
+                    }
                 }
                 if (trackNumber != null) {
                     String[] trackNumberParts = trackNumber.split("/");
@@ -85,7 +86,7 @@ public class Music {
                 music.add(new Music(
                     musicId,
                     String.join(" - ", completeTitle),
-                    musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
+                    duration,
                     ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicId)
                 ));
             }
