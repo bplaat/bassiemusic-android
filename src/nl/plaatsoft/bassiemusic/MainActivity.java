@@ -15,8 +15,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.Manifest;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1;

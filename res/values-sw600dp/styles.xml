@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Music item -->
+    <style name="MusicItemPosition">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">24dp</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
+    </style>
+
+    <style name="MusicItemCover">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginRight">24dp</item>
+        <item name="android:background">@color/loading_color</item>
+    </style>
+
+    <style name="MusicItemInfo">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">24dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MusicItemInfoAlbum">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">24dp</item>
+    </style>
+
+    <!-- Music player -->
+    <style name="MusicPlayer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:background">@color/primary_color</item>
+        <item name="android:elevation">8dp</item>
+    </style>
+
+    <!-- Music player info bar -->
+    <style name="MusicPlayerInfo">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">24dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="MusicPlayerInfoContainer">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+
+    <style name="MusicPlayerDuration">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <!-- Music player controls -->
+    <style name="MusicPlayerControls">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">3</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+</resources>

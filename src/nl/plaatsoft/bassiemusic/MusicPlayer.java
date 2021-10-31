@@ -14,6 +14,7 @@ import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.SeekBar;
@@ -148,12 +149,24 @@ public class MusicPlayer extends LinearLayout {
 
         mediaPlayer = new MediaPlayer();
 
+        ImageView infoCoverImage = (ImageView)findViewById(R.id.music_player_info_cover_image);
         TextSwitcher infoTitleLabel = (TextSwitcher)findViewById(R.id.music_player_info_title_label);
+        TextSwitcher infoArtistsLabel = (TextSwitcher)findViewById(R.id.music_player_info_artists_label);
         TextSwitcher infoDurationLabel = (TextSwitcher)findViewById(R.id.music_player_info_duration_label);
         mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
             // Update info texts
+            try {
+                getContext().getContentResolver().openInputStream(playingMusic.getCoverUri());
+                infoCoverImage.setImageURI(playingMusic.getCoverUri());
+            } catch (Exception exception) {
+                infoCoverImage.setImageDrawable(null);
+            }
+
             infoTitleLabel.setText(playingMusic.getTitle());
             infoTitleLabel.setSelected(true);
+
+            infoArtistsLabel.setText(String.join(", ", playingMusic.getArtists()));
+            infoArtistsLabel.setSelected(true);
 
             infoDurationLabel.setText(Music.formatDuration(playingMusic.getDuration()));
 

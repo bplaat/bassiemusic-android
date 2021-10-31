@@ -62,7 +62,11 @@ public class SearchActivity extends BaseActivity {;
 
                 if (searchQuery.length() >= 1) {
                     for (Music musicItem : music) {
-                        if (musicItem.getTitle().toLowerCase().contains(searchQuery)) {
+                        if (
+                            String.join(", ", musicItem.getArtists()).toLowerCase().contains(searchQuery) ||
+                            musicItem.getAlbum().toLowerCase().contains(searchQuery) ||
+                            musicItem.getTitle().toLowerCase().contains(searchQuery)
+                        ) {
                             searchAdapter.add(musicItem);
                         }
                     }

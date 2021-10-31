@@ -3,12 +3,25 @@
     <LinearLayout android:id="@+id/music_player_info_button"
         style="@style/MusicPlayerInfo">
 
-        <TextSwitcher android:id="@+id/music_player_info_title_label"
-            style="@style/MusicPlayerTitle">
+        <ImageView android:id="@+id/music_player_info_cover_image"
+            style="@style/MusicItemCover" />
 
-            <TextView style="@style/MusicPlayerTitleText" />
-            <TextView style="@style/MusicPlayerTitleText" />
-        </TextSwitcher>
+        <LinearLayout style="@style/MusicPlayerInfoContainer">
+
+            <TextSwitcher android:id="@+id/music_player_info_title_label"
+                style="@style/MusicPlayerTitle">
+
+                <TextView style="@style/MusicPlayerTitleText" />
+                <TextView style="@style/MusicPlayerTitleText" />
+            </TextSwitcher>
+
+            <TextSwitcher android:id="@+id/music_player_info_artists_label"
+                style="@style/MusicPlayerArtists">
+
+                <TextView style="@style/MusicPlayerArtistsText" />
+                <TextView style="@style/MusicPlayerArtistsText" />
+            </TextSwitcher>
+        </LinearLayout>
 
         <TextSwitcher android:id="@+id/music_player_info_duration_label"
             style="@style/MusicPlayerDuration">
@@ -19,41 +32,43 @@
     </LinearLayout>
 
     <LinearLayout style="@style/MusicPlayerControls">
-        <TextSwitcher android:id="@+id/music_player_time_current_label"
-            style="@style/MusicPlayerTimeLabel">
+        <LinearLayout style="@style/MusicPlayerButtons">
+            <TextSwitcher android:id="@+id/music_player_time_current_label"
+                style="@style/MusicPlayerTimeLabel">
 
-            <TextView style="@style/MusicPlayerLeftTimeLabelText" />
-            <TextView style="@style/MusicPlayerLeftTimeLabelText" />
-        </TextSwitcher>
+                <TextView style="@style/MusicPlayerLeftTimeLabelText" />
+                <TextView style="@style/MusicPlayerLeftTimeLabelText" />
+            </TextSwitcher>
 
-        <ImageButton android:id="@+id/music_player_previous_button"
-            android:src="@drawable/ic_skip_previous"
-            style="@style/MusicPlayerIconButton" />
+            <ImageButton android:id="@+id/music_player_previous_button"
+                android:src="@drawable/ic_skip_previous"
+                style="@style/MusicPlayerIconButton" />
 
-        <ImageButton android:id="@+id/music_player_seek_back_button"
-            android:src="@drawable/ic_fast_rewind"
-            style="@style/MusicPlayerIconButton" />
+            <ImageButton android:id="@+id/music_player_seek_back_button"
+                android:src="@drawable/ic_fast_rewind"
+                style="@style/MusicPlayerIconButton" />
 
-        <ImageButton android:id="@+id/music_player_play_button"
-            android:src="@drawable/ic_pause"
-            style="@style/MusicPlayerIconButton" />
+            <ImageButton android:id="@+id/music_player_play_button"
+                android:src="@drawable/ic_pause"
+                style="@style/MusicPlayerIconButton" />
 
-        <ImageButton android:id="@+id/music_player_seek_forward_button"
-            android:src="@drawable/ic_fast_forward"
-            style="@style/MusicPlayerIconButton" />
+            <ImageButton android:id="@+id/music_player_seek_forward_button"
+                android:src="@drawable/ic_fast_forward"
+                style="@style/MusicPlayerIconButton" />
 
-        <ImageButton android:id="@+id/music_player_next_button"
-            android:src="@drawable/ic_skip_next"
-            style="@style/MusicPlayerIconButton" />
+            <ImageButton android:id="@+id/music_player_next_button"
+                android:src="@drawable/ic_skip_next"
+                style="@style/MusicPlayerIconButton" />
 
-        <TextSwitcher android:id="@+id/music_player_time_until_label"
-            style="@style/MusicPlayerTimeLabel">
+            <TextSwitcher android:id="@+id/music_player_time_until_label"
+                style="@style/MusicPlayerTimeLabel">
 
-            <TextView style="@style/MusicPlayerRightTimeLabelText" />
-            <TextView style="@style/MusicPlayerRightTimeLabelText" />
-        </TextSwitcher>
+                <TextView style="@style/MusicPlayerRightTimeLabelText" />
+                <TextView style="@style/MusicPlayerRightTimeLabelText" />
+            </TextSwitcher>
+        </LinearLayout>
+
+        <SeekBar android:id="@+id/music_player_seekbar"
+            style="@style/MusicPlayerSeekbar" />
     </LinearLayout>
-
-    <SeekBar android:id="@+id/music_player_seekbar"
-        style="@style/MusicPlayerSeekbar" />
 </merge>

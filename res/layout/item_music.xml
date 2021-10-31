@@ -2,8 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ListItemButton">
 
-    <TextView android:id="@+id/music_title"
-        style="@style/ListItemButtonLabel" />
+    <TextView android:id="@+id/music_position"
+        style="@style/MusicItemPosition" />
+
+    <ImageView android:id="@+id/music_cover"
+        style="@style/MusicItemCover" />
+
+    <LinearLayout style="@style/MusicItemInfo">
+        <TextView android:id="@+id/music_title"
+            style="@style/MusicItemInfoTitle" />
+
+        <TextView android:id="@+id/music_artists"
+            style="@style/MusicItemInfoArtists" />
+    </LinearLayout>
+
+    <TextView android:id="@+id/music_album"
+        style="@style/MusicItemInfoAlbum" />
 
     <TextView android:id="@+id/music_duration"
         style="@style/ListItemButtonMeta"/>

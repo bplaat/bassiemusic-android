@@ -180,6 +180,56 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ListItemButtonMeta">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
+    </style>
+
+    <style name="ListItemButtonSwitch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ListItemFooter" parent="ListItem">
+        <item name="android:textColor">@color/secondary_text_color</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <!-- Music item -->
+    <style name="MusicItemPosition">
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
+    </style>
+
+    <style name="MusicItemCover">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:background">@color/loading_color</item>
+    </style>
+
+    <style name="MusicItemInfo">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MusicItemInfoTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">4dp</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
         <item name="android:scrollHorizontally">true</item>
@@ -187,23 +237,21 @@
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
     </style>
 
-    <style name="ListItemButtonMeta">
-        <item name="android:layout_width">wrap_content</item>
+    <style name="MusicItemInfoArtists">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">16dp</item>
         <item name="android:textColor">@color/secondary_text_color</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
     </style>
 
-    <style name="ListItemButtonSwitch">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">16dp</item>
-    </style>
-
-    <style name="ListItemFooter" parent="ListItem">
-        <item name="android:textColor">@color/secondary_text_color</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+    <style name="MusicItemInfoAlbum">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:visibility">gone</item>
     </style>
 
     <!-- Music player -->
@@ -217,9 +265,12 @@
         <item name="android:elevation">8dp</item>
     </style>
 
+    <!-- Music player info bar -->
     <style name="MusicPlayerInfo">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
@@ -227,10 +278,18 @@
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="MusicPlayerTitle">
+    <style name="MusicPlayerInfoContainer">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MusicPlayerTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">4dp</item>
         <item name="android:inAnimation">@anim/fade_in</item>
         <item name="android:outAnimation">@anim/fade_out</item>
     </style>
@@ -245,10 +304,27 @@
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
     </style>
 
+    <style name="MusicPlayerArtists">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inAnimation">@anim/fade_in</item>
+        <item name="android:outAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="MusicPlayerArtistsText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+    </style>
+
     <style name="MusicPlayerDuration">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">16dp</item>
         <item name="android:inAnimation">@anim/fade_in</item>
         <item name="android:outAnimation">@anim/fade_out</item>
     </style>
@@ -260,7 +336,14 @@
         <item name="android:gravity">right</item>
     </style>
 
+    <!-- Music player controls -->
     <style name="MusicPlayerControls">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MusicPlayerButtons">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">16dp</item>
