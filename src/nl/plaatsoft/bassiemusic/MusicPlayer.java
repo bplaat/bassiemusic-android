@@ -155,12 +155,7 @@ public class MusicPlayer extends LinearLayout {
         TextSwitcher infoDurationLabel = (TextSwitcher)findViewById(R.id.music_player_info_duration_label);
         mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
             // Update info texts
-            try {
-                getContext().getContentResolver().openInputStream(playingMusic.getCoverUri());
-                infoCoverImage.setImageURI(playingMusic.getCoverUri());
-            } catch (Exception exception) {
-                infoCoverImage.setImageDrawable(null);
-            }
+            FetchCoverTask.with(getContext()).load(playingMusic.getCoverUri()).fadeIn().into(infoCoverImage).fetch();
 
             infoTitleLabel.setText(playingMusic.getTitle());
             infoTitleLabel.setSelected(true);

@@ -60,7 +60,7 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
 
         this.selectedPosition = selectedPosition;
 
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // Slow
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -103,12 +103,7 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
 
         viewHolder.musicPosition.setText(String.valueOf(music.getPosition()));
 
-        try {
-            getContext().getContentResolver().openInputStream(music.getCoverUri());
-            viewHolder.musicCover.setImageURI(music.getCoverUri());
-        } catch (Exception exception) {
-            viewHolder.musicCover.setImageDrawable(null);
-        }
+        FetchCoverTask.with(getContext()).load(music.getCoverUri()).fadeIn().into(viewHolder.musicCover).fetch();
 
         viewHolder.musicTitle.setText(music.getTitle());
         if (position == selectedPosition) {

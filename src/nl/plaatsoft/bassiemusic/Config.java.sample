@@ -5,6 +5,8 @@ public class Config {
 
     public static final String APP_OVERRIDE_STORE_PAGE_URL = null;
 
+    public static final int ANIMATION_IMAGE_LOADING_TIMEOUT = 50;
+
     public static final int MUSIC_PLAYER_PREVIOUS_RESET_TIMEOUT = 25000;
     public static final int MUSIC_PLAYER_SEEK_SKIP_TIME = 10000;
     public static final int MUSIC_PLAYER_SYNC_TIMEOUT = 200;
