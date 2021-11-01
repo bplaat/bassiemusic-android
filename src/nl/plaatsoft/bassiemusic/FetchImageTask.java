@@ -4,7 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Looper;
 import android.os.Handler;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -14,13 +14,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FetchCoverTask {
+public class FetchImageTask {
     public static interface OnLoadListener {
         public abstract void onLoad(Bitmap image);
     }
@@ -31,25 +30,32 @@ public class FetchCoverTask {
 
     private static final Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private static final Handler handler = new Handler(Looper.getMainLooper());
+    private static final List<FetchImageTask> tasks = new ArrayList<FetchImageTask>();
 
     private Context context;
-    private Music music;
+    private String url;
+    private boolean isTransparent;
     private boolean isFadedIn;
     private boolean isLoadedFomCache = true;
     private boolean isSavedToCache = true;
     private OnLoadListener onLoadListener;
     private OnErrorListener onErrorListener;
     private ImageView imageView;
+    private boolean isFetching;
     private boolean isCanceled;
     private boolean isFinished;
     private long startTime;
 
-    private FetchCoverTask(Context context) {
+    private FetchImageTask(Context context) {
         this.context = context;
     }
 
-    public Music getMusic() {
-        return music;
+    public String getUrl() {
+        return url;
+    }
+
+    public boolean isFetching() {
+        return isFetching;
     }
 
     public boolean isCanceled() {
@@ -60,62 +66,67 @@ public class FetchCoverTask {
         return isFinished;
     }
 
-    public static FetchCoverTask with(Context context) {
-        return new FetchCoverTask(context);
+    public static FetchImageTask with(Context context) {
+        return new FetchImageTask(context);
     }
 
-    public FetchCoverTask fromMusic(Music music) {
-        this.music = music;
+    public FetchImageTask load(String url) {
+        this.url = url;
         return this;
     }
 
-    public FetchCoverTask fadeIn() {
+    public FetchImageTask transparent() {
+        isTransparent = true;
+        return this;
+    }
+
+    public FetchImageTask fadeIn() {
         isFadedIn = true;
         return this;
     }
 
-    public FetchCoverTask noCache() {
+    public FetchImageTask noCache() {
         isLoadedFomCache = false;
         isSavedToCache = false;
         return this;
     }
 
-    public FetchCoverTask notFromCache() {
+    public FetchImageTask notFromCache() {
         isLoadedFomCache = false;
         return this;
     }
 
-    public FetchCoverTask notToCache() {
+    public FetchImageTask notToCache() {
         isSavedToCache = false;
         return this;
     }
 
-    public FetchCoverTask then(OnLoadListener onLoadListener) {
+    public FetchImageTask then(OnLoadListener onLoadListener) {
         this.onLoadListener = onLoadListener;
         return this;
     }
 
-    public FetchCoverTask then(OnLoadListener onLoadListener, OnErrorListener onErrorListener) {
+    public FetchImageTask then(OnLoadListener onLoadListener, OnErrorListener onErrorListener) {
         this.onLoadListener = onLoadListener;
         this.onErrorListener = onErrorListener;
         return this;
     }
 
-    public FetchCoverTask into(ImageView imageView) {
+    public FetchImageTask into(ImageView imageView) {
         this.imageView = imageView;
         return this;
     }
 
-    public FetchCoverTask fetch() {
+    public FetchImageTask fetch() {
         if (imageView != null) {
-            FetchCoverTask previousFetchCoverTask = (FetchCoverTask)imageView.getTag();
-            if (previousFetchCoverTask != null) {
-                if (previousFetchCoverTask.getMusic().getAlbum().equals(music.getAlbum())) {
+            FetchImageTask previousFetchImageTask = (FetchImageTask)imageView.getTag();
+            if (previousFetchImageTask != null) {
+                if (previousFetchImageTask.getUrl().equals(url)) {
                     cancel();
                     return this;
                 } else {
-                    if (!previousFetchCoverTask.isFinished()) {
-                        previousFetchCoverTask.cancel();
+                    if (!previousFetchImageTask.isFinished()) {
+                        previousFetchImageTask.cancel();
                     }
                 }
             }
@@ -124,42 +135,29 @@ public class FetchCoverTask {
             imageView.setImageBitmap(null);
         }
 
+        tasks.add(this);
+        for (FetchImageTask task : tasks) {
+            if (task.getUrl().equals(url) && task.isFetching()) {
+                return this;
+            }
+        }
+
+        isFetching = true;
         startTime = System.currentTimeMillis();
         executor.execute(() -> {
             try {
-                Bitmap image = fetchCover();
+                Bitmap image = fetchImage();
                 handler.post(() -> {
                     onLoad(image);
                 });
             } catch (Exception exception) {
-                // When an album cover dont exists fetch and cache it from the nice and open Deezer API
-                // I know this code is a callback / exception nightmare, I'm working on it
                 handler.post(() -> {
                     if (!isCanceled) {
-                        try {
-                            String url = Config.DEEZER_API_URL + "/search/album?q=" +
-                                URLEncoder.encode(music.getArtists().get(0) + " - " + music.getAlbum(), "UTF-8") + "&limit=1";
-                            FetchDataTask.with(context).load(url).withCache().then(data -> {
-                                if (!isCanceled) {
-                                    try {
-                                        JSONArray albumsJson = new JSONObject(data).getJSONArray("data");
-                                        if (albumsJson.length() > 0) {
-                                            JSONObject albumJson = albumsJson.getJSONObject(0);
-                                            FetchImageTask.with(context).load(albumJson.getString("cover_medium")).fadeIn().then(image -> {
-                                                onLoad(image);
-                                            }, exception2 -> {
-                                                onExpection(exception2);
-                                            }).fetch();
-                                        }
-                                    } catch (Exception exception2) {
-                                        onExpection(exception2);
-                                    }
-                                }
-                            }, exception2 -> {
-                                onExpection(exception2);
-                            }).fetch();
-                        } catch (Exception exception2) {
-                            onExpection(exception2);
+                        finish();
+                        if (onErrorListener != null) {
+                            onErrorListener.onError(exception);
+                        } else {
+                            exception.printStackTrace();
                         }
                     }
                 });
@@ -176,13 +174,20 @@ public class FetchCoverTask {
 
     private void finish() {
         isFinished = true;
+        tasks.remove(this);
     }
 
-    private Bitmap fetchCover() throws Exception {
+    private Bitmap fetchImage() throws Exception {
+        // Check if the file exists in the cache
+        File file = new File(context.getCacheDir(), Utils.md5(url));
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inPreferredConfig = isTransparent ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
+        if (isLoadedFomCache && file.exists()) {
+            return BitmapFactory.decodeFile(file.getPath(), options);
+        }
 
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(context.getContentResolver().openInputStream(music.getAlbumCoverUri()));
+        // Or fetch the image from the internet in to a byte array buffer
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(new URL(url).openStream());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int number_read = 0;
@@ -193,14 +198,26 @@ public class FetchCoverTask {
         bufferedInputStream.close();
 
         byte[] image = byteArrayOutputStream.toByteArray();
+
+        // When needed save the image to a cache file
+        if (isSavedToCache) {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(image);
+            fileOutputStream.close();
+        }
+
         return BitmapFactory.decodeByteArray(image, 0, image.length, options);
     }
 
-    private void onLoad(Bitmap image) {
+    public void onLoad(Bitmap image) {
         if (!isCanceled) {
             finish();
 
             if (imageView != null) {
+                if (isTransparent) {
+                    imageView.setBackgroundColor(Color.TRANSPARENT);
+                }
+
                 boolean isWaitingLong = (System.currentTimeMillis() - startTime) > Config.ANIMATION_IMAGE_LOADING_TIMEOUT;
                 if (isFadedIn && isWaitingLong) {
                     imageView.setImageAlpha(0);
@@ -222,16 +239,15 @@ public class FetchCoverTask {
             if (onLoadListener != null) {
                 onLoadListener.onLoad(image);
             }
-        }
-    }
 
-    private void onExpection(Exception exception) {
-        if (!isCanceled) {
-            finish();
-            if (onErrorListener != null) {
-                onErrorListener.onError(exception);
-            } else {
-                exception.printStackTrace();
+            if (isFetching) {
+                for (int i = 0; i < tasks.size(); i++) {
+                    FetchImageTask task = tasks.get(i);
+                    if (task.getUrl().equals(url) && !task.isFetching()) {
+                        task.onLoad(image);
+                        i--;
+                    }
+                }
             }
         }
     }

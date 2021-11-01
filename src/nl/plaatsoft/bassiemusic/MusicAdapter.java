@@ -29,17 +29,11 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
     private static class Section {
         public char character;
         public int position;
-
-        public Section(char character, int position) {
-            this.character = character;
-            this.position = position;
-        }
     }
 
-    private List<Section> sections = null;
-
+    private List<Section> sections;
     private int selectedPosition = -1;
-    private boolean isSelectedPositionAnimated = false;
+    private boolean isSelectedPositionAnimated;
     private int oldSelectedPosition = -1;
 
     public MusicAdapter(Context context) {
@@ -60,9 +54,10 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
 
         this.selectedPosition = selectedPosition;
 
-        notifyDataSetChanged(); // Slow
+        notifyDataSetChanged(); // Slow TODO
     }
 
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
@@ -103,7 +98,7 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
 
         viewHolder.musicPosition.setText(String.valueOf(music.getPosition()));
 
-        FetchCoverTask.with(getContext()).load(music.getCoverUri()).fadeIn().into(viewHolder.musicCover).fetch();
+        FetchCoverTask.with(getContext()).fromMusic(music).fadeIn().into(viewHolder.musicCover).fetch();
 
         viewHolder.musicTitle.setText(music.getTitle());
         if (position == selectedPosition) {
@@ -135,6 +130,7 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         return convertView;
     }
 
+    @Override
     public Object[] getSections() {
         if (sections == null) {
             sections = new ArrayList<Section>();
@@ -152,7 +148,10 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
                 }
 
                 if (!isCharacterFound) {
-                    sections.add(new Section(firstCharacter, position));
+                    Section section = new Section();
+                    section.character = firstCharacter;
+                    section.position = position;
+                    sections.add(section);
                 }
             }
         }
@@ -164,10 +163,12 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         return sectionsArray;
     }
 
+    @Override
     public int getPositionForSection(int section) {
         return sections.get(section).position;
     }
 
+    @Override
     public int getSectionForPosition(int position) {
         Music music = getItem(position);
         char firstCharacter = Character.toUpperCase(music.getArtists().get(0).charAt(0));

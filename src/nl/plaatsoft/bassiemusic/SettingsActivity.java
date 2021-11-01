@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsActivity extends BaseActivity {
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);

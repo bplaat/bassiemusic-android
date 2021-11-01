@@ -32,9 +32,9 @@ public class MusicPlayer extends LinearLayout {
         public void onNext(boolean inHistory);
     }
 
-    private IntentFilter becomingNoisyFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    private IntentFilter becomingNoisyFilter;
     private BroadcastReceiver becomingNoisyReceiver;
-    private boolean becomingNoisyIsRegistered = false;
+    private boolean becomingNoisyIsRegistered;
 
     private PowerManager.WakeLock wakeLock;
     private MediaPlayer mediaPlayer;
@@ -66,6 +66,8 @@ public class MusicPlayer extends LinearLayout {
 
     private void initView() {
         inflate(getContext(), R.layout.view_music_player, this);
+
+        becomingNoisyFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
 
         becomingNoisyReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -155,7 +157,7 @@ public class MusicPlayer extends LinearLayout {
         TextSwitcher infoDurationLabel = (TextSwitcher)findViewById(R.id.music_player_info_duration_label);
         mediaPlayer.setOnPreparedListener((MediaPlayer mediaPlayer) -> {
             // Update info texts
-            FetchCoverTask.with(getContext()).load(playingMusic.getCoverUri()).fadeIn().into(infoCoverImage).fetch();
+            FetchCoverTask.with(getContext()).fromMusic(playingMusic).fadeIn().into(infoCoverImage).fetch();
 
             infoTitleLabel.setText(playingMusic.getTitle());
             infoTitleLabel.setSelected(true);
@@ -260,7 +262,7 @@ public class MusicPlayer extends LinearLayout {
             .build());
 
         try {
-            mediaPlayer.setDataSource(getContext(), playingMusic.getUri());
+            mediaPlayer.setDataSource(getContext(), playingMusic.getContentUri());
             mediaPlayer.prepareAsync();
         } catch (Exception exception) {
             exception.printStackTrace();

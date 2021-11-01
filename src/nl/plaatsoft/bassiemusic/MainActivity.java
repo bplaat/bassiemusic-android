@@ -39,13 +39,14 @@ public class MainActivity extends BaseActivity {
     private ListView musicList;
     private MusicAdapter musicAdapter;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Pages
         handler = new Handler(Looper.getMainLooper());
 
+        // Pages
         musicPage = (LinearLayout)findViewById(R.id.main_music_page);
 
         emptyPage = (LinearLayout)findViewById(R.id.main_empty_page);
@@ -192,6 +193,7 @@ public class MainActivity extends BaseActivity {
         RatingAlert.updateAndShow(this);
     }
 
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         long[] musicHistoryArray = new long[musicHistory.size()];
@@ -203,10 +205,12 @@ public class MainActivity extends BaseActivity {
         savedInstanceState.putBoolean("is_music_playing", musicPlayer.isPlaying());
     }
 
+    @Override
     public void onBackPressed() {
         moveTaskToBack(false);
     }
 
+    @Override
     public void onPause() {
         if (settings.getBoolean("remember_music", Config.SETTINGS_REMEMBER_MUSIC_DEFAULT)) {
             rememberMusic();
@@ -214,11 +218,13 @@ public class MainActivity extends BaseActivity {
         super.onPause();
     }
 
+    @Override
     public void onDestroy() {
         musicPlayer.release();
         super.onDestroy();
     }
 
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MainActivity.STORAGE_PERMISSION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             musicPage.setVisibility(View.VISIBLE);
@@ -228,6 +234,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MainActivity.SEARCH_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             long musicId = data.getLongExtra("id", -1);

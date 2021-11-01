@@ -45,10 +45,10 @@
     <string name="settings_share_button">Share this app</string>
     <string name="settings_share_message">Check out this cool Android music app:</string>
     <string name="settings_about_button">About this app</string>
-    <string name="settings_footer_button">This application is made by Bastiaan van der Plaat</string>
+    <string name="settings_footer_button">This application is made by Bastiaan van der Plaat\nWith album covers from the nice and open Deezer API</string>
 
     <string name="settings_about_alert_title_label">About this app</string>
-    <string name="settings_about_alert_message_label">This application is made by Bastiaan van der Plaat</string>
+    <string name="settings_about_alert_message_label">This application is made by Bastiaan van der Plaat\n\nWith album covers from the nice and open Deezer API</string>
     <string name="settings_about_alert_website_button">Website</string>
     <string name="settings_about_alert_ok_button">OK</string>
 

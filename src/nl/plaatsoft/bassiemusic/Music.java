@@ -13,22 +13,11 @@ public class Music {
     private long id;
     private List<String> artists;
     private String album;
+    private Uri albumCoverUri;
     private String title;
     private int position;
     private long duration;
-    private Uri uri;
-    private Uri coverUri;
-
-    public Music(long id, List<String> artists, String album, String title, int position, long duration, Uri uri, Uri coverUri) {
-        this.id = id;
-        this.artists = artists;
-        this.album = album;
-        this.title = title;
-        this.position = position;
-        this.duration = duration;
-        this.uri = uri;
-        this.coverUri = coverUri;
-    }
+    private Uri contentUri;
 
     public long getId() {
         return id;
@@ -38,8 +27,13 @@ public class Music {
         return artists;
     }
 
+
     public String getAlbum() {
         return album;
+    }
+
+    public Uri getAlbumCoverUri() {
+        return albumCoverUri;
     }
 
     public String getTitle() {
@@ -54,12 +48,8 @@ public class Music {
         return duration;
     }
 
-    public Uri getUri() {
-        return uri;
-    }
-
-    public Uri getCoverUri() {
-        return coverUri;
+    public Uri getContentUri() {
+        return contentUri;
     }
 
     public static String formatDuration(long ms) {
@@ -72,7 +62,7 @@ public class Music {
     }
 
     public static List<Music> loadMusic(Context context) {
-        List<Music> music = new ArrayList<Music>();
+        List<Music> musicList = new ArrayList<Music>();
 
         Cursor musicCursor = context.getContentResolver().query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -83,74 +73,76 @@ public class Music {
         );
         if (musicCursor != null) {
             while (musicCursor.moveToNext()) {
-                long musicId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                Music music = new Music();
+                music.id = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+                music.contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.id);
                 String artist = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).trim();
-                String album = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)).trim();
-                String title = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)).trim();
+                music.album = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)).trim();
+                music.title = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)).trim();
                 String trackNumber = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.CD_TRACK_NUMBER));
-                long duration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                music.duration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 long albumId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                music.albumCoverUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
 
-                List<String> artists = new ArrayList<String>();
-                int position = 1;
+                music.artists = new ArrayList<String>();
+                music.position = 1;
                 if (artist != null && !artist.equals("<unknown>")) {
                     String[] artistParts = artist.split(",");
                     for (String artistPart : artistParts) {
-                        artists.add(artistPart.trim());
+                        music.artists.add(artistPart.trim());
                     }
 
                     if (trackNumber != null) {
                         String[] trackNumberParts = trackNumber.split("/");
                         if (trackNumberParts.length >= 1) {
-                            position = Integer.parseInt(trackNumberParts[0]);
+                            music.position = Integer.parseInt(trackNumberParts[0]);
                         }
                     }
                 } else {
-                    String[] titleParts = title.split("-");
+                    String[] titleParts = music.title.split("-");
                     if (titleParts.length >= 2) {
-                        artists.add(titleParts[0].trim());
+                        music.artists.add(titleParts[0].trim());
 
-                        int i = 2;
+                        int position = 2;
                         try {
-                            position = Integer.parseInt(titleParts[1].trim());
-                            album = titleParts[0].trim();
+                            music.position = Integer.parseInt(titleParts[1].trim());
+                            music.album = titleParts[0].trim();
                         } catch (Exception exception) {
-                            album = titleParts[1].trim();
+                            music.album = titleParts[1].trim();
                             try {
-                                position = Integer.parseInt(titleParts[2].trim());
-                                i = 3;
+                                music.position = Integer.parseInt(titleParts[2].trim());
+                                position = 3;
                             } catch (Exception exception2) {}
                         }
 
-                        title = "";
-                        for (; i < titleParts.length; i++) {
-                            title += titleParts[i].trim();
-                            if (i != titleParts.length - 1) title += " ";
+                        StringBuilder titleBuilder = new StringBuilder();
+                        for (; position < titleParts.length; position++) {
+                            titleBuilder.append(titleParts[position].trim());
+                            if (position != titleParts.length - 1) {
+                                titleBuilder.append(" ");
+                            }
                         }
+                        music.title = titleBuilder.toString();
                     }
                 }
 
-                if (title.equals("")) {
-                    title = album;
+                if (music.title.equals("")) {
+                    music.title = music.album;
                 }
 
-                if (artists.size() == 0) {
-                    artists.add("Unkown artist");
+                if (music.artists.size() == 0) {
+                    music.artists.add("Unkown artist");
                 }
 
-                Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicId);
-
-                Uri coverUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
-
-                music.add(new Music(musicId, artists, album, title, position, duration, contentUri, coverUri));
+                musicList.add(music);
             }
             musicCursor.close();
         }
 
-        Collections.sort(music, (Music a, Music b) -> a.getPosition() - b.getPosition());
-        Collections.sort(music, (Music a, Music b) -> a.getAlbum().compareToIgnoreCase(b.getAlbum()));
-        Collections.sort(music, (Music a, Music b) -> a.getArtists().get(0).compareToIgnoreCase(b.getArtists().get(0)));
+        Collections.sort(musicList, (Music a, Music b) -> a.getPosition() - b.getPosition());
+        Collections.sort(musicList, (Music a, Music b) -> a.getAlbum().compareToIgnoreCase(b.getAlbum()));
+        Collections.sort(musicList, (Music a, Music b) -> a.getArtists().get(0).compareToIgnoreCase(b.getArtists().get(0)));
 
-        return music;
+        return musicList;
     }
 }

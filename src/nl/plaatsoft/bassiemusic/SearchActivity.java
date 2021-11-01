@@ -18,7 +18,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import java.util.List;
 
-public class SearchActivity extends BaseActivity {;
+public class SearchActivity extends BaseActivity {
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
