@@ -1,7 +1,5 @@
 package nl.plaatsoft.bassiemusic.components;
 
-import android.animation.AnimatorSet;
-import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -37,28 +35,13 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
 
     private List<Section> sections;
     private int selectedPosition = -1;
-    private boolean isSelectedPositionAnimated;
-    private int oldSelectedPosition = -1;
 
     public MusicAdapter(Context context) {
         super(context, 0);
     }
 
-    public int getSelectedPosition() {
-        return selectedPosition;
-    }
-
     public void setSelectedPosition(int selectedPosition) {
-        if (this.selectedPosition != selectedPosition) {
-            oldSelectedPosition = this.selectedPosition;
-            isSelectedPositionAnimated = false;
-        } else {
-            isSelectedPositionAnimated = true;
-        }
-
         this.selectedPosition = selectedPosition;
-
-        notifyDataSetChanged(); // Slow TODO
     }
 
     @Override
@@ -79,22 +62,8 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         }
 
         if (position == selectedPosition) {
-            if (!isSelectedPositionAnimated) {
-                AnimatorSet animation = (AnimatorSet)AnimatorInflater.loadAnimator(getContext(), R.animator.selected_music_in);
-                animation.setTarget(convertView);
-                animation.start();
-                isSelectedPositionAnimated = true;
-            } else {
-                convertView.setBackgroundResource(R.color.selected_background_color);
-            }
-        }
-        else if (position == oldSelectedPosition) {
-            AnimatorSet animation = (AnimatorSet)AnimatorInflater.loadAnimator(getContext(), R.animator.selected_music_out);
-            animation.setTarget(convertView);
-            animation.start();
-            oldSelectedPosition = -1;
-        }
-        else {
+            convertView.setBackgroundResource(R.color.selected_background_color);
+        } else {
             convertView.setBackgroundColor(Color.TRANSPARENT);
         }
 
@@ -105,6 +74,7 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         FetchCoverTask.with(getContext()).fromMusic(music).fadeIn().into(viewHolder.musicCover).fetch();
 
         viewHolder.musicTitle.setText(music.getTitle());
+
         if (position == selectedPosition) {
             viewHolder.musicTitle.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             viewHolder.musicTitle.setSelected(true);

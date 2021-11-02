@@ -167,7 +167,9 @@ public class FetchImageTask implements Task {
             }
 
             imageView.setTag(this);
-            imageView.setImageBitmap(null);
+            if (!(bitmapCache.get(uri) != null || failedImagesCache.contains(uri))) {
+                imageView.setImageBitmap(null);
+            }
         }
 
         tasks.add(this);

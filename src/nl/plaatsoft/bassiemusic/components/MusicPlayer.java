@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
+import android.widget.TextView;
 import android.widget.SeekBar;
 import nl.plaatsoft.bassiemusic.models.Music;
 import nl.plaatsoft.bassiemusic.tasks.FetchCoverTask;
@@ -164,13 +165,22 @@ public class MusicPlayer extends LinearLayout {
             // Update info texts
             FetchCoverTask.with(getContext()).fromMusic(playingMusic).fadeIn().into(infoCoverImage).fetch();
 
-            infoTitleLabel.setText(playingMusic.getTitle());
+            String newTitleLabel = playingMusic.getTitle();
+            if (!((TextView)infoTitleLabel.getCurrentView()).getText().equals(newTitleLabel)) {
+                infoTitleLabel.setText(newTitleLabel);
+            }
             infoTitleLabel.setSelected(true);
 
-            infoArtistsLabel.setText(String.join(", ", playingMusic.getArtists()));
+            String newArtistsLabel = String.join(", ", playingMusic.getArtists());
+            if (!((TextView)infoArtistsLabel.getCurrentView()).getText().equals(newArtistsLabel)) {
+                infoArtistsLabel.setText(newArtistsLabel);
+            }
             infoArtistsLabel.setSelected(true);
 
-            infoDurationLabel.setText(Music.formatDuration(playingMusic.getDuration()));
+            String newDurationLabel = Music.formatDuration(playingMusic.getDuration());
+            if (!((TextView)infoDurationLabel.getCurrentView()).getText().equals(newDurationLabel)) {
+                infoDurationLabel.setText(newDurationLabel);
+            }
 
             // Update seekbar max
             seekBar.setMax(mediaPlayer.getDuration());

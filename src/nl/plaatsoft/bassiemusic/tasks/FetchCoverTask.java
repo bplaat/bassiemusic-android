@@ -1,20 +1,12 @@
 package nl.plaatsoft.bassiemusic.tasks;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Looper;
 import android.os.Handler;
 import android.util.Log;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -30,6 +22,14 @@ public class FetchCoverTask {
 
     public static interface OnErrorListener {
         public abstract void onError(Exception exception);
+    }
+
+    public class NoCoverFound extends Exception {
+        private static final long serialVersionUID = 1;
+
+        public NoCoverFound(String message) {
+            super(message);
+        }
     }
 
     private static final Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -125,6 +125,9 @@ public class FetchCoverTask {
                             }, exception2 -> {
                                 onExpection(exception2);
                             }).fetch();
+                        } else {
+                            imageView.setImageBitmap(null);
+                            onExpection(new NoCoverFound("No album cover was found via the Deezer API"));
                         }
                     } catch (Exception exception2) {
                         onExpection(exception2);

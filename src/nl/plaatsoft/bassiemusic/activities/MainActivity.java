@@ -1,5 +1,7 @@
 package nl.plaatsoft.bassiemusic.activities;
 
+import android.animation.AnimatorSet;
+import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.Intent;
@@ -8,12 +10,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.Manifest;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,8 @@ public class MainActivity extends BaseActivity {
     private MusicPlayer musicPlayer;
     private ListView musicList;
     private MusicAdapter musicAdapter;
+
+    private int selectedPosition = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +84,7 @@ public class MainActivity extends BaseActivity {
         musicPlayer = (MusicPlayer)findViewById(R.id.main_music_music_player);
 
         musicPlayer.setOnInfoClickListener(() -> {
-            scrollToMusicByPosition(musicAdapter.getSelectedPosition());
+            scrollToMusicByPosition(selectedPosition);
         });
 
         musicPlayer.setOnPreviousListener((boolean inHistory) -> {
@@ -95,7 +101,7 @@ public class MainActivity extends BaseActivity {
                     playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
                 }
             } else {
-                playMusicByPosition(musicAdapter.getSelectedPosition() == 0 ? musicAdapter.getCount() - 1 : musicAdapter.getSelectedPosition() - 1);
+                playMusicByPosition(selectedPosition == 0 ? musicAdapter.getCount() - 1 : selectedPosition - 1);
             }
         });
 
@@ -113,7 +119,7 @@ public class MainActivity extends BaseActivity {
                     playMusicByPosition((int)(Math.random() * musicAdapter.getCount()));
                 }
             } else {
-                playMusicByPosition(musicAdapter.getSelectedPosition() == musicAdapter.getCount() - 1 ? 0 : musicAdapter.getSelectedPosition() + 1);
+                playMusicByPosition(selectedPosition == musicAdapter.getCount() - 1 ? 0 : selectedPosition + 1);
             }
         });
 
@@ -281,9 +287,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void rememberMusic() {
-        if (musicAdapter.getSelectedPosition() != -1) {
+        if (selectedPosition != -1) {
             SharedPreferences.Editor settingsEditor = settings.edit();
-            Music music = musicAdapter.getItem(musicAdapter.getSelectedPosition());
+            Music music = musicAdapter.getItem(selectedPosition);
             settingsEditor.putLong("playing_music_id", music.getId());
             settingsEditor.putInt("playing_music_position", musicPlayer.getCurrentPosition());
             settingsEditor.apply();
@@ -322,8 +328,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void playMusicByPosition(int position, int startPosition, boolean isAutoPlayed, boolean inHistory) {
-        musicAdapter.setSelectedPosition(position);
         scrollToMusicByPosition(position);
+        setSelectedPosition(position);
 
         Music music = musicAdapter.getItem(position);
         if (musicHistoryCurrent == musicHistory.size() - 1 && musicHistory.get(musicHistory.size() - 1) == music.getId()) {
@@ -350,5 +356,54 @@ public class MainActivity extends BaseActivity {
                 musicList.setSelection(position - (musicList.getLastVisiblePosition() - musicList.getFirstVisiblePosition() - 1));
             }
         });
+    }
+
+    private void updateSelectedView() {
+        LinearLayout selectedView = (LinearLayout)musicList.getChildAt(selectedPosition - musicList.getFirstVisiblePosition());
+        if (selectedView != null) {
+            AnimatorSet animation = (AnimatorSet)AnimatorInflater.loadAnimator(this, R.animator.selected_music_in);
+            animation.setTarget(selectedView);
+            animation.start();
+
+            TextView musicTitle = (TextView)selectedView.findViewById(R.id.music_title);
+            musicTitle.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            musicTitle.setSelected(true);
+
+            TextView musicArtists = (TextView)selectedView.findViewById(R.id.music_artists);
+            musicArtists.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            musicArtists.setSelected(true);
+        } else {
+            // When the view doesn't exist right now try again next sweep
+            musicList.post(() -> {
+                updateSelectedView();
+            });
+        }
+    }
+
+    private void setSelectedPosition(int selectedPosition) {
+        if (this.selectedPosition != selectedPosition) {
+            if (this.selectedPosition != -1) {
+                LinearLayout oldSelectedView = (LinearLayout)musicList.getChildAt(this.selectedPosition - musicList.getFirstVisiblePosition());
+                if (oldSelectedView != null) {
+                    AnimatorSet animation = (AnimatorSet)AnimatorInflater.loadAnimator(this, R.animator.selected_music_out);
+                    animation.setTarget(oldSelectedView);
+                    animation.start();
+
+                    TextView musicTitle = (TextView)oldSelectedView.findViewById(R.id.music_title);
+                    musicTitle.setEllipsize(null);
+                    musicTitle.setSelected(false);
+
+                    TextView musicArtists = (TextView)oldSelectedView.findViewById(R.id.music_artists);
+                    musicArtists.setEllipsize(null);
+                    musicArtists.setSelected(false);
+                }
+            }
+
+            this.selectedPosition = selectedPosition;
+            musicAdapter.setSelectedPosition(selectedPosition);
+            musicList.post(() -> {
+                updateSelectedView();
+            });
+        }
     }
 }
