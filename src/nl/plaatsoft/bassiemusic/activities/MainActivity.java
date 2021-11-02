@@ -300,6 +300,7 @@ public class MainActivity extends BaseActivity {
         music = Music.loadMusic(this);
         musicAdapter.clear();
         musicAdapter.addAll(music);
+        musicAdapter.refreshSections();
 
         if (music.size() == 0) {
             musicPage.setVisibility(View.GONE);

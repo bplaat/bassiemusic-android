@@ -104,6 +104,10 @@ public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer 
         return convertView;
     }
 
+    public void refreshSections() {
+        sections = null;
+    }
+
     @Override
     public Object[] getSections() {
         if (sections == null) {
