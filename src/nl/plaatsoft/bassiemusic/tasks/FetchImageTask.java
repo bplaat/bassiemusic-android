@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Looper;
 import android.os.Handler;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import java.io.BufferedInputStream;
@@ -33,9 +34,24 @@ public class FetchImageTask implements Task {
         public abstract void onError(Exception exception);
     }
 
+    public class AlreadyFailedImage extends Exception {
+        private static final long serialVersionUID = 1;
+
+        public AlreadyFailedImage(String message) {
+            super(message);
+        }
+    }
+
     private static final Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private static final Handler handler = new Handler(Looper.getMainLooper());
     private static final List<FetchImageTask> tasks = new ArrayList<FetchImageTask>();
+    private static final List<Uri> failedImagesCache = new ArrayList<Uri>();
+    private static final LruCache<Uri, Bitmap> bitmapCache = new LruCache<Uri, Bitmap>((int)(Runtime.getRuntime().freeMemory() / 2)) {
+        @Override
+        protected int sizeOf(Uri uri, Bitmap bitmap) {
+            return bitmap.getByteCount();
+        }
+    };
 
     private Context context;
     private Uri uri;
@@ -164,6 +180,19 @@ public class FetchImageTask implements Task {
 
         startTime = System.currentTimeMillis();
         isFetching = true;
+
+        // Check of bitmap is already in cache
+        if (bitmapCache.get(uri) != null) {
+            onLoad(bitmapCache.get(uri));
+            return this;
+        }
+
+        // Check if the image failed before
+        if (failedImagesCache.contains(uri)) {
+            onExpection(new AlreadyFailedImage("This image already failed before"));
+            return this;
+        }
+
         executor.execute(() -> {
             try {
                 Bitmap image = fetchImage();
@@ -193,41 +222,50 @@ public class FetchImageTask implements Task {
     }
 
     private Bitmap fetchImage() throws Exception {
+        Bitmap image;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = isTransparent ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
 
         // Check if the uri is a local content uri: for example an album art
         if (uri.getScheme().equals("content")) {
-            return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
+            image = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
         } else {
             // Check if the file exists in the cache
             File file = new File(context.getCacheDir(), Utils.md5(uri.toString()));
             if (isLoadedFomCache && file.exists()) {
-                return BitmapFactory.decodeFile(file.getPath(), options);
+                image = BitmapFactory.decodeFile(file.getPath(), options);
+            } else {
+                // Or fetch the image from the internet in to a byte array buffer
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(new URL(uri.toString()).openStream());
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int number_read = 0;
+                while ((number_read = bufferedInputStream.read(buffer, 0, buffer.length)) != -1) {
+                    byteArrayOutputStream.write(buffer, 0, number_read);
+                }
+                byteArrayOutputStream.close();
+                bufferedInputStream.close();
+
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+                // When needed save the image to a cache file
+                if (isSavedToCache) {
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    fileOutputStream.write(imageBytes);
+                    fileOutputStream.close();
+                }
+
+                image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length, options);
             }
-
-            // Or fetch the image from the internet in to a byte array buffer
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(new URL(uri.toString()).openStream());
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int number_read = 0;
-            while ((number_read = bufferedInputStream.read(buffer, 0, buffer.length)) != -1) {
-                byteArrayOutputStream.write(buffer, 0, number_read);
-            }
-            byteArrayOutputStream.close();
-            bufferedInputStream.close();
-
-            byte[] image = byteArrayOutputStream.toByteArray();
-
-            // When needed save the image to a cache file
-            if (isSavedToCache) {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                fileOutputStream.write(image);
-                fileOutputStream.close();
-            }
-
-            return BitmapFactory.decodeByteArray(image, 0, image.length, options);
         }
+
+        // Put bitmap in cache when it is not
+        synchronized (bitmapCache) {
+            if (bitmapCache.get(uri) == null) {
+                bitmapCache.put(uri, image);
+            }
+        }
+        return image;
     }
 
     public void onLoad(Bitmap image) {
@@ -276,6 +314,10 @@ public class FetchImageTask implements Task {
     public void onExpection(Exception exception) {
         if (!isCanceled) {
             finish();
+
+            if (!failedImagesCache.contains(uri)) {
+                failedImagesCache.add(uri);
+            }
 
             if (onErrorListener != null) {
                 onErrorListener.onError(exception);
