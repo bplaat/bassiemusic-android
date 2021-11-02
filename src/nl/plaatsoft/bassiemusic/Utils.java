@@ -3,7 +3,9 @@ package nl.plaatsoft.bassiemusic;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import java.security.MessageDigest;
+import nl.plaatsoft.bassiemusic.Config;
 
 public class Utils {
     private Utils() {}
@@ -20,7 +22,7 @@ public class Utils {
             return hashBuilder.toString();
         }
         catch (Exception exception) {
-            exception.printStackTrace();
+            Log.e(Config.LOG_TAG, "An exception catched!", exception);
             return null;
         }
     }

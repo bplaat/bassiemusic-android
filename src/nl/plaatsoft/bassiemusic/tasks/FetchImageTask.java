@@ -1,12 +1,14 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.tasks;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Looper;
 import android.os.Handler;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import java.io.BufferedInputStream;
@@ -18,8 +20,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.ArrayList;
 import java.util.List;
+import nl.plaatsoft.bassiemusic.Config;
+import nl.plaatsoft.bassiemusic.Utils;
+import nl.plaatsoft.bassiemusic.R;
 
-public class FetchImageTask {
+public class FetchImageTask implements Task {
     public static interface OnLoadListener {
         public abstract void onLoad(Bitmap image);
     }
@@ -33,7 +38,7 @@ public class FetchImageTask {
     private static final List<FetchImageTask> tasks = new ArrayList<FetchImageTask>();
 
     private Context context;
-    private String url;
+    private Uri uri;
     private boolean isTransparent;
     private boolean isFadedIn;
     private boolean isLoadedFomCache = true;
@@ -50,28 +55,40 @@ public class FetchImageTask {
         this.context = context;
     }
 
-    public String getUrl() {
-        return url;
+    @Override
+    public Uri getUri() {
+        return uri;
     }
 
     public boolean isFetching() {
         return isFetching;
     }
 
+    @Override
     public boolean isCanceled() {
         return isCanceled;
     }
 
+    @Override
     public boolean isFinished() {
         return isFinished;
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
     public static FetchImageTask with(Context context) {
         return new FetchImageTask(context);
     }
 
+    public FetchImageTask load(Uri uri) {
+        this.uri = uri;
+        return this;
+    }
+
     public FetchImageTask load(String url) {
-        this.url = url;
+        uri = Uri.parse(url);
         return this;
     }
 
@@ -119,14 +136,16 @@ public class FetchImageTask {
 
     public FetchImageTask fetch() {
         if (imageView != null) {
-            FetchImageTask previousFetchImageTask = (FetchImageTask)imageView.getTag();
-            if (previousFetchImageTask != null) {
-                if (previousFetchImageTask.getUrl().equals(url)) {
-                    cancel();
-                    return this;
-                } else {
-                    if (!previousFetchImageTask.isFinished()) {
-                        previousFetchImageTask.cancel();
+            if (imageView.getTag() instanceof Task) {
+                Task previousTask = (Task)imageView.getTag();
+                if (previousTask != null) {
+                    if (previousTask.getUri().equals(uri)) {
+                        cancel();
+                        return this;
+                    } else {
+                        if (!previousTask.isFinished()) {
+                            previousTask.cancel();
+                        }
                     }
                 }
             }
@@ -137,13 +156,14 @@ public class FetchImageTask {
 
         tasks.add(this);
         for (FetchImageTask task : tasks) {
-            if (task.getUrl().equals(url) && task.isFetching()) {
+            if (task.isFetching() && task.getUri().equals(uri)) {
+                startTime = task.getStartTime();
                 return this;
             }
         }
 
-        isFetching = true;
         startTime = System.currentTimeMillis();
+        isFetching = true;
         executor.execute(() -> {
             try {
                 Bitmap image = fetchImage();
@@ -152,14 +172,7 @@ public class FetchImageTask {
                 });
             } catch (Exception exception) {
                 handler.post(() -> {
-                    if (!isCanceled) {
-                        finish();
-                        if (onErrorListener != null) {
-                            onErrorListener.onError(exception);
-                        } else {
-                            exception.printStackTrace();
-                        }
-                    }
+                    onExpection(exception);
                 });
             }
         });
@@ -167,46 +180,54 @@ public class FetchImageTask {
         return this;
     }
 
+    @Override
     public void cancel() {
         isCanceled = true;
         finish();
     }
 
-    private void finish() {
+    @Override
+    public void finish() {
         isFinished = true;
         tasks.remove(this);
     }
 
     private Bitmap fetchImage() throws Exception {
-        // Check if the file exists in the cache
-        File file = new File(context.getCacheDir(), Utils.md5(url));
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = isTransparent ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
-        if (isLoadedFomCache && file.exists()) {
-            return BitmapFactory.decodeFile(file.getPath(), options);
+
+        // Check if the uri is a local content uri: for example an album art
+        if (uri.getScheme().equals("content")) {
+            return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
+        } else {
+            // Check if the file exists in the cache
+            File file = new File(context.getCacheDir(), Utils.md5(uri.toString()));
+            if (isLoadedFomCache && file.exists()) {
+                return BitmapFactory.decodeFile(file.getPath(), options);
+            }
+
+            // Or fetch the image from the internet in to a byte array buffer
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(new URL(uri.toString()).openStream());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int number_read = 0;
+            while ((number_read = bufferedInputStream.read(buffer, 0, buffer.length)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, number_read);
+            }
+            byteArrayOutputStream.close();
+            bufferedInputStream.close();
+
+            byte[] image = byteArrayOutputStream.toByteArray();
+
+            // When needed save the image to a cache file
+            if (isSavedToCache) {
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(image);
+                fileOutputStream.close();
+            }
+
+            return BitmapFactory.decodeByteArray(image, 0, image.length, options);
         }
-
-        // Or fetch the image from the internet in to a byte array buffer
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(new URL(url).openStream());
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int number_read = 0;
-        while ((number_read = bufferedInputStream.read(buffer, 0, buffer.length)) != -1) {
-            byteArrayOutputStream.write(buffer, 0, number_read);
-        }
-        byteArrayOutputStream.close();
-        bufferedInputStream.close();
-
-        byte[] image = byteArrayOutputStream.toByteArray();
-
-        // When needed save the image to a cache file
-        if (isSavedToCache) {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(image);
-            fileOutputStream.close();
-        }
-
-        return BitmapFactory.decodeByteArray(image, 0, image.length, options);
     }
 
     public void onLoad(Bitmap image) {
@@ -243,8 +264,30 @@ public class FetchImageTask {
             if (isFetching) {
                 for (int i = 0; i < tasks.size(); i++) {
                     FetchImageTask task = tasks.get(i);
-                    if (task.getUrl().equals(url) && !task.isFetching()) {
+                    if (task.getUri().equals(uri) && !task.isFetching()) {
                         task.onLoad(image);
+                        i--;
+                    }
+                }
+            }
+        }
+    }
+
+    public void onExpection(Exception exception) {
+        if (!isCanceled) {
+            finish();
+
+            if (onErrorListener != null) {
+                onErrorListener.onError(exception);
+            } else {
+                Log.e(Config.LOG_TAG, "An exception catched!", exception);
+            }
+
+            if (isFetching) {
+                for (int i = 0; i < tasks.size(); i++) {
+                    FetchImageTask task = tasks.get(i);
+                    if (task.getUri().equals(uri) && !task.isFetching()) {
+                        task.onExpection(exception);
                         i--;
                     }
                 }

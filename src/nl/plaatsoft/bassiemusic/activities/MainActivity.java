@@ -1,4 +1,4 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.activities;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -17,6 +17,12 @@ import android.widget.ListView;
 import android.Manifest;
 import java.util.ArrayList;
 import java.util.List;
+import nl.plaatsoft.bassiemusic.components.MusicAdapter;
+import nl.plaatsoft.bassiemusic.components.MusicPlayer;
+import nl.plaatsoft.bassiemusic.components.RatingAlert;
+import nl.plaatsoft.bassiemusic.models.Music;
+import nl.plaatsoft.bassiemusic.Config;
+import nl.plaatsoft.bassiemusic.R;
 
 public class MainActivity extends BaseActivity {
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1;

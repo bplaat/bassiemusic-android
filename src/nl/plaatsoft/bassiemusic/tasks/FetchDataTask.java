@@ -1,8 +1,10 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.tasks;
 
 import android.content.Context;
 import android.os.Looper;
 import android.os.Handler;
+import android.net.Uri;
+import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.File;
@@ -13,8 +15,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.ArrayList;
 import java.util.List;
+import nl.plaatsoft.bassiemusic.Config;
+import nl.plaatsoft.bassiemusic.Utils;
 
-public class FetchDataTask {
+public class FetchDataTask implements Task {
     public static interface OnLoadListener {
         public abstract void onLoad(String data);
     }
@@ -28,7 +32,7 @@ public class FetchDataTask {
     private static final List<FetchDataTask> tasks = new ArrayList<FetchDataTask>();
 
     private Context context;
-    private String url;
+    private Uri uri;
     private boolean isLoadedFomCache;
     private boolean isSavedToCache;
     private OnLoadListener onLoadListener;
@@ -41,18 +45,21 @@ public class FetchDataTask {
         this.context = context;
     }
 
-    public String getUrl() {
-        return url;
+    @Override
+    public Uri getUri() {
+        return uri;
     }
 
     public boolean isFetching() {
         return isFetching;
     }
 
+    @Override
     public boolean isCanceled() {
         return isCanceled;
     }
 
+    @Override
     public boolean isFinished() {
         return isFinished;
     }
@@ -61,8 +68,13 @@ public class FetchDataTask {
         return new FetchDataTask(context);
     }
 
+    public FetchDataTask load(Uri uri) {
+        this.uri = uri;
+        return this;
+    }
+
     public FetchDataTask load(String url) {
-        this.url = url;
+        uri = Uri.parse(url);
         return this;
     }
 
@@ -96,7 +108,7 @@ public class FetchDataTask {
     public FetchDataTask fetch() {
         tasks.add(this);
         for (FetchDataTask task : tasks) {
-            if (task.getUrl().equals(url) && task.isFetching()) {
+            if (task.isFetching() && task.getUri().equals(uri)) {
                 return this;
             }
         }
@@ -110,33 +122,28 @@ public class FetchDataTask {
                 });
             } catch (Exception exception) {
                 handler.post(() -> {
-                    if (!isCanceled) {
-                        finish();
-                        if (onErrorListener != null) {
-                            onErrorListener.onError(exception);
-                        } else {
-                            exception.printStackTrace();
-                        }
-                    }
+                    onExpection(exception);
                 });
             }
         });
         return this;
     }
 
+    @Override
     public void cancel() {
         isCanceled = true;
         finish();
     }
 
-    private void finish() {
+    @Override
+    public void finish() {
         isFinished = true;
         tasks.remove(this);
     }
 
     private String fetchData() throws Exception {
-        // Check if the url is already cached
-        File file = new File(context.getCacheDir(), Utils.md5(url));
+        // Check if the uri is already cached
+        File file = new File(context.getCacheDir(), Utils.md5(uri.toString()));
         if (isLoadedFomCache && file.exists()) {
             // Then read the cached file
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -150,7 +157,7 @@ public class FetchDataTask {
         }
 
         // Or fetch the data from the internet
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(uri.toString()).openStream()));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         while ((line = bufferedReader.readLine()) != null) {
@@ -179,8 +186,30 @@ public class FetchDataTask {
             if (isFetching) {
                 for (int i = 0; i < tasks.size(); i++) {
                     FetchDataTask task = tasks.get(i);
-                    if (task.getUrl().equals(url) && !task.isFetching()) {
+                    if (task.getUri().equals(uri) && !task.isFetching()) {
                         task.onLoad(data);
+                        i--;
+                    }
+                }
+            }
+        }
+    }
+
+    public void onExpection(Exception exception) {
+        if (!isCanceled) {
+            finish();
+
+            if (onErrorListener != null) {
+                onErrorListener.onError(exception);
+            } else {
+                Log.e(Config.LOG_TAG, "An exception catched!", exception);
+            }
+
+            if (isFetching) {
+                for (int i = 0; i < tasks.size(); i++) {
+                    FetchDataTask task = tasks.get(i);
+                    if (task.getUri().equals(uri) && !task.isFetching()) {
+                        task.onExpection(exception);
                         i--;
                     }
                 }

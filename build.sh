@@ -35,7 +35,7 @@ else
                 apksigner.bat sign --v4-signing-enabled false --ks keystore.jks --ks-pass pass:$password --ks-pass pass:$password $name.apk
 
                 adb install -r $name.apk
-                adb shell am start -n $package/.MainActivity
+                adb shell am start -n $package/.activities.MainActivity
 
                 rm -f classes.txt classes.dex
             fi

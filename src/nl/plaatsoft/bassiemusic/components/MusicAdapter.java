@@ -1,4 +1,4 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.components;
 
 import android.animation.AnimatorSet;
 import android.animation.AnimatorInflater;
@@ -15,6 +15,10 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+import nl.plaatsoft.bassiemusic.models.Music;
+import nl.plaatsoft.bassiemusic.tasks.FetchCoverTask;
+import nl.plaatsoft.bassiemusic.Utils;
+import nl.plaatsoft.bassiemusic.R;
 
 public class MusicAdapter extends ArrayAdapter<Music> implements SectionIndexer {
     private static class ViewHolder {

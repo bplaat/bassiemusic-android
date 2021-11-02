@@ -1,4 +1,4 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.models;
 
 import android.content.Context;
 import android.content.ContentUris;
@@ -13,7 +13,7 @@ public class Music {
     private long id;
     private List<String> artists;
     private String album;
-    private Uri albumCoverUri;
+    private Uri CoverUri;
     private String title;
     private int position;
     private long duration;
@@ -32,8 +32,8 @@ public class Music {
         return album;
     }
 
-    public Uri getAlbumCoverUri() {
-        return albumCoverUri;
+    public Uri getCoverUri() {
+        return CoverUri;
     }
 
     public String getTitle() {
@@ -82,7 +82,7 @@ public class Music {
                 String trackNumber = musicCursor.getString(musicCursor.getColumnIndex(MediaStore.Audio.Media.CD_TRACK_NUMBER));
                 music.duration = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 long albumId = musicCursor.getLong(musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-                music.albumCoverUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
+                music.CoverUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
 
                 music.artists = new ArrayList<String>();
                 music.position = 1;

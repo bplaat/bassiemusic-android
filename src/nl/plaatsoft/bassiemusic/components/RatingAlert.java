@@ -1,4 +1,4 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.components;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import nl.plaatsoft.bassiemusic.Config;
+import nl.plaatsoft.bassiemusic.Utils;
+import nl.plaatsoft.bassiemusic.R;
 
 public class RatingAlert {
     public static void updateAndShow(Context context) {

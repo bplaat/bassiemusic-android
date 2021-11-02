@@ -30,7 +30,7 @@
         <ListView android:id="@+id/main_music_list"
             style="@style/MusicListContainer" />
 
-        <nl.plaatsoft.bassiemusic.MusicPlayer
+        <nl.plaatsoft.bassiemusic.components.MusicPlayer
             android:id="@+id/main_music_music_player"
             style="@style/MusicPlayer" />
     </LinearLayout>

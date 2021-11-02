@@ -1,4 +1,4 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.activities;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -17,6 +17,9 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import java.util.List;
+import nl.plaatsoft.bassiemusic.components.MusicAdapter;
+import nl.plaatsoft.bassiemusic.models.Music;
+import nl.plaatsoft.bassiemusic.R;
 
 public class SearchActivity extends BaseActivity {
     @Override

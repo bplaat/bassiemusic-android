@@ -1,4 +1,4 @@
-package nl.plaatsoft.bassiemusic;
+package nl.plaatsoft.bassiemusic.components;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,12 +12,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextSwitcher;
 import android.widget.SeekBar;
+import nl.plaatsoft.bassiemusic.models.Music;
+import nl.plaatsoft.bassiemusic.tasks.FetchCoverTask;
+import nl.plaatsoft.bassiemusic.Config;
+import nl.plaatsoft.bassiemusic.R;
 
 public class MusicPlayer extends LinearLayout {
     public static interface OnInfoClickListener {
@@ -265,7 +270,7 @@ public class MusicPlayer extends LinearLayout {
             mediaPlayer.setDataSource(getContext(), playingMusic.getContentUri());
             mediaPlayer.prepareAsync();
         } catch (Exception exception) {
-            exception.printStackTrace();
+            Log.e(Config.LOG_TAG, "An exception catched!", exception);
         }
     }
 

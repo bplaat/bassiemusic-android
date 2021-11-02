@@ -15,7 +15,7 @@
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/Theme.App">
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".activities.MainActivity"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize">
 
@@ -25,14 +25,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SearchActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".activities.SearchActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <activity android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".activities.SettingsActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize" />
     </application>
