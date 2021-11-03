@@ -191,7 +191,7 @@ public class FetchImageTask implements Task {
 
         // Check if the image failed before
         if (failedImagesCache.contains(uri)) {
-            onExpection(new AlreadyFailedImage("This image already failed before"));
+            onException(new AlreadyFailedImage("This image already failed before"));
             return this;
         }
 
@@ -203,7 +203,7 @@ public class FetchImageTask implements Task {
                 });
             } catch (Exception exception) {
                 handler.post(() -> {
-                    onExpection(exception);
+                    onException(exception);
                 });
             }
         });
@@ -313,7 +313,7 @@ public class FetchImageTask implements Task {
         }
     }
 
-    public void onExpection(Exception exception) {
+    public void onException(Exception exception) {
         if (!isCanceled) {
             finish();
 
@@ -331,7 +331,7 @@ public class FetchImageTask implements Task {
                 for (int i = 0; i < tasks.size(); i++) {
                     FetchImageTask task = tasks.get(i);
                     if (task.getUri().equals(uri) && !task.isFetching()) {
-                        task.onExpection(exception);
+                        task.onException(exception);
                         i--;
                     }
                 }

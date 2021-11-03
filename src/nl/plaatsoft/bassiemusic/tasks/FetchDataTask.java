@@ -122,7 +122,7 @@ public class FetchDataTask implements Task {
                 });
             } catch (Exception exception) {
                 handler.post(() -> {
-                    onExpection(exception);
+                    onException(exception);
                 });
             }
         });
@@ -195,7 +195,7 @@ public class FetchDataTask implements Task {
         }
     }
 
-    public void onExpection(Exception exception) {
+    public void onException(Exception exception) {
         if (!isCanceled) {
             finish();
 
@@ -209,7 +209,7 @@ public class FetchDataTask implements Task {
                 for (int i = 0; i < tasks.size(); i++) {
                     FetchDataTask task = tasks.get(i);
                     if (task.getUri().equals(uri) && !task.isFetching()) {
-                        task.onExpection(exception);
+                        task.onException(exception);
                         i--;
                     }
                 }

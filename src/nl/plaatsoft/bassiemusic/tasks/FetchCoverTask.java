@@ -123,20 +123,19 @@ public class FetchCoverTask {
                             fetchImageTask.into(imageView).then(image -> {
                                 onLoad(image);
                             }, exception2 -> {
-                                onExpection(exception2);
+                                onException(exception2);
                             }).fetch();
                         } else {
-                            imageView.setImageBitmap(null);
-                            onExpection(new NoCoverFound("No album cover was found via the Deezer API"));
+                            onException(new NoCoverFound("No album cover was found via the Deezer API"));
                         }
                     } catch (Exception exception2) {
-                        onExpection(exception2);
+                        onException(exception2);
                     }
                 }, exception2 -> {
-                    onExpection(exception2);
+                    onException(exception2);
                 }).fetch();
             } catch (Exception exception2) {
-                onExpection(exception2);
+                onException(exception2);
             }
         }).fetch();
         return this;
@@ -148,7 +147,9 @@ public class FetchCoverTask {
         }
     }
 
-    private void onExpection(Exception exception) {
+    private void onException(Exception exception) {
+        imageView.setImageBitmap(null);
+
         if (onErrorListener != null) {
             onErrorListener.onError(exception);
         } else {
