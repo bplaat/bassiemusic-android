@@ -185,12 +185,14 @@ public class FetchImageTask implements Task {
 
         // Check of bitmap is already in cache
         if (bitmapCache.get(uri) != null) {
+            finish();
             onLoad(bitmapCache.get(uri));
             return this;
         }
 
         // Check if the image failed before
         if (failedImagesCache.contains(uri)) {
+            finish();
             onException(new AlreadyFailedImage("This image already failed before"));
             return this;
         }
@@ -220,6 +222,9 @@ public class FetchImageTask implements Task {
     @Override
     public void finish() {
         isFinished = true;
+        if (imageView != null) {
+            imageView.setTag(null);
+        }
         tasks.remove(this);
     }
 

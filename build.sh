@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# --- Bassie Android Build Script v1.0 ---
+# --- Bassie Android Build Script v1.1 ---
 
 # The default gradle Android build toolchain is so slow and produces bloated apks
 # So I use this nice build shell script to get the job done!
@@ -13,6 +13,11 @@
 
 PATH=$PATH:~/android-sdk/build-tools/30.0.3:~/android-sdk/platform-tools
 PLATFORM=~/android-sdk/platforms/android-30/android.jar
+
+# Use an Java API jar from the 1.8 version if we are using an JDK above 1.8 on macOS
+if [ "$(uname -s)" == "Darwin" ]; then
+    JAVAC_OPTIONS="-bootclasspath /Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/rt.jar"
+fi
 
 name="bassiemusic"
 package="nl.plaatsoft.bassiemusic"
@@ -40,10 +45,6 @@ else
             echo "Compiling java code"
             mkdir src-compiled
             find src -name *.java > sources.txt
-            if [ "$(uname -s)" == "Darwin" ]; then
-                # Use an Java API jar from the 1.8 version if we are using an JDK above 1.8
-                JAVAC_OPTIONS="-bootclasspath /Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/rt.jar"
-            fi
             if javac -Xlint -source 1.8 -target 1.8 -cp $PLATFORM -d src-compiled $JAVAC_OPTIONS @sources.txt; then
 
                 echo "Packing and signing application"
@@ -51,7 +52,7 @@ else
                 if [ "$(uname -s)" == "Linux" ]; then
                     d8 --release --lib $PLATFORM --min-api 21 @classes.txt
                 elif [ "$(uname -s)" == "Darwin" ]; then
-                    d8 --release --lib $PLATFORM --min-api 21 $(find src-compiled -name *.class)
+                    d8 --release --lib $PLATFORM --min-api 21 $(find src-compiled -name *.class) # TODO: Needs fixing
                 else
                     d8.bat --release --lib $PLATFORM --min-api 21 @classes.txt
                 fi
