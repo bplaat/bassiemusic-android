@@ -166,9 +166,7 @@ public class MainActivity extends BaseActivity {
         });
 
         ((ImageButton)findViewById(R.id.main_music_settings_button)).setOnClickListener((View view) -> {
-            oldLanguage = settings.getInt("language", Config.SETTINGS_LANGUAGE_DEFAULT);
-            oldTheme = settings.getInt("theme", Config.SETTINGS_THEME_DEFAULT);
-            startActivityForResult(new Intent(this, SettingsActivity.class), MainActivity.SETTINGS_ACTIVITY_REQUEST_CODE);
+            openSettingsActivity();
         });
 
         // Empty page
@@ -179,6 +177,9 @@ public class MainActivity extends BaseActivity {
         };
         ((ImageButton)findViewById(R.id.main_empty_refresh_button)).setOnClickListener(refreshEmptyOnClick);
         ((Button)findViewById(R.id.main_empty_hero_button)).setOnClickListener(refreshEmptyOnClick);
+        ((ImageButton)findViewById(R.id.main_empty_settings_button)).setOnClickListener((View view) -> {
+            openSettingsActivity();
+        });
 
         // Access page
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -187,6 +188,9 @@ public class MainActivity extends BaseActivity {
             };
             ((ImageButton)findViewById(R.id.main_access_refresh_button)).setOnClickListener(accessOnClick);
             ((Button)findViewById(R.id.main_access_hero_button)).setOnClickListener(accessOnClick);
+            ((ImageButton)findViewById(R.id.main_access_settings_button)).setOnClickListener((View view) -> {
+                openSettingsActivity();
+            });
 
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 accessPage.setVisibility(View.VISIBLE);
@@ -278,6 +282,12 @@ public class MainActivity extends BaseActivity {
                 musicList.setFastScrollEnabled(settings.getBoolean("fast_scroll", Config.SETTINGS_FAST_SCROLL_DEFAULT));
             }
         }
+    }
+
+    private void openSettingsActivity() {
+        oldLanguage = settings.getInt("language", Config.SETTINGS_LANGUAGE_DEFAULT);
+        oldTheme = settings.getInt("theme", Config.SETTINGS_THEME_DEFAULT);
+        startActivityForResult(new Intent(this, SettingsActivity.class), MainActivity.SETTINGS_ACTIVITY_REQUEST_CODE);
     }
 
     private void rememberShuffling() {

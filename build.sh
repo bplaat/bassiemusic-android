@@ -6,13 +6,13 @@
 # So I use this nice build shell script to get the job done!
 
 # Install an Java JDK 8 or later and add all binaries to your path
-# Install your Android SDK at ~/android-sdk/ with the following packages:
-# platform-tools, platforms;android-30, build-tools;30.0.3
+# Install your Android SDK and set the $`ANDROID_HOME` env variable with the following packages:
+# platform-tools, platforms;android-32, build-tools;32.0.0
 # Run this script with bash on Linux, macOS or a Git Bash / Msys install on Windows
 # For inspecting apks you need to install Jadx GUI and add it to your path
 
-PATH=$PATH:~/android-sdk/build-tools/30.0.3:~/android-sdk/platform-tools
-PLATFORM=~/android-sdk/platforms/android-30/android.jar
+PATH=$PATH:$ANDROID_HOME/build-tools/32.0.0:$ANDROID_HOME/platform-tools
+PLATFORM=$ANDROID_HOME/platforms/android-32/android.jar
 
 # Use an Java API jar from the 1.8 version if we are using an JDK above 1.8 on macOS
 if [ "$(uname -s)" == "Darwin" ]; then

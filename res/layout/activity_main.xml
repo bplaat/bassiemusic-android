@@ -47,6 +47,10 @@
             <ImageButton android:id="@+id/main_empty_refresh_button"
                 android:src="@drawable/ic_refresh"
                 style="@style/ActionBarIconButton" />
+
+            <ImageButton android:id="@+id/main_empty_settings_button"
+                android:src="@drawable/ic_settings"
+                style="@style/ActionBarIconButton" />
         </LinearLayout>
 
         <ScrollView android:id="@+id/main_empty_scroll"
@@ -80,6 +84,10 @@
 
             <ImageButton android:id="@+id/main_access_refresh_button"
                 android:src="@drawable/ic_refresh"
+                style="@style/ActionBarIconButton" />
+
+            <ImageButton android:id="@+id/main_access_settings_button"
+                android:src="@drawable/ic_settings"
                 style="@style/ActionBarIconButton" />
         </LinearLayout>
 
