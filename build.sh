@@ -5,19 +5,14 @@
 # The default gradle Android build toolchain is so slow and produces bloated apks
 # So I use this nice build shell script to get the job done!
 
-# Install an Java JDK 8 or later and add all binaries to your path
-# Install your Android SDK and set the $`ANDROID_HOME` env variable with the following packages:
-# platform-tools, platforms;android-32, build-tools;32.0.0
+# Install the OpenJDK JDK 8 and add all binaries to your path
+# Install your Android SDK and set the $ANDROID_HOME with the path with
+# the following packages: platform-tools platforms;android-31 build-tools;31.0.0
 # Run this script with bash on Linux, macOS or a Git Bash / Msys install on Windows
 # For inspecting apks you need to install Jadx GUI and add it to your path
 
-PATH=$PATH:$ANDROID_HOME/build-tools/32.0.0:$ANDROID_HOME/platform-tools
-PLATFORM=$ANDROID_HOME/platforms/android-32/android.jar
-
-# Use an Java API jar from the 1.8 version if we are using an JDK above 1.8 on macOS
-if [ "$(uname -s)" == "Darwin" ]; then
-    JAVAC_OPTIONS="-bootclasspath /Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre/lib/rt.jar"
-fi
+PATH=$PATH:$ANDROID_HOME/build-tools/31.0.0:$ANDROID_HOME/platform-tools
+PLATFORM=$ANDROID_HOME/platforms/android-31/android.jar
 
 name="bassiemusic"
 package="nl.plaatsoft.bassiemusic"
@@ -45,14 +40,12 @@ else
             echo "Compiling java code"
             mkdir src-compiled
             find src -name *.java > sources.txt
-            if javac -Xlint -source 1.8 -target 1.8 -cp $PLATFORM -d src-compiled $JAVAC_OPTIONS @sources.txt; then
+            if javac -Xlint -cp $PLATFORM -d src-compiled @sources.txt; then
 
                 echo "Packing and signing application"
                 find src-compiled -name *.class > classes.txt
-                if [ "$(uname -s)" == "Linux" ]; then
+                if [ "$(uname -s)" == "Linux" ] || [ "$(uname -s)" == "Darwin" ]; then
                     d8 --release --lib $PLATFORM --min-api 21 @classes.txt
-                elif [ "$(uname -s)" == "Darwin" ]; then
-                    d8 --release --lib $PLATFORM --min-api 21 $(find src-compiled -name *.class) # TODO: Needs fixing
                 else
                     d8.bat --release --lib $PLATFORM --min-api 21 @classes.txt
                 fi
