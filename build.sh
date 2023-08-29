@@ -7,12 +7,12 @@
 
 # Install the OpenJDK JDK 8 and add all binaries to your path
 # Install your Android SDK and set the $ANDROID_HOME with the path with
-# the following packages: platform-tools platforms;android-31 build-tools;31.0.0
+# the following packages: platform-tools platforms;android-33 build-tools;33.0.2
 # Run this script with bash on Linux, macOS or a Git Bash / Msys install on Windows
 # For inspecting apks you need to install Jadx GUI and add it to your path
 
-PATH=$PATH:$ANDROID_HOME/build-tools/31.0.0:$ANDROID_HOME/platform-tools
-PLATFORM=$ANDROID_HOME/platforms/android-31/android.jar
+PATH=$PATH:$ANDROID_HOME/build-tools/33.0.2:$ANDROID_HOME/platform-tools
+PLATFORM=$ANDROID_HOME/platforms/android-33/android.jar
 
 name="bassiemusic"
 package="nl.plaatsoft.bassiemusic"

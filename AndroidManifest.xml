@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nl.plaatsoft.bassiemusic"
     android:versionCode="29"
-    android:versionName="2.9-dev">
+    android:versionName="2.9">
 
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="31" />
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,7 +17,8 @@
 
         <activity android:name=".activities.MainActivity"
             android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize">
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +30,13 @@
             android:parentActivityName=".activities.MainActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:exported="true" />
 
         <activity android:name=".activities.SettingsActivity"
             android:parentActivityName=".activities.MainActivity"
             android:launchMode="singleTop"
-            android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize" />
+            android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"
+            android:exported="true" />
     </application>
 </manifest>

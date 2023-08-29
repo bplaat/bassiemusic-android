@@ -1,11 +1,13 @@
 package nl.plaatsoft.bassiemusic.activities;
 
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,15 @@ import nl.plaatsoft.bassiemusic.Utils;
 import nl.plaatsoft.bassiemusic.R;
 
 public class SettingsActivity extends BaseActivity {
+    @SuppressWarnings("deprecation")
+    static private String getVersionName(PackageManager pm) throws PackageManager.NameNotFoundException {
+        String packageName = "nl.plaatsoft.bassiemusic";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return pm.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0)).versionName;
+        }
+        return pm.getPackageInfo(packageName, 0).versionName;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +116,7 @@ public class SettingsActivity extends BaseActivity {
 
         // Init version button easter egg
         try {
-            ((TextView)findViewById(R.id.settings_version_label)).setText("v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+            ((TextView)findViewById(R.id.settings_version_label)).setText("v" + getVersionName(getPackageManager()));
         } catch (Exception exception) {
             Log.e(Config.LOG_TAG, "An exception catched!", exception);
         }

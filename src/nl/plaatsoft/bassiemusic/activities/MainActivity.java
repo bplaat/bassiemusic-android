@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.window.OnBackInvokedDispatcher;
 import android.Manifest;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,13 @@ public class MainActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // On back handler
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, () -> {
+                moveTaskToBack(false);
+            });
+        }
 
         handler = new Handler(Looper.getMainLooper());
 
@@ -222,6 +230,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onBackPressed() {
         moveTaskToBack(false);
     }
