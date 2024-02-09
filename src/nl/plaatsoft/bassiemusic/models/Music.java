@@ -27,7 +27,6 @@ public class Music {
         return artists;
     }
 
-
     public String getAlbum() {
         return album;
     }

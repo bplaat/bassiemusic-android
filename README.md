@@ -13,6 +13,6 @@ If you don't want to use the Google Play store, you can always download the late
 </a>
 
 ## License
-Copyright (c) 2018 - present Bastiaan van der Plaat
+Copyright (c) 2018 - 2024 Bastiaan van der Plaat
 
 Licensed under the [MIT](LICENSE) license.

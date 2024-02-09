@@ -191,8 +191,9 @@ public class MainActivity extends BaseActivity {
 
         // Access page
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String permission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Manifest.permission.READ_MEDIA_AUDIO : Manifest.permission.READ_EXTERNAL_STORAGE;
             View.OnClickListener accessOnClick = (View view) -> {
-                requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
+                requestPermissions(new String[] { permission }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
             };
             ((ImageButton)findViewById(R.id.main_access_refresh_button)).setOnClickListener(accessOnClick);
             ((Button)findViewById(R.id.main_access_hero_button)).setOnClickListener(accessOnClick);
@@ -200,10 +201,10 @@ public class MainActivity extends BaseActivity {
                 openSettingsActivity();
             });
 
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            if (checkSelfPermission(permission) == PackageManager.PERMISSION_DENIED) {
                 accessPage.setVisibility(View.VISIBLE);
                 musicPage.setVisibility(View.GONE);
-                requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
+                requestPermissions(new String[] { permission }, MainActivity.STORAGE_PERMISSION_REQUEST_CODE);
                 return;
             }
         }

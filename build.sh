@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# --- Bassie Android Build Script v1.1 ---
+# --- Bassie Android Build Script v1.2 ---
 
 # The default gradle Android build toolchain is so slow and produces bloated apks
 # So I use this nice build shell script to get the job done!
 
-# Install the OpenJDK JDK 8 and add all binaries to your path
+# Install the OpenJDK JDK 17 and add all binaries to your path
 # Install your Android SDK and set the $ANDROID_HOME with the path with
-# the following packages: platform-tools platforms;android-33 build-tools;33.0.2
+# the following packages: platform-tools platforms;android-34 build-tools;34.0.0
 # Run this script with bash on Linux, macOS or a Git Bash / Msys install on Windows
 # For inspecting apks you need to install Jadx GUI and add it to your path
 
-PATH=$PATH:$ANDROID_HOME/build-tools/33.0.2:$ANDROID_HOME/platform-tools
-PLATFORM=$ANDROID_HOME/platforms/android-33/android.jar
+PATH=$PATH:$ANDROID_HOME/build-tools/34.0.0:$ANDROID_HOME/platform-tools
+PLATFORM=$ANDROID_HOME/platforms/android-34/android.jar
 
 name="bassiemusic"
 package="nl.plaatsoft.bassiemusic"
